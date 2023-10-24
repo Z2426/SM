@@ -4,8 +4,10 @@ import cors from "cors"
 import morgan from "morgan"
 import bodyParser from "body-parser"
 import dbConnection from "./dbConfig/index.js"
+import router from './routes/index.js'
 //securty packges
 import helmet from "helmet"
+import errorMiddleware from './middleware/errorMiddleware.js'
 dotenv.config()
 const app=express()
 const PORT =process.env.PORT || 8800
@@ -16,6 +18,9 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.json({limit:"10mb"}))
 app.use(express.urlencoded({extended: true}))
 app.use(morgan("dev"))
+//error middleware
+app.use(router)
+app.use(errorMiddleware)
 dbConnection()
 app.listen(PORT,()=>{
     console.log(`http://localhost:${process.env.PORT}`)
