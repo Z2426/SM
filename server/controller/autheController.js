@@ -39,12 +39,13 @@ export const login =async(req,res,next)=>{
             return
         }
         //find user by email
-        const user = await Users.findOne({email}.select("+password")
+        const user = await Users.findOne({ email })
+        .select('+password')
         .populate({
-            path:"friends",
-            select:"firstName lastName location profileUrl -password"
-
-        }))
+            path: "friends",
+            select: "firstName lastName location profileUrl -password"
+        });
+    
         if(!user){
             next("Inalid email or password")
             return
@@ -70,6 +71,6 @@ export const login =async(req,res,next)=>{
 
     }catch(error){
         console.log(error)
-        res.status(404).json({message:err.message})
+        res.status(404).json({message:error.message})
     }
 }

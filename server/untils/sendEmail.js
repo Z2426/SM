@@ -10,8 +10,8 @@ const {AUTH_EMAIL,AUTH_PASSWORD,APP_URL} =process.env
 let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth:{
-        user:AUTH_EMAIL,
-        pass:AUTH_PASSWORD
+        user:"nguyenvanban9923@gmail.com",
+        pass:'tqmj hzgo pvha rcvt'
     }
 })
 
