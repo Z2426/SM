@@ -24,7 +24,12 @@ export const sendVerificationEmail= async(user,res)=>{
         from : AUTH_EMAIL,
         to:email,
         subject:"Email verification",
-        html:`<div> <h1>OKE</h1> </div>`
+        html:`<div>
+         <h1>${lastName}</h1>
+         <p>Please verify your email address so we can know that really you</p>
+         <p>This link expire  1 hour</p>
+         <a href=${link}>Email address<a/>
+         </div>` 
     }
     try{
         const hashedToken =await hashString(token)
