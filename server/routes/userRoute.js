@@ -1,7 +1,7 @@
 import { verify } from "crypto"
 import express from "express"
 import path from "path"
-import { verifyEmail } from "../controller/userController.js"
+import  verifyEmail  from "../models/emailVerificationModel.js"
 const router =express.Router()
 const __dirname =path.resolve(path.dirname(""))
 router.get("/verify/:userId/:token",verifyEmail)
