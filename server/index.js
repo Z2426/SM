@@ -20,7 +20,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(morgan("dev"))
 //error middleware
 app.use(router)
-app.use(errorMiddleware)
+//app.use(errorMiddleware)
 dbConnection()
 app.listen(PORT,()=>{
     console.log(`http://localhost:${process.env.PORT}`)
