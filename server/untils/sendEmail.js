@@ -6,7 +6,8 @@ import { hashString } from "./index.js"
 
 
 dotenv.config()
-const {AUTH_EMAIL,AUTH_PASSWORD,APP_URL} =process.env
+const {AUTH_EMAIL,AUTH_PASSWORD,APP_URL} =process.env // not wokring
+
 let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth:{
@@ -18,7 +19,10 @@ let transporter = nodemailer.createTransport({
 export const sendVerificationEmail= async(user,res)=>{
     const {_id,email,lastName} =user
     const token =_id+uuidv4()
-    const link =APP_URL+"users/verify"+_id+"/"+token
+    console.log("Test app url",APP_URL)
+    console.log(user)
+    const link =APP_URL+"/users/verify/"+_id+"/"+token
+    console.log("Link verify ",link)
     //mail options
     const mailOptions={
         from : AUTH_EMAIL,
@@ -28,6 +32,7 @@ export const sendVerificationEmail= async(user,res)=>{
          <h1>${lastName}</h1>
          <p>Please verify your email address so we can know that really you</p>
          <p>This link expire  1 hour</p>
+         <p>${link}</p>
          <a href=${link}>Email address<a/>
          </div>` 
     }
