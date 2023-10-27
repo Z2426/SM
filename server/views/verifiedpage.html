@@ -1,3 +1,49 @@
-<h1>
-    OKE
-</h1>
+<head>
+    <title>Email Verificaion</title>
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="ion">
+            <span id="statusIon" class=""></span>
+        </div>
+        <div id="statusMessage" class="">"
+            <!--replace the localhost:3000  with your delouted URL-->
+            <a href="http://localhost:8800/auth/login" id="btn" class="">Login</a>
+        </div>
+        <script>
+            //Get the message parameter from the URL
+            const urlParams = new URLSearchParams(window.location.search)
+            const message =urlParams.get('message')
+            const status =urlParams.get('status')
+            //Get the card , status ion , and status message element
+            const card =document.querySelector('.card')
+            const statusIon =document.getElementById('statusIon')
+            const statusMessage=docuement.getElementById("statusMessage")
+            const btn =document.getElementById("btn")
+            //display appropiate contennt and set backgrounf color bases  on the message parama
+            if(status==='success'){
+                statusIon.innerHTML="✔️"
+                statusMessage.textContent=message
+                card.classList.add("success")
+                statusIon.classList.add('success')
+                statusMessage.classList.add('success')
+                btn.classList.add("showBtn")
+
+            }else if(status="error"){
+                statusIon.innerHTML="❌"
+                statusMessage.textContent=message
+                card.classList.add("error")
+                statusIon.classList.add('error')
+                statusMessage.classList.add('error')
+                btn.classList.add("hideBtn")
+
+            }else{
+
+            }
+        </script>
+
+    </div>
+</body>
