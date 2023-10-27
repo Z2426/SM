@@ -5,9 +5,10 @@ import  {verifyEmail}  from "../controller/userController.js"
 const router =express.Router()
 const __dirname =path.resolve(path.dirname(""))
 router.get("/verify/:userId/:token",verifyEmail)
+//bug : not verified data
 router.get("/verified",(req,res)=>{
     //res.send("123")
-    console.log(__dirname+"./view/verifieldpage.html")
+    
      res.sendFile(path.join(__dirname,'views', 'verifiedpage.html'))
    // res.sendFile(path.join(__dirname),"./view/verifieldpage.html")
 })

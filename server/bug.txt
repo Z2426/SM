@@ -1,3 +1,5 @@
- 1/ Dang ki => xac thuc email |x
-2/ dang nhap : token |v
+BE
+1.  page verify err ( 1:18:00)
+=> not show ion base on  parama
+2. 
 
