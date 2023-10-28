@@ -2,80 +2,7 @@ import mongoose from "mongoose";
 import Users from '../models/userModel.js'
 import Verification from "../models/emailVerificationModel.js";
 import {compareString} from "../untils/index.js"
-/*
-export const verifyEmail = async(req,res)=>{
-    
-    const {userId,token} =req.params
-    try{
-        const result =await Verification.findOne({userId})
-        if(result){
-            const {expiresAt,token :hashedToken} =result
-            //token has expires
-            if(expiresAt <Date.now()){
-                console.log("token has expires")
-                await Verification.findOneAndDelete({userId}).then(()=>{
-                    Users.findOneAndDelete({_id:userId})
-                    .then(()=>{
-                        const message="Verification token has expired"
-                        res.redirect(
-                            `/users/verified?status=error&message=${message}`
-                        )
-
-                    }).catch((err)=>{
-                        res.redirect(`/users/verified?status=error&message=`)
-                    })
-
-                }).catch((err)=>{
-                    res.redirect(`/users/verified?message=${err}`)
-                })
-            }else{
-                //token valid
-                compareString(token,hashedToken)
-                .then((isMatch)=>{
-                    if(isMatch){
-                        console.log("is match success")
-                        Users.findOneAndUpdate({_id:userId},{verified:true})
-                        .then(()=>{
-                            Verification.findOneAndDelete({userId}).then(()=>{
-                                const message ="Email verified succesfully"
-                                res.redirect(
-                                    `/users/verified?status=success&message=${message}`
-                                )
-                            })
-
-                        }).catch((err)=>{
-                            console.log("is match"+err)
-                            const message ="Verificaion failed or link invalid"
-                            res.redirect(
-                                `/users/verified?status=error&message=${message}`
-                            )
-                        })
-
-                    }else{
-                        //invalid token
-                        const message ="Verificarion failed or link is invalid"
-                        res.redirect(`/users/verified?status=error&message=${message}`)
-
-                    }
-
-                }).catch((error)=>{
-                    console.log(error)
-                    res.redirect(`/users/verified?message=`)
-
-                })
-            }
-        }else{
-            const message="Invalid verification link. Try again later"
-            res.redirect(`/users/verified?status=error&message=${message}`)
-        }
-    }catch(error){
-        console.log(error)
-        res.redirect(`/users/verified?message=`)
-        //res.status(404).json({message:error.message})
-
-    }
-}
-*/
+import {passwordReset} from "../models/passwordResetModel.js"
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
 
@@ -117,3 +44,32 @@ export const verifyEmail = async (req, res) => {
         // You can also handle the error with a proper response status or JSON message if needed.
     }
 };
+export const requestPaswordReset =async(req,res)=>{
+    try{
+        const {email} =req.body
+        const user =await Users.findOne({email})
+        if(!user){
+            return res.status(404).json({
+                status:"FAILED",
+                message:"Email address not found"
+            })
+        }
+        const existingRequest =await passwordReset.findOne({email})
+       if(existingRequest){
+        if(existingRequest.expiresAt >Date.now()){
+            return res.status(201).json({
+                status:"PENDING",
+                message:"Reset password link has already been sent to your email"
+            })
+
+        }
+        await passwordReset.findOneAndDelete({email})
+
+       }
+       await resetPasswordLink(user,res)
+
+    }catch(error){
+        console.log(error)
+        res.status(404).json({message:error,message})
+    }
+}

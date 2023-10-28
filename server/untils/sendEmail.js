@@ -59,3 +59,17 @@ export const sendVerificationEmail= async(user,res)=>{
         res.status(404).json({message:"Something went wrong"})
     }
 }
+export const resetPasswordLink =async(user,res)=>{
+    const {_id,email} =user
+    const token =_id +uuidv4()
+    const link =APP_URL+"/users/reset-password/"+_id+"/"+token
+    //mail options
+    const mailOptions ={
+        from : AUTH_EMAIL,
+        to:email,
+        subject:"Password Reset",
+        html :`
+        <p><p/>
+        `
+    }
+}
