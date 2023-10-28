@@ -3,8 +3,8 @@ import Verification from "../models/emailVerificationModel.js"
 import dotenv from "dotenv"
 import {  v4  as uuidv4} from "uuid"
 import { hashString } from "./index.js"
-
-
+import PasswordReset from '../models/passwordResetModel.js'
+import Users from '../models/userModel.js'
 dotenv.config()
 const {AUTH_EMAIL,AUTH_PASSWORD,APP_URL} =process.env // not wokring
 
@@ -60,16 +60,51 @@ export const sendVerificationEmail= async(user,res)=>{
     }
 }
 export const resetPasswordLink =async(user,res)=>{
-    const {_id,email} =user
-    const token =_id +uuidv4()
-    const link =APP_URL+"/users/reset-password/"+_id+"/"+token
-    //mail options
+    const {_id,email}= user
+    const token =_id + uuidv4()
+    const link=APP_URL+"/users/reset-password/"+_id+'/'+token
+    //mail option
     const mailOptions ={
-        from : AUTH_EMAIL,
+        from :AUTH_EMAIL,
         to:email,
         subject:"Password Reset",
         html :`
-        <p><p/>
+        <p>Password reset link .Please click the link below to reset password</p>
+        <br>
+        <p><b>THis link expires in 10 minutes</b></p>
+        <br>
+        <p>${link}</p>
+        <a href=${link}>link rest</a>
         `
     }
+    try{
+        const hasshedToken =await hashString(token)
+        const resetEmail =await PasswordReset.create({
+            userId:_id,
+            email:email,
+            token:hasshedToken,
+            createAt:Date.now(),
+            expiresAt:Date.now()+600000
+        })
+        if(resetEmail){
+            transporter.sendMail(mailOptions)
+            .then(()=>{
+                res.status(201).send({
+                    success:"PENDING",
+                    message:"Reset Password Link has been sent to your account"
+                })
+            }).catch((err)=>{
+                console.log(err)
+                res.status(404).json({message:"Something went wrong"})
+            })
+
+        }
+
+    }catch(error){
+        console.log(error)
+        res.status(404).json({message:"Somethong went wrong"})
+    }
+
+
+  
 }

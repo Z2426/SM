@@ -1,7 +1,7 @@
 import mongoose ,{Schema} from "mongoose"
 const passwordRestSchema =Schema({
     userId:{type:String, unique:true},
-    email:{type:Strng ,unique:true},
+    email:{type:String ,unique:true},
     token:String,
     createAt:Date,
     expiresAt:Date
