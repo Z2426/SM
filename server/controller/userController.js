@@ -5,6 +5,7 @@ import Verification from "../models/emailVerificationModel.js";
 import {compareString, hashString} from "../untils/index.js"
 import passwordReset from "../models/passwordResetModel.js"
 import {resetPasswordLink} from "../untils/sendEmail.js"
+import { createJWT } from "../untils/index.js";
 export const suggestedFriends =async(req,res,next)=>{
   try{
     const {userId} =req.body.user
@@ -220,7 +221,7 @@ export const friendRequest =async(req,res,next)=>{
             next("Fiend request already sent.")
             return
         }
-        const accountExist =await FriendRequest.findOne({
+        const accountExist =await FriendsRequest.findOne({
             requestFrom:requestTo,
             requestTo:userId
         })
@@ -228,7 +229,7 @@ export const friendRequest =async(req,res,next)=>{
             next("Friend request aleady sent")
             return
         }
-        const newRes =await FriendRequest.create({
+        const newRes =await FriendsRequest.create({
             requestTo,
             requestFrom:userId
         })
@@ -307,6 +308,44 @@ export const getUser =async (req,res,next)=>{
     }
 }
 
+export const updateUser = async (req, res, next) => {
+    try {
+      const { firstName, lastName, location, profileUrl, profession } = req.body;
+  
+      if (!(firstName || lastName  || profession || location)) {
+        next("Please provide all required fields");
+        return;
+      }
+  
+      const { userId } = req.body.user;
+  
+      const updateUser = {
+        firstName,
+        lastName,
+        location,
+        profileUrl,
+        profession,
+        _id: userId,
+      };
+      const user = await Users.findByIdAndUpdate(userId, updateUser, {
+        new: true,
+      });
+  
+      await user.populate({ path: "friends", select: "-password" });
+      const token = createJWT(user?._id);
+  
+      user.password = undefined;
+  
+      res.status(200).json({
+        sucess: true,
+        message: "User updated successfully",
+        user,
+        token,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ message: error.message });
+    }
+  };
 
-}
   
