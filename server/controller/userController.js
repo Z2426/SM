@@ -1,9 +1,87 @@
 import mongoose from "mongoose";
 import Users from '../models/userModel.js'
+import FriendsRequest from  '../models/friendRequest.js'
 import Verification from "../models/emailVerificationModel.js";
 import {compareString, hashString} from "../untils/index.js"
 import passwordReset from "../models/passwordResetModel.js"
 import {resetPasswordLink} from "../untils/sendEmail.js"
+export const suggestedFriends =async(req,res,next)=>{
+  try{
+    const {userId} =req.body.user
+    let queryObject ={}
+    queryObject._id={$ne:userId}
+    queryObject.friend={$nin:userId}
+    let queryResult =Users.find(queryObject)
+    .limit(15)
+    .select("firstName lastName profuleUrl profession -password")
+    const suggestedFriends =await queryResult
+    res.status(200).json({
+        success:true,
+        data:suggestedFriends
+    })
+
+
+  }catch(error){
+    console.log(error)
+    res.status(404).json({message:error.message})
+  }
+}
+export const profileViews =async(req,res,next)=>{
+  try{
+    const {userId} =req.body.user
+    const {id} =req.body
+    const user =await  Users.findById(id)
+    user.views.push(userId)
+    await user.save()
+    res.status(201).json({
+        success :true,
+        message:"Successfully"
+,
+    })
+
+  }catch(error){
+    console.log(error)
+    res.status(500).json({
+        message:"auth error",
+        success:false,
+        error: error.message
+    })
+  }
+}
+export const acceptRequest =async(req,res,next)=>{
+   try{
+    const id =req.body.user.userId
+    const {rid,status} =req.body
+    const requestExist =await FriendsRequest.findById(rid)
+    if(!requestExist){
+        next("No friend request found")
+        return
+    }
+    const newRes =await FriendsRequest.findByIdAndUpdate(
+        {_id:rid},
+        {requestStatus:status})
+    if(status ==="Accept"){
+       const user =await  Users.findById(id)
+       user.friends.push(newRes?.requestFrom)
+       await user.save()
+       const friend =await Users.findById(newRes?.requestFrom)
+       friend.friends.push(newRes?.requestTo)
+       await friend.save()
+    }
+    res.status(201).json({
+        success:true,
+        message:"Friend Request" +status
+    })
+   }catch(error){
+    console.log(error)
+    res.status(500).json({
+        message:"auth error",
+        success:false,
+        error:error.message
+    })
+
+   }
+}
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
 
@@ -130,3 +208,105 @@ export const changePassword=async(req,res)=>{
     }
     
 }
+export const friendRequest =async(req,res,next)=>{
+    try{
+        const {userId} =req.body.user
+        const {requestTo}=req.body
+        const requestExist =await FriendsRequest.findOne({
+            requestTo:userId,
+            requestTo
+        })
+        if(requestExist){
+            next("Fiend request already sent.")
+            return
+        }
+        const accountExist =await FriendRequest.findOne({
+            requestFrom:requestTo,
+            requestTo:userId
+        })
+        if(accountExist){
+            next("Friend request aleady sent")
+            return
+        }
+        const newRes =await FriendRequest.create({
+            requestTo,
+            requestFrom:userId
+        })
+
+
+        res.status(201).json({
+            success:true,
+            message:"Fiend request successfully"
+        })
+
+    }catch(error){
+        console.log(error)
+        res.status(500).json({
+            message:"auth error",
+            success: false,
+            error:error.message
+        })
+    }
+}
+export const getFriendRequest =async(req,res,next)=>{
+ try{
+    const {userId} =req.body.user
+    const request =await FriendsRequest.find({
+        requestTo:userId,
+        requestStatus:"Pending"
+    }).populate({
+        path:"requestFrom",
+        select:"fisrtName lastName profileUrl professtion -password"
+
+    }).limit(10)
+    .sort({
+        _id:-1
+    })
+    res.status(200).json({
+        success :true,
+        data:request
+    })
+    
+
+ }catch(error){
+    console.log(error)
+    res.status(500).json({
+        message:"auth error",
+        success :false,
+        error:error.message
+    })
+ }
+}
+export const getUser =async (req,res,next)=>{
+    try{
+        const {userId} =req.body.user
+        const {id} =req.params
+        const user =await Users.findById(id??userId).populate({
+            path:"friends",
+            select:"-password"
+        })
+        if(!user){
+            return res.status(200).send({
+                message:"User not found",
+                success:false
+            })
+        }
+        user.password =undefined
+        res.status(200).json({
+            success:true,
+            user:user
+        })
+
+    }catch(error){
+        console.log(error)
+        res.status(500).json({
+            message:"auth error",
+            success: false,
+            error: error.message
+        })
+    }
+}
+
+
+}
+  
