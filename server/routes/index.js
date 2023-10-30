@@ -6,4 +6,9 @@ const router =express.Router()
 router.use('/auth',authRoute)// auth: register , login
 router.use('/users',userRoute)
 router.use("/posts",postRoute)
+
+router.get("/",(req,res)=>{
+    res.send("Welcome fen")
+
+})
 export default router
