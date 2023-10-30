@@ -1,5 +1,43 @@
 import Posts  from "../models/postModel.js"
 import Users from "../models/userModel.js"
+export const getUserPost =async(req,res,next)=>{
+    try{
+        const {id} =req.params
+        const post =await Posts.find({userId:id})
+        .populate({
+            path:"userId",
+            select:"firstName lastName location profileUrl -password"
+        })
+        .sort({_id:-1})
+        res.status(200).json({
+            success:true,
+            message:"succesfully",
+            data:post
+
+        })
+
+    }catch(err){
+
+    }
+}
+export const getPost =async(req,res,next)=>{
+    try{
+        const {id} =req.params
+        const post =await  Posts.findById(id).populate({
+            path:"userId",
+            slect:"firstName lastName lcoation profileUrl -paasword"
+        })
+        res.status(200).json({
+            success:true,
+            message:"successfully",
+            data:post
+        })
+
+    }catch(err){
+        console.log(err)
+        res.status(404).json({message: err.mesage})
+    }
+}
 export const getPosts =async(req,res,next)=>{
     try{
         const {userId} =req.body.user
