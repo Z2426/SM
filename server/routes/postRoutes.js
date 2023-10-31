@@ -5,20 +5,24 @@ import {createPost,getPost,getPosts,
     commentPost,deletePost} from "../controller/postController.js"
 import {userAuth} from "../middleware/authMiddleware.js"
  const router =express.Router()
- //delete post
- router.delete("/:id",userAuth,deletePost)
- //like and comment on post
- router.post("/like/:id",likePost)
- router.post("/like-comment/:id/:rid?",userAuth,likePostComment)
- router.post("/reply-commnet/:id",userAuth,replyPostComment)
- router.post("/comment/:id",userAuth,commentPost)
- //get comments
- router.get("/comments/:postId",getComments)
- //get post
- router.post("/get-user-post/:id",userAuth,getUserPost)
- router.post("/:id",userAuth,getPost)
-// create post
-router.post("/create-post",userAuth,createPost)
-//get posts
-router.post("/",userAuth,getPosts)
+ // crete post
+router.post("/create-post", userAuth, createPost);
+// get posts
+router.post("/", userAuth, getPosts);
+router.post("/:id", userAuth, getPost);
+
+router.post("/get-user-post/:id", userAuth, getUserPost);
+
+// get comments
+router.get("/comments/:postId", getComments);
+
+//like and comment on posts
+router.post("/like/:id", userAuth, likePost);
+router.post("/like-comment/:id/:rid?", userAuth, likePostComment);
+router.post("/comment/:id", userAuth, commentPost);
+router.post("/reply-comment/:id", userAuth, replyPostComment);
+
+//delete post
+router.delete("/:id", userAuth, deletePost);
+
  export default router
