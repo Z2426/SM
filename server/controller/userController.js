@@ -50,38 +50,49 @@ export const profileViews =async(req,res,next)=>{
   }
 }
 export const acceptRequest =async(req,res,next)=>{
-   try{
-    const id =req.body.user.userId
-    const {rid,status} =req.body
-    const requestExist =await FriendsRequest.findById(rid)
-    if(!requestExist){
-        next("No friend request found")
-        return
-    }
-    const newRes =await FriendsRequest.findByIdAndUpdate(
-        {_id:rid},
-        {requestStatus:status})
-    if(status ==="Accept"){
-       const user =await  Users.findById(id)
-       user.friends.push(newRes?.requestFrom)
-       await user.save()
-       const friend =await Users.findById(newRes?.requestFrom)
-       friend.friends.push(newRes?.requestTo)
-       await friend.save()
-    }
-    res.status(201).json({
-        success:true,
-        message:"Friend Request" +status
-    })
-   }catch(error){
-    console.log(error)
-    res.status(500).json({
-        message:"auth error",
-        success:false,
-        error:error.message
-    })
-
-   }
+    try {
+        const id = req.body.user.userId;
+    
+        const { rid, status } = req.body;
+    
+        const requestExist = await FriendsRequest.findById(rid);
+    
+        if (!requestExist) {
+          next("No Friend Request Found.");
+          return;
+        }
+    
+        const newRes = await FriendsRequest.findByIdAndUpdate(
+          { _id: rid },
+          { requestStatus: status }
+        );
+    
+        if (status === "Accepted") {
+          const user = await Users.findById(id);
+    
+          user.friends.push(newRes?.requestFrom);
+    
+          await user.save();
+    
+          const friend = await Users.findById(newRes?.requestFrom);
+    
+          friend.friends.push(newRes?.requestTo);
+    
+          await friend.save();
+        }
+    
+        res.status(201).json({
+          success: true,
+          message: "Friend Request " + status,
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({
+          message: "auth error",
+          success: false,
+          error: error.message,
+        });
+      }
 }
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
@@ -155,6 +166,7 @@ export const requestPaswordReset =async(req,res)=>{
 }
 export const resetPassword=async(req,res)=>{
     const {userId,token} =req.params
+    console.log("Reset password")
     try{
         //find record
         const user =await Users.findById(userId)
@@ -192,6 +204,7 @@ export const resetPassword=async(req,res)=>{
 }
 export const changePassword=async(req,res)=>{
     try{
+        console.log("change password")
       const {userId,password} =req.body
       const hashedpassword= await hashString(password)
       const user =await Users.findByIdAndUpdate({_id:userId},{password:hashedpassword})
@@ -279,33 +292,37 @@ export const getFriendRequest =async(req,res,next)=>{
  }
 }
 export const getUser =async (req,res,next)=>{
-    try{
-        const {userId} =req.body.user
-        const {id} =req.params
-        const user =await Users.findById(id??userId).populate({
-            path:"friends",
-            select:"-password"
-        })
-        if(!user){
-            return res.status(200).send({
-                message:"User not found",
-                success:false
-            })
-        }
-        user.password =undefined
-        res.status(200).json({
-            success:true,
-            user:user
-        })
-
-    }catch(error){
-        console.log(error)
-        res.status(500).json({
-            message:"auth error",
+    try {
+        const { userId } = req.body.user;
+        const { id } = req.params;
+    
+        const user = await Users.findById(id ?? userId).populate({
+          path: "friends",
+          select: "-password",
+        });
+    
+        if (!user) {
+          return res.status(200).send({
+            message: "User Not Found",
             success: false,
-            error: error.message
-        })
-    }
+          });
+        }
+    
+        user.password = undefined;
+    
+        res.status(200).json({
+          success: true,
+          user: user,
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({
+          message: "auth error",
+          success: false,
+          error: error.message,
+        });
+      }
+        
 }
 
 export const updateUser = async (req, res, next) => {

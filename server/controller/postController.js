@@ -201,6 +201,7 @@ export const likePostComment = async (req, res, next) => {
 
   try {
     if (rid === undefined || rid === null || rid === `false`) {
+      console.log("rid error")
       const comment = await Comments.findById(id);
 
       const index = comment.likes.findIndex((el) => el === String(userId));

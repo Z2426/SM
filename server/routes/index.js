@@ -9,6 +9,5 @@ router.use("/posts",postRoute)
 
 router.get("/",(req,res)=>{
     res.send("Welcome fen")
-
 })
 export default router
