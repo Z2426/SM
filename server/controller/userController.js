@@ -6,27 +6,31 @@ import {compareString, hashString} from "../untils/index.js"
 import passwordReset from "../models/passwordResetModel.js"
 import {resetPasswordLink} from "../untils/sendEmail.js"
 import { createJWT } from "../untils/index.js";
-export const suggestedFriends =async(req,res,next)=>{
-  try{
-    const {userId} =req.body.user
-    let queryObject ={}
-    queryObject._id={$ne:userId}
-    queryObject.friend={$nin:userId}
-    let queryResult =Users.find(queryObject)
-    .limit(15)
-    .select("firstName lastName profuleUrl profession -password")
-    const suggestedFriends =await queryResult
+export const suggestedFriends = async (req, res) => {
+  try {
+    const { userId } = req.body.user;
+
+    let queryObject = {};
+
+    queryObject._id = { $ne: userId };
+
+    queryObject.friends = { $nin: userId };
+
+    let queryResult = Users.find(queryObject)
+      .limit(15)
+      .select("firstName lastName profileUrl profession -password");
+
+    const suggestedFriends = await queryResult;
+
     res.status(200).json({
-        success:true,
-        data:suggestedFriends
-    })
-
-
-  }catch(error){
-    console.log(error)
-    res.status(404).json({message:error.message})
+      success: true,
+      data: suggestedFriends,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: error.message });
   }
-}
+};
 export const profileViews =async(req,res,next)=>{
   try{
     const {userId} =req.body.user
