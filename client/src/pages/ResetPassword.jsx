@@ -48,7 +48,7 @@ const ResetPassword = () => {
         </span>
 
         <form
-          onSubmit={handleSubmit(onsubmit)}
+          onSubmit={handleSubmit(handleresetSubmit)}
           className="py-4 flex flex-col gap-5"
         >
           <TextInput
