@@ -8,7 +8,12 @@ import { BgImage } from "../assets";
 import { BsShare } from "react-icons/bs";
 import { AiOutlineInteraction } from "react-icons/ai";
 import { ImConnection } from "react-icons/im";
+import { apiRequest } from "../until";
+import { UserLogin } from "../redux/userSlice";
 const Login = () => {
+  const [errMsg, seterrMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -17,11 +22,30 @@ const Login = () => {
     mode: "onChange",
   });
 
-  const onSubmmit = async (data) => {};
+  const onSubmmit = async (data) => {
+    setIsSubmitting(true)
+    try{
+      const res  =await apiRequest({
+        url:"/auth/login",
+        data:data,
+        method:"POST"
+      })
+      if(res?.status==="failed"){
+        seterrMsg(res)
+      }else{
+        seterrMsg("")
+        const newData= {token:res?.token,...res?.user}
+        dispatch(UserLogin(newData))
+        window.location.replace("/")
+      }
+      setIsSubmitting(false)
+    }catch(error){
+      console.log(error)
+      setIsSubmitting(false)
+    }
+  };
 
-  const { errMsg, seterrMsg } = useState("");
-  const { isSubmitting, setIsSubmitting } = useState(false);
-  const dispatch = useDispatch();
+ 
 
   return (
     <div className="bg-bgColor w-full h-[100vh] flex items-center justify-center p-6">
