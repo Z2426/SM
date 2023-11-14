@@ -9,7 +9,7 @@ export const API = axious.create({
 export const apiRequest = async ({ url, token, data, method }) => {
     try {
         const result = await API(url, {
-            methodl: method || "GET",
+            method: method || "GET",
             data: data,
             header: {
                 "content-type": "application/json",
