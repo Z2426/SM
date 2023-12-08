@@ -228,29 +228,22 @@ export const changePassword=async(req,res)=>{
 export const friendRequest =async(req,res,next)=>{
     try{
         const {userId} =req.body.user
+        console.log(`friendrequest: userID:${userId}`)
         const {requestTo}=req.body
         const requestExist =await FriendsRequest.findOne({
             requestTo:userId,
-            requestTo
+            requestFrom :requestTo
         })
+        console.log("requestExist ")
+        console.log(requestExist)
         if(requestExist){
             next("Fiend request already sent.")
             return
-        }
-        const accountExist =await FriendsRequest.findOne({
-            requestFrom:requestTo,
-            requestTo:userId
-        })
-        if(accountExist){
-            next("Friend request aleady sent")
-            return
-        }
+        }    
         const newRes =await FriendsRequest.create({
             requestTo,
             requestFrom:userId
         })
-
-
         res.status(201).json({
             success:true,
             message:"Fiend request successfully"
