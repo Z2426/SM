@@ -80,11 +80,10 @@ export const acceptRequest =async(req,res,next)=>{
     
           const friend = await Users.findById(newRes?.requestFrom);
     
-          friend.friends.push(newRes?.requestTo);
+          friend.friends.push(id);
     
           await friend.save();
         }
-    
         res.status(201).json({
           success: true,
           message: "Friend Request " + status,
@@ -136,7 +135,7 @@ export const verifyEmail = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.redirect(`/users/verified?message=`);
-        // You can also handle the error with a proper response status or JSON message if needed.
+       
     }
 };
 export const requestPaswordReset =async(req,res)=>{
