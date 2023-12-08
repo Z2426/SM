@@ -6,5 +6,4 @@ const notificationSchema = new mongoose.Schema({
     friendRequestId: { type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest' }, 
     viewed: { type: Boolean, default: false }, 
 }, { timestamps: true });
-
 const Notification = mongoose.model('Notification', notificationSchema);

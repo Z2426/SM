@@ -6,31 +6,79 @@ import {compareString, hashString} from "../untils/index.js"
 import passwordReset from "../models/passwordResetModel.js"
 import {resetPasswordLink} from "../untils/sendEmail.js"
 import { createJWT } from "../untils/index.js";
+// API để gợi ý bạn bè theo các điều kiện
 export const suggestedFriends = async (req, res) => {
   try {
     const { userId } = req.body.user;
+    const user = await Users.findById(userId).populate('friends');
+    const userFriends = user.friends.map(friend => friend._id);
 
-    let queryObject = {};
+    // Tìm người dùng khớp theo điều kiện: độ tuổi, không phải là bạn bè, thông tin khớp
+    let suggestedUsers = await Users.aggregate([
+      {
+        $match: {
+          $and: [
+            { _id: { $nin: userFriends, $ne: userId } },
+            { friends: { $nin: userFriends } }, // Loại bỏ những người đã là bạn bè
+            user.birthDate ?
+              {
+                birthDate: {
+                  $gte: new Date(user.birthDate - 5 * 365 * 24 * 60 * 60 * 1000),
+                  $lte: new Date(user.birthDate + 5 * 365 * 24 * 60 * 60 * 1000)
+                }
+              } : {}
+          ].filter(Boolean)
+            .concat([
+              user.profession ? { profession: user.professtion } : {},
+              user.location ? { location: user.location } : {},
+              user.workplace ? { workplace: user.workplace } : {}
+            ].filter(Boolean))
+        }
+      },
+      {
+        $project: { firstName: 1, lastName: 1, email: 1 }
+      }
+    ]);
 
-    queryObject._id = { $ne: userId };
+    if (suggestedUsers.length === 0) {
+      suggestedUsers = await Users.aggregate([
+        { $match: { _id: { $nin: userFriends, $ne: userId } } },
+        { $sample: { size: 15 } },
+        { $project: { firstName: 1, lastName: 1, email: 1 } }
+      ]);
+    }
 
-    queryObject.friends = { $nin: userId };
-
-    let queryResult = Users.find(queryObject)
-      .limit(15)
-      .select("firstName lastName profileUrl profession -password");
-
-    const suggestedFriends = await queryResult;
-
-    res.status(200).json({
-      success: true,
-      data: suggestedFriends,
-    });
+    res.status(200).json(suggestedUsers);
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
+
+// export const suggestedFriends = async (req, res) => {
+//   try {
+//     const { userId } = req.body.user;
+
+//     let queryObject = {};
+
+//     queryObject._id = { $ne: userId };
+
+//     queryObject.friends = { $nin: userId };
+
+//     let queryResult = Users.find(queryObject)
+//       .limit(15)
+//       .select("firstName lastName profileUrl profession -password");
+
+//     const suggestedFriends = await queryResult;
+
+//     res.status(200).json({
+//       success: true,
+//       data: suggestedFriends,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(404).json({ message: error.message });
+//   }
+// };
 export const profileViews =async(req,res,next)=>{
   try{
     const {userId} =req.body.user
