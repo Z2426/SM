@@ -173,6 +173,7 @@ export const resetPassword=async(req,res)=>{
     try{
         //find record
         const user =await Users.findById(userId)
+        console.log(user)
         if(!user){
             const message="Invalid password reset link .Try again"
             res.redirect(`
@@ -180,20 +181,25 @@ export const resetPassword=async(req,res)=>{
             `)
         }
         const resetPassword =await passwordReset.findOne({userId})
+        
         if(!resetPassword){
             const message="Invalid password reset link .Try again"
+            console.log(message)
             res.redirect(`/users/resetpassword?status=error&message=${message}`)
         }
         const {expiresAt,token:resetToken}=resetPassword
         if(expiresAt <Date.now()){
             const message ="Reset Password link has expired .please try again"
+            console.log(message)
             res.redirect(`/users/resetpassword?status=error&message=${message}`)
         }else{
             const isMatch= await compareString(token,resetToken)
             if(!isMatch){
                 const message ="Invalid reset password link .Please try again"
+                console.log(message)
                 res.redirect(`/users/resetpassword?status=error&message=${message}`)
             }else{
+              console.log("Reset sucess")
                 res.redirect(`/users/resetpassword?type=reset&id=${userId}`)
             }
         }
@@ -207,7 +213,7 @@ export const resetPassword=async(req,res)=>{
 }
 export const changePassword=async(req,res)=>{
     try{
-        console.log("change password")
+      console.log("change password")
       const {userId,password} =req.body
       const hashedpassword= await hashString(password)
       const user =await Users.findByIdAndUpdate({_id:userId},{password:hashedpassword})

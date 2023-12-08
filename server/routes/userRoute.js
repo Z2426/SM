@@ -30,9 +30,9 @@ router.put("/update-user",userAuth,updateUser)
 
 
 //Password reset
-router.get("/reset-password/:userId/:token",resetPassword)
-router.post('/request-passwordreset',requestPaswordReset)
-router.post("/reset-password",changePassword)
+router.get("/reset-password/:userId/:token",resetPassword)//2
+router.post('/request-passwordreset',requestPaswordReset)//1
+router.post("/reset-password",changePassword)//3
 
 
 router.get("/verify/:userId/:token",verifyEmail)

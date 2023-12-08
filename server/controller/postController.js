@@ -88,23 +88,7 @@ export const getPost = async (req, res, next) => {
       path: "userId",
       select: "firstName lastName location profileUrl -password",
     });
-    // .populate({
-    //   path: "comments",
-    //   populate: {
-    //     path: "userId",
-    //     select: "firstName lastName location profileUrl -password",
-    //   },
-    //   options: {
-    //     sort: "-_id",
-    //   },
-    // })
-    // .populate({
-    //   path: "comments",
-    //   populate: {
-    //     path: "replies.userId",
-    //     select: "firstName lastName location profileUrl -password",
-    //   },
-    // });
+
 
     res.status(200).json({
       sucess: true,
@@ -168,9 +152,9 @@ export const getComments = async (req, res, next) => {
 export const likePost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
-    const { id } = req.params;
+    const { postId} = req.params;
 
-    const post = await Posts.findById(id);
+    const post = await Posts.findById(postId);
 
     const index = post.likes.findIndex((pid) => pid === String(userId));
 
@@ -180,7 +164,7 @@ export const likePost = async (req, res, next) => {
       post.likes = post.likes.filter((pid) => pid !== String(userId));
     }
 
-    const newPost = await Posts.findByIdAndUpdate(id, post, {
+    const newPost = await Posts.findByIdAndUpdate(postId, post, {
       new: true,
     });
 
@@ -201,7 +185,6 @@ export const likePostComment = async (req, res, next) => {
 
   try {
     if (rid === undefined || rid === null || rid === `false`) {
-      console.log("rid error")
       const comment = await Comments.findById(id);
 
       const index = comment.likes.findIndex((el) => el === String(userId));
@@ -263,22 +246,20 @@ export const commentPost = async (req, res, next) => {
   try {
     const { comment, from } = req.body;
     const { userId } = req.body.user;
-    const { id } = req.params;
+    const { postId} = req.params;
 
     if (comment === null) {
       return res.status(404).json({ message: "Comment is required." });
     }
 
-    const newComment = new Comments({ comment, from, userId, postId: id });
+    const newComment = new Comments({ comment, from, userId, postId:postId});
 
-    await newComment.save();
-
-    //updating the post with the comments id
-    const post = await Posts.findById(id);
+    await newComment.save()
+    const post = await Posts.findById(postId);
 
     post.comments.push(newComment._id);
 
-    const updatedPost = await Posts.findByIdAndUpdate(id, post, {
+    const updatedPost = await Posts.findByIdAndUpdate(postId, post, {
       new: true,
     });
 
