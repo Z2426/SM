@@ -2,12 +2,16 @@ import  express from "express"
 import {createPost,getPost,getPosts,
     getUserPost,getComments,likePost,
     likePostComment,replyPostComment,
-    commentPost,deletePost} from "../controller/postController.js"
+    commentPost,deletePost,getTimeCreatePost} from "../controller/postController.js"
 import {userAuth} from "../middleware/authMiddleware.js"
+
  const router =express.Router()
+
+ router.post("/get-time-create-post/:postId",getTimeCreatePost)
  // crete post
 router.post("/create-post", userAuth, createPost);
 // get posts
+
 router.post("/:id", userAuth, getPost);
 router.post("/", userAuth, getPosts);
 router.post("/get-user-post/:id", userAuth, getUserPost);

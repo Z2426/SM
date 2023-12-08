@@ -6,7 +6,7 @@ import {userAuth } from "../middleware/authMiddleware.js"
 import  {requestPaswordReset, verifyEmail,resetPassword,
   changePassword,friendRequest,acceptRequest,
   getFriendRequest,profileViews,suggestedFriends,
-  getUser,updateUser,
+  getUser,updateUser,searchUsersByName
 }  from "../controller/userController.js"
 import { resetPasswordLink } from "../untils/sendEmail.js"
 const router =express.Router()
@@ -15,10 +15,6 @@ const __dirname =path.resolve(path.dirname(""))
 router.post("/profile-view",userAuth,profileViews)
 //suggested friends
 router.post("/suggested-friends",userAuth,suggestedFriends)
-
-
-//suggest profile
-
 //accept /deny friend request
 router.post("/accept-request",userAuth,acceptRequest)
 // friend request 
@@ -27,13 +23,12 @@ router.post("/get-friend-request",userAuth,getFriendRequest)
 //user routes
 router.post("/get-user/:id",userAuth,getUser)
 router.put("/update-user",userAuth,updateUser)
-
-
 //Password reset
 router.get("/reset-password/:userId/:token",resetPassword)//2
 router.post('/request-passwordreset',requestPaswordReset)//1
 router.post("/reset-password",changePassword)//3
-
+//Search name
+router.post("/search/:keyword",userAuth,searchUsersByName);
 
 router.get("/verify/:userId/:token",verifyEmail)
 //bug : not verified data html

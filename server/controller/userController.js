@@ -6,6 +6,88 @@ import {compareString, hashString} from "../untils/index.js"
 import passwordReset from "../models/passwordResetModel.js"
 import {resetPasswordLink} from "../untils/sendEmail.js"
 import { createJWT } from "../untils/index.js";
+//Tim kiem ban be
+export const searchUsersByName = async (req, res) => {
+  try {
+    const { userId} = req.body.user;
+    const keyword =req.params.keyword
+    const user = await Users.findById(userId).populate('friends');
+    const userFriends = user.friends.map(friend => friend._id);
+
+    // Tạo biểu thức chính quy từ keyword (tên người dùng)
+    const regex = new RegExp(keyword, 'i'); // 'i' để không phân biệt chữ hoa chữ thường
+
+    // Tìm kiếm người dùng theo tên và các điều kiện khác
+    let suggestedUsers = await Users.aggregate([
+      {
+        $match: {
+          $or: [
+            { firstName: { $regex: regex } }, // Tìm kiếm theo tên người dùng
+            { lastName: { $regex: regex } }
+          ]
+        }
+      },
+      {
+        $addFields: {
+          isFriend: {
+            $cond: { if: { $in: ['$_id', userFriends] }, then: true, else: false }
+          }
+        }
+      },
+      {
+        $addFields: {
+          matchedInfo: {
+            $cond: {
+              if: {
+                $or: [
+                  // Thêm điều kiện ngày sinh nếu tồn tại và là một ngày hợp lệ
+                  user.birthDate instanceof Date && !isNaN(user.birthDate)
+                    ? {
+                        birthDate: {
+                          $gte: new Date(user.birthDate.getTime() - 5 * 365 * 24 * 60 * 60 * 1000),
+                          $lte: new Date(user.birthDate.getTime() + 5 * 365 * 24 * 60 * 60 * 1000)
+                        }
+                      }
+                    : {},
+                  user.profession ? { profession: user.profession } : {},
+                  user.location ? { location: user.location } : {},
+                  user.workplace ? { workplace: user.workplace } : {}
+                ].filter(Boolean)
+              },
+              then: true,
+              else: false
+            }
+          }
+        }
+      },
+      {
+        $sort: { isFriend: -1, matchedInfo: -1 }
+      },
+      {
+        $project: { firstName: 1, lastName: 1, email: 1 }
+      }
+    ]);
+
+    // Nếu không có người dùng phù hợp, lấy danh sách tất cả người dùng có tên khớp với từ khóa
+    if (suggestedUsers.length === 0) {
+      suggestedUsers = await Users.aggregate([
+        {
+          $match: {
+            $or: [
+              { firstName: { $regex: regex } },
+              { lastName: { $regex: regex } }
+            ]
+          }
+        },
+        { $project: { firstName: 1, lastName: 1, email: 1 } }
+      ]);
+    }
+
+    res.status(200).json(suggestedUsers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 // API để gợi ý bạn bè theo các điều kiện
 export const suggestedFriends = async (req, res) => {
   try {
@@ -13,26 +95,36 @@ export const suggestedFriends = async (req, res) => {
     const user = await Users.findById(userId).populate('friends');
     const userFriends = user.friends.map(friend => friend._id);
 
-    // Tìm người dùng khớp theo điều kiện: độ tuổi, không phải là bạn bè, thông tin khớp
+    // Tạo một đối tượng để lọc điều kiện
+    const filterConditions = [
+      { _id: { $nin: userFriends, $ne: userId } },
+      { friends: { $nin: userFriends } } // Loại bỏ những người đã là bạn bè
+    ];
+
+    // Thêm điều kiện ngày sinh nếu tồn tại và là một ngày hợp lệ
+    if (user.birthDate instanceof Date && !isNaN(user.birthDate)) {
+      filterConditions.push({
+        birthDate: {
+          $gte: new Date(user.birthDate.getTime() - 5 * 365 * 24 * 60 * 60 * 1000),
+          $lte: new Date(user.birthDate.getTime() + 5 * 365 * 24 * 60 * 60 * 1000)
+        }
+      });
+    }
+
+    // Thêm các điều kiện khác (nghề nghiệp, địa điểm, nơi làm việc) nếu tồn tại
+    const additionalConditions = [
+      user.profession ? { profession: user.profession } : {},
+      user.location ? { location: user.location } : {},
+      user.workplace ? { workplace: user.workplace } : {}
+    ].filter(condition => Object.keys(condition).length !== 0);
+
+    filterConditions.push(...additionalConditions);
+
+    // Tìm người dùng theo điều kiện lọc
     let suggestedUsers = await Users.aggregate([
       {
         $match: {
-          $and: [
-            { _id: { $nin: userFriends, $ne: userId } },
-            { friends: { $nin: userFriends } }, // Loại bỏ những người đã là bạn bè
-            user.birthDate ?
-              {
-                birthDate: {
-                  $gte: new Date(user.birthDate - 5 * 365 * 24 * 60 * 60 * 1000),
-                  $lte: new Date(user.birthDate + 5 * 365 * 24 * 60 * 60 * 1000)
-                }
-              } : {}
-          ].filter(Boolean)
-            .concat([
-              user.profession ? { profession: user.professtion } : {},
-              user.location ? { location: user.location } : {},
-              user.workplace ? { workplace: user.workplace } : {}
-            ].filter(Boolean))
+          $and: filterConditions
         }
       },
       {
@@ -40,6 +132,7 @@ export const suggestedFriends = async (req, res) => {
       }
     ]);
 
+    // Nếu không có người dùng phù hợp, lấy danh sách 15 người dùng ngẫu nhiên
     if (suggestedUsers.length === 0) {
       suggestedUsers = await Users.aggregate([
         { $match: { _id: { $nin: userFriends, $ne: userId } } },
@@ -54,31 +147,7 @@ export const suggestedFriends = async (req, res) => {
   }
 };
 
-// export const suggestedFriends = async (req, res) => {
-//   try {
-//     const { userId } = req.body.user;
 
-//     let queryObject = {};
-
-//     queryObject._id = { $ne: userId };
-
-//     queryObject.friends = { $nin: userId };
-
-//     let queryResult = Users.find(queryObject)
-//       .limit(15)
-//       .select("firstName lastName profileUrl profession -password");
-
-//     const suggestedFriends = await queryResult;
-
-//     res.status(200).json({
-//       success: true,
-//       data: suggestedFriends,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(404).json({ message: error.message });
-//   }
-// };
 export const profileViews =async(req,res,next)=>{
   try{
     const {userId} =req.body.user

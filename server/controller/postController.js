@@ -1,6 +1,26 @@
 import Comments from "../models/commentModel.js";
 import Posts from "../models/postModel.js";
 import Users from "../models/userModel.js";
+import {calculatePostTime} from "../untils/index.js"
+export const getTimeCreatePost =async(req,res,next)=>{
+  try {
+    const postId = req.params.postId;
+    console.log("test getimepostcreate "+postId)
+    // Lấy thông tin về bài viết từ cơ sở dữ liệu
+    const post = await Posts.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Bài viết không tồn tại' });
+    }
+
+    // Tính toán thời gian tạo của bài viết
+    const postTime = calculatePostTime(post.createdAt);
+    console.log(`createdAt :${post.createdAt} + postime:${postTime}`)
+    res.status(200).json({ timeCreated: postTime });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 export const createPost = async (req, res, next) => {
   try {
