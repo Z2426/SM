@@ -2,11 +2,11 @@ import  express from "express"
 import {createPost,getPost,getPosts,
     getUserPost,getComments,likePost,
     likePostComment,replyPostComment,
-    commentPost,deletePost,getTimeCreatePost} from "../controller/postController.js"
+    commentPost,deletePost,getTimeCreatePost,getCommentAndReplyCount} from "../controller/postController.js"
 import {userAuth} from "../middleware/authMiddleware.js"
 
  const router =express.Router()
-
+ router.get("/count-all-comment-post/:postId",getCommentAndReplyCount)
  router.post("/get-time-create-post/:postId",getTimeCreatePost)
  // crete post
 router.post("/create-post", userAuth, createPost);

@@ -11,6 +11,9 @@ const postSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+postSchema.virtual('likeCount').get(function() {
+  return this.likes.length;
+});
 
 const Posts = mongoose.model("Posts", postSchema);
 

@@ -21,7 +21,7 @@ router.post("/accept-request",userAuth,acceptRequest)
 router.post("/friend-request",userAuth,friendRequest)
 router.post("/get-friend-request",userAuth,getFriendRequest)
 //user routes
-router.post("/get-user/:id",userAuth,getUser)
+router.post("/get-user/:id?",userAuth,getUser)
 router.put("/update-user",userAuth,updateUser)
 //Password reset
 router.get("/reset-password/:userId/:token",resetPassword)//2

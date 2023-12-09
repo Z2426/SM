@@ -6,6 +6,7 @@ import {compareString, hashString} from "../untils/index.js"
 import passwordReset from "../models/passwordResetModel.js"
 import {resetPasswordLink} from "../untils/sendEmail.js"
 import { createJWT } from "../untils/index.js";
+import Notification from "../models/Notification.js";
 //Tim kiem ban be
 export const searchUsersByName = async (req, res) => {
   try {
@@ -352,10 +353,11 @@ export const friendRequest =async(req,res,next)=>{
     try{
         const {userId} =req.body.user
         console.log(`friendrequest: userID:${userId}`)
+        const createdBy = await Users.findById(userId)
         const {requestTo}=req.body
         const requestExist =await FriendsRequest.findOne({
-            requestTo:userId,
-            requestFrom :requestTo
+            requestTo,
+            requestFrom :userId
         })
         console.log("requestExist ")
         console.log(requestExist)
@@ -363,10 +365,15 @@ export const friendRequest =async(req,res,next)=>{
             next("Fiend request already sent.")
             return
         }    
-        const newRes =await FriendsRequest.create({
-            requestTo,
-            requestFrom:userId
-        })
+        const user_send = await Users.findById(userId)
+        const notification = new Notification({
+          userId: requestTo,
+          content: `${user_send.lastName} ${user_send.firstName} send you a friend request`,
+          createdBy
+        });
+    
+        await notification.save();
+
         res.status(201).json({
             success:true,
             message:"Fiend request successfully"
