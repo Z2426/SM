@@ -9,8 +9,8 @@ const { AUTH_EMAIL, AUTH_PASSWORD, APP_URL } = process.env // not wokring
 let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: "nguyenvanban9923@gmail.com",
-        pass: 'tqmj hzgo pvha rcvt'
+        user: process.env.AUTHE_EMAIL,
+        pass: process.env.AUTHE_PASSWORD
     }
 })
 export const sendVerificationEmail = async (user, res) => {
@@ -25,13 +25,14 @@ export const sendVerificationEmail = async (user, res) => {
         from: AUTH_EMAIL,
         to: email,
         subject: "Email verification",
-        html: `<div>
-         <h1>${lastName}</h1>
-         <p>Please verify your email address so we can know that really you</p>
-         <p>This link expire  1 hour</p>
-         <p>${link}</p>
-         <a href=${link}>Email address<a/>
-         </div>`
+        html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1>Welcome, ${lastName}!</h1>
+        <p>Thank you for creating an account. Please verify your email address to complete the registration process.</p>
+        <p>This verification link will expire in 1 hour.</p>
+        <a href="${link}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; text-decoration: none; border-radius: 5px;">Verify Email Address</a>
+        <p>If you didn't create this account, please ignore this email.</p>
+        <p>Thank you!!!</p>
+      </div>`
     }
     try {
         const hashedToken = await hashString(token)
@@ -67,12 +68,14 @@ export const resetPasswordLink = async (user, res) => {
         to: email,
         subject: "Password Reset",
         html: `
-        <p>Password reset link .Please click the link below to reset password</p>
-        <br>
-        <p><b>THis link expires in 10 minutes</b></p>
-        <br>
-        <p>${link}</p>
-        <a href=${link}>link rest</a>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1>Password Reset</h1>
+        <p>We received a request to reset your password. Please click the link below to reset your password:</p>
+        <p><strong>This password reset link will expire in 10 minutes.</strong></p>
+        <a href="${link}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+        <p>If you didn't request a password reset, you can safely ignore this email.</p>
+        <p>Thank you,<br>Your Company Name</p>
+      </div>
         `
     }
     try {
