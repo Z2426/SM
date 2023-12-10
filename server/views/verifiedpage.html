@@ -1,60 +1,70 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>EMAIL VERIFICATION</title>
-        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-        <style>
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                text-align: center;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                background-color: rgba(0, 0, 0, 0);
-            }
-            .card {
-                border-radius: 10px;
-                padding: 20px;
-                background-color: white;
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            }
-            .ion {
-                font-size: 64px;
-                margin-bottom: 20px;
-            }
-            .success {
-                color: green;
-            }
-            .error {
-                color: red;
-            }
-            .hideBtn {
-                display: none;
-            }
-            .showBtn {
-                display: flex;
-                text-align: center;
-                align-items: center;
-                justify-content: center;
-                border-radius: 5px;
-                padding: 10px;
-                background-color: rgba(1, 116, 210, 0.971);
-                color: white;
-                margin-top: 10px;
-                text-decoration: none; /* Added for the "Login" link */
-            }
-        </style>
-    </head>
-    <body>
-        <div class="card">
-            <div class="ion">
-                <span id="statusIcon"></span>
-            </div>
-            <div id="statusMessage" class=""></div>
-            <a href="http://localhost:8800/auth/login" class="showBtn">Login</a>
+
+<head>
+    <title>EMAIL VERIFICATION</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        .card {
+            border-radius: 10px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .ion {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .hideBtn {
+            display: none;
+        }
+
+        .showBtn {
+            display: flex;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: rgba(1, 116, 210, 0.971);
+            color: white;
+            margin-top: 10px;
+            text-decoration: none;
+            /* Added for the "Login" link */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="ion">
+            <span id="statusIcon"></span>
         </div>
-        <script src="script.js"></script>
-    </body>
+        <div id="statusMessage" class=""></div>
+        <a href="http://localhost:8800/auth/login" class="showBtn">Login</a>
+    </div>
+    <script src="script.js"></script>
+</body>
+
 </html>

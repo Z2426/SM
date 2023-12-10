@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose"
 const notificationSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
@@ -14,7 +14,6 @@ const notificationSchema = new mongoose.Schema(
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
   },
   { timestamps: true }
-);
-
-const Notification = mongoose.model("Notification", notificationSchema);
-export default Notification;
+)
+const Notification = mongoose.model("Notification", notificationSchema)
+export default Notification

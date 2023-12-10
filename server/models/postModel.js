@@ -1,6 +1,4 @@
-import mongoose, { Schema } from "mongoose";
-
-
+import mongoose, { Schema } from "mongoose"
 const postSchema = new mongoose.Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "Users" },
@@ -11,10 +9,8 @@ const postSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-postSchema.virtual('likeCount').get(function() {
-  return this.likes.length;
+postSchema.virtual('likeCount').get(function () {
+  return this.likes.length
 });
-
-const Posts = mongoose.model("Posts", postSchema);
-
-export default Posts;
+const Posts = mongoose.model("Posts", postSchema)
+export default Posts
