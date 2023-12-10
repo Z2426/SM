@@ -174,14 +174,30 @@ export const profileViews = async (req, res, next) => {
       message: "Successfully",
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "auth error",
-      success: false,
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 };
+
+// export const profileViews = async (req, res, next) => {
+//   try {
+//     const { userId } = req.body.user;
+//     const { id } = req.body;
+//     const user = await Users.findById(id);
+//     user.views.push(userId);
+//     await user.save();
+//     res.status(201).json({
+//       success: true,
+//       message: "Successfully",
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       message: "auth error",
+//       success: false,
+//       error: error.message,
+//     });
+//   }
+// };
 export const acceptRequest = async (req, res, next) => {
   try {
     const id = req.body.user.userId;
@@ -302,6 +318,7 @@ export const resetPassword = async (req, res) => {
   try {
     //find record
     const user = await Users.findById(userId);
+    console.log(user);
     if (!user) {
       const message = "Invalid password reset link .Try again";
       res.redirect(`

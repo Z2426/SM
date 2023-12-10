@@ -317,7 +317,9 @@ export const commentPost = async (req, res, next) => {
 
     // Tìm bài post
     const post = await Posts.findById(postId);
+    // Tìm bài post
 
+    // Thêm ID của comment vào mảng comments của bài post
     // Thêm ID của comment vào mảng comments của bài post
     post.comments.push(newComment._id);
     await post.save();
@@ -357,6 +359,7 @@ export const replyPostComment = async (req, res, next) => {
   const { userId } = req.body.user;
   const { comment, replyAt, from } = req.body;
   const { id } = req.params;
+
   const createdBy = await Users.findById(userId);
   if (!comment) {
     return res.status(400).json({ message: "Comment is required." });
@@ -369,6 +372,9 @@ export const replyPostComment = async (req, res, next) => {
     }
 
     const commentOwner = commentInfo.userId;
+    if (!commentInfo) {
+      return res.status(404).json({ message: "Comment not found." });
+    }
 
     const newReply = {
       userId,
@@ -385,6 +391,7 @@ export const replyPostComment = async (req, res, next) => {
     const savedCommentInfo = await commentInfo.save();
 
     // Get the index of the newly added reply (assuming it's the most recent one)
+
     const lastReplyIndex = savedCommentInfo.replies.length - 1;
 
     // Retrieve the _id (rid) of the newly added reply
@@ -402,6 +409,8 @@ export const replyPostComment = async (req, res, next) => {
 
     res.status(200).json(savedCommentInfo);
   } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
