@@ -23,29 +23,28 @@ const Login = () => {
   });
 
   const onSubmmit = async (data) => {
-    setIsSubmitting(true)
-    try{
-      const res  =await apiRequest({
-        url:"/auth/login",
-        data:data,
-        method:"POST"
-      })
-      if(res?.status==="failed"){
-        seterrMsg(res)
-      }else{
-        seterrMsg("")
-        const newData= {token:res?.token,...res?.user}
-        dispatch(UserLogin(newData))
-        window.location.replace("/")
+    setIsSubmitting(true);
+    try {
+      const res = await apiRequest({
+        url: "/auth/login",
+        data: data,
+        method: "POST",
+      });
+      console.log(res);
+      if (res?.status === "failed") {
+        seterrMsg(res);
+      } else {
+        seterrMsg("");
+        const newData = { token: res?.token, ...res?.user };
+        dispatch(UserLogin(newData));
+        window.location.replace("/");
       }
-      setIsSubmitting(false)
-    }catch(error){
-      console.log(error)
-      setIsSubmitting(false)
+      setIsSubmitting(false);
+    } catch (error) {
+      console.log(error);
+      setIsSubmitting(false);
     }
   };
-
- 
 
   return (
     <div className="bg-bgColor w-full h-[100vh] flex items-center justify-center p-6">

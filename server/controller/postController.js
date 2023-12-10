@@ -7,7 +7,7 @@ export const getCommentAndReplyCount = async (req, res, next) => {
   try {
     const postId = req.params.postId;
     console.log(postId);
-    const postComments = await Comments.find({ postId }).populate('replies');
+    const postComments = await Comments.find({ postId }).populate("replies");
 
     let totalComments = postComments.length;
     let totalReplies = 0;
@@ -15,29 +15,29 @@ export const getCommentAndReplyCount = async (req, res, next) => {
     postComments.forEach((comment) => {
       totalReplies += comment.replies.length;
     });
-    let totalCommentandReplies =totalComments+totalReplies
-    const result = { totalComments, totalReplies,totalCommentandReplies }; // Tạo object chứa kết quả
+    let totalCommentandReplies = totalComments + totalReplies;
+    const result = { totalComments, totalReplies, totalCommentandReplies }; // Tạo object chứa kết quả
 
     res.json(result); // Trả về kết quả dưới dạng JSON
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error fetching comments and replies' });
+    res.status(500).json({ message: "Error fetching comments and replies" });
   }
 };
 export const getTimeCreatePost =async(req,res,next)=>{
   try {
     const postId = req.params.postId;
-    console.log("test getimepostcreate "+postId)
+    console.log("test getimepostcreate " + postId);
     // Lấy thông tin về bài viết từ cơ sở dữ liệu
     const post = await Posts.findById(postId);
 
     if (!post) {
-      return res.status(404).json({ message: 'Bài viết không tồn tại' });
+      return res.status(404).json({ message: "Bài viết không tồn tại" });
     }
 
     // Tính toán thời gian tạo của bài viết
     const postTime = calculatePostTime(post.createdAt);
-    console.log(`createdAt :${post.createdAt} + postime:${postTime}`)
+    console.log(`createdAt :${post.createdAt} + postime:${postTime}`);
     res.status(200).json({ timeCreated: postTime });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -187,9 +187,9 @@ export const likePost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
     const { postId } = req.params;
-    const createdBy = await Users.findById(userId)
+    const createdBy = await Users.findById(userId);
     const post = await Posts.findById(postId);
-    
+
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -203,10 +203,10 @@ export const likePost = async (req, res, next) => {
 
       const postOwner = await Users.findById(post.userId);
       const notification = new Notification({
-        userId: postOwner ,
+        userId: postOwner,
         content: `${fullNameLike} liked your post`,
         postId: postId,
-        createdBy
+        createdBy,
       });
 
       await notification.save();
@@ -222,7 +222,7 @@ export const likePost = async (req, res, next) => {
       success: true,
       message: "Successfully",
       data: newPost,
-      createdBy
+      createdBy,
     });
   } catch (error) {
     console.log(error);
@@ -313,7 +313,7 @@ export const commentPost = async (req, res, next) => {
     const { comment, from } = req.body;
     const { userId } = req.body.user;
     const { postId } = req.params;
-    const createdBy = await Users.findById(userId)
+    const createdBy = await Users.findById(userId);
     // Kiểm tra comment
     if (!comment) {
       return res.status(404).json({ message: "Comment is required." });
@@ -325,7 +325,9 @@ export const commentPost = async (req, res, next) => {
 
     // Tìm bài post
     const post = await Posts.findById(postId);
+    // Tìm bài post
 
+    // Thêm ID của comment vào mảng comments của bài post
     // Thêm ID của comment vào mảng comments của bài post
     post.comments.push(newComment._id);
     await post.save();
@@ -334,7 +336,10 @@ export const commentPost = async (req, res, next) => {
     const postOwner = post.userId; // Đây là người chủ sở hữu bài post
 
     // Kiểm tra xem đã có thông báo nào cho comment này chưa
-    const existingNotification = await Notification.findOne({ postId, commentId: newComment._id });
+    const existingNotification = await Notification.findOne({
+      postId,
+      commentId: newComment._id,
+    });
 
     if (!existingNotification && String(postOwner) !== userId) {
       // Nếu chưa có thông báo và người comment không phải là chủ sở hữu của bài post, tạo thông báo mới
@@ -343,7 +348,7 @@ export const commentPost = async (req, res, next) => {
         content: `${from} commented on your post`,
         postId,
         commentId: newComment._id,
-        createdBy
+        createdBy,
       });
 
       // Lưu thông báo vào cơ sở dữ liệu
@@ -358,13 +363,12 @@ export const commentPost = async (req, res, next) => {
   }
 };
 
-
-
 export const replyPostComment = async (req, res, next) => {
   const { userId } = req.body.user;
   const { comment, replyAt, from } = req.body;
   const { id } = req.params;
-  const createdBy = await Users.findById(userId)
+
+  const createdBy = await Users.findById(userId);
   if (!comment) {
     return res.status(400).json({ message: "Comment is required." });
   }
@@ -376,6 +380,9 @@ export const replyPostComment = async (req, res, next) => {
     }
 
     const commentOwner = commentInfo.userId;
+    if (!commentInfo) {
+      return res.status(404).json({ message: "Comment not found." });
+    }
 
     const newReply = {
       userId,
@@ -392,6 +399,7 @@ export const replyPostComment = async (req, res, next) => {
     const savedCommentInfo = await commentInfo.save();
 
     // Get the index of the newly added reply (assuming it's the most recent one)
+
     const lastReplyIndex = savedCommentInfo.replies.length - 1;
 
     // Retrieve the _id (rid) of the newly added reply
@@ -402,7 +410,7 @@ export const replyPostComment = async (req, res, next) => {
       content: `${from} replied to your comment in post`,
       commentId: id,
       replyId: newReplyId,
-      createdBy
+      createdBy,
     });
 
     await notification.save();
@@ -411,9 +419,10 @@ export const replyPostComment = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const deletePost = async (req, res, next) => {
   try {

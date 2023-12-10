@@ -1,10 +1,11 @@
 import { Outlet, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Home, Login, Profile, Register, ResetPassword } from "./pages";
+import { Home, Login, Profile, Register, ResetPassword, Chat } from "./pages";
 import { useSelector } from "react-redux";
+
 function Layout() {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
-  console.log(user);
+  //console.log(user);
 
   return user?.token ? (
     <Outlet />
@@ -21,6 +22,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/profile/:id?" element={<Profile />} />
+          <Route path="/chat/:id?" element={<Chat />} />
         </Route>
 
         <Route path="/register" element={<Register />} />

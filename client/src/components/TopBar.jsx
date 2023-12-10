@@ -6,10 +6,12 @@ import TextInput from "./TextInput";
 import CustomButton from "./CustomButton";
 import { useForm } from "react-hook-form";
 import { BsMoon, BsSunFill } from "react-icons/bs";
+import { IoChatboxOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { setTheme } from "../redux/theme";
 import { Logout } from "../redux/userSlice";
-const TopBar = () => {
+import { fetchPosts } from "../until";
+const TopBar = ({ user }) => {
   const { theme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
   const {
@@ -22,7 +24,9 @@ const TopBar = () => {
 
     dispatch(setTheme(themeValue));
   };
-  const handleSearch = async (data) => {};
+  const handleSearch = async (data) => {
+    await fetchPosts(user.token, dispatch, "", data);
+  };
   return (
     <div
       className="topbar w-full flex items-center justify-between py-3
@@ -32,8 +36,8 @@ const TopBar = () => {
         <div className="p-1 md:p-2 bg-[#065ad8] rounded text-white">
           <TbSocial />
         </div>
-        <span className="text-xl md:text-2xl text-[#065ad8] rounded text-white">
-          Fun
+        <span className="text-xl md:text-2xl text-[#065ad8] rounded ">
+          SOCIAL MEIDA
         </span>
       </Link>
 
@@ -58,6 +62,12 @@ const TopBar = () => {
         <button onClick={() => handleTheme()}>
           {theme ? <BsMoon /> : <BsSunFill />}
         </button>
+        <div className="hidden lg:flex">
+          {" "}
+          <Link to={`/chat/${user?._id}`}>
+            <IoChatboxOutline />
+          </Link>
+        </div>
         <div className="hidden lg:flex">
           {" "}
           <IoMdNotificationsOutline />
