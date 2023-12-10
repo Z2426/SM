@@ -1,9 +1,9 @@
 import React from "react";
-import { friends } from "../assets/data";
+// import { friends } from "../assets/data";
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
 
-const FriendsCard = () => {
+const FriendsCard = ({ friends }) => {
   return (
     <div>
       <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">

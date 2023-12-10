@@ -24,7 +24,10 @@ const userSchema = new mongoose.Schema({
     professtion:{type:String},
     friends:[{type:Schema.Types.ObjectId,ref:"Users"}],
     views:[{type:String}],
-    verified:{type:Boolean,default:false}
+    verified:{type:Boolean,default:false},
+    birthDate: { type: Date },
+    workplace: { type: String },
+    friends: [{ type: Schema.Types.ObjectId, ref: 'Users' }]
 
 
 },{

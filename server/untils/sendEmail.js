@@ -63,6 +63,7 @@ export const resetPasswordLink =async(user,res)=>{
     const {_id,email}= user
     const token =_id + uuidv4()
     const link=APP_URL+"/users/reset-password/"+_id+'/'+token
+    console.log(`reset link : ${link}`)
     //mail option
     const mailOptions ={
         from :AUTH_EMAIL,

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-//schema
+
 const postSchema = new mongoose.Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "Users" },
@@ -11,6 +11,9 @@ const postSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+postSchema.virtual('likeCount').get(function() {
+  return this.likes.length;
+});
 
 const Posts = mongoose.model("Posts", postSchema);
 

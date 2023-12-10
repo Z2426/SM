@@ -3,7 +3,6 @@ import  { compareString,hashString, createJWT } from '../untils/index.js'
 import {sendVerificationEmail} from '../untils/sendEmail.js'
 export const register =async (req,res,next)=>{
     const {firstName,lastName,email,password}=req.body
-    //validate fileds
     if(!(firstName ||lastName||email||password)){
         next("Provide required filed!")
         return
@@ -21,7 +20,6 @@ export const register =async (req,res,next)=>{
             email,
             password:hashedPassowrd
         })
-        //send email veification
         sendVerificationEmail(user,res)
 
     }catch(e){
@@ -33,12 +31,10 @@ export const register =async (req,res,next)=>{
 export const login =async(req,res,next)=>{
     const {email,password} =req.body
     try{
-        //validation
         if(!email || !password){
             next("Please Provide User credentials")
             return
         }
-        //find user by email
         const user = await Users.findOne({ email })
         .select('+password')
         .populate({
@@ -54,7 +50,6 @@ export const login =async(req,res,next)=>{
             next("User email is not verified.chekc your email account and verify your email")
             return
         }
-        //compare password
         const isMatch =await compareString(password,user?.password)
         if(!isMatch){
             next("Invalid email or password")

@@ -1,6 +1,49 @@
 import Comments from "../models/commentModel.js";
 import Posts from "../models/postModel.js";
 import Users from "../models/userModel.js";
+import Notification from "../models/Notification.js";
+import { calculatePostTime } from "../untils/index.js";
+export const getCommentAndReplyCount = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    console.log(postId);
+    const postComments = await Comments.find({ postId }).populate("replies");
+
+    let totalComments = postComments.length;
+    let totalReplies = 0;
+
+    postComments.forEach((comment) => {
+      totalReplies += comment.replies.length;
+    });
+    let totalCommentandReplies = totalComments + totalReplies;
+    const result = { totalComments, totalReplies, totalCommentandReplies }; // Tạo object chứa kết quả
+
+    res.json(result); // Trả về kết quả dưới dạng JSON
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching comments and replies" });
+  }
+};
+
+export const getTimeCreatePost = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    console.log("test getimepostcreate " + postId);
+    // Lấy thông tin về bài viết từ cơ sở dữ liệu
+    const post = await Posts.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Bài viết không tồn tại" });
+    }
+
+    // Tính toán thời gian tạo của bài viết
+    const postTime = calculatePostTime(post.createdAt);
+    console.log(`createdAt :${post.createdAt} + postime:${postTime}`);
+    res.status(200).json({ timeCreated: postTime });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 export const createPost = async (req, res, next) => {
   try {
@@ -88,24 +131,6 @@ export const getPost = async (req, res, next) => {
       path: "userId",
       select: "firstName lastName location profileUrl -password",
     });
-    // .populate({
-    //   path: "comments",
-    //   populate: {
-    //     path: "userId",
-    //     select: "firstName lastName location profileUrl -password",
-    //   },
-    //   options: {
-    //     sort: "-_id",
-    //   },
-    // })
-    // .populate({
-    //   path: "comments",
-    //   populate: {
-    //     path: "replies.userId",
-    //     select: "firstName lastName location profileUrl -password",
-    //   },
-    // });
-
     res.status(200).json({
       sucess: true,
       message: "successfully",
@@ -168,30 +193,47 @@ export const getComments = async (req, res, next) => {
 export const likePost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
-    const { id } = req.params;
+    const { postId } = req.params;
+    const createdBy = await Users.findById(userId);
+    const post = await Posts.findById(postId);
 
-    const post = await Posts.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
     const index = post.likes.findIndex((pid) => pid === String(userId));
 
     if (index === -1) {
       post.likes.push(userId);
+      const userLike = await Users.findById(userId);
+      const fullNameLike = `${userLike.lastName} ${userLike.firstName}`;
+
+      const postOwner = await Users.findById(post.userId);
+      const notification = new Notification({
+        userId: postOwner,
+        content: `${fullNameLike} liked your post`,
+        postId: postId,
+        createdBy,
+      });
+
+      await notification.save();
     } else {
       post.likes = post.likes.filter((pid) => pid !== String(userId));
     }
 
-    const newPost = await Posts.findByIdAndUpdate(id, post, {
+    const newPost = await Posts.findByIdAndUpdate(postId, post, {
       new: true,
     });
 
     res.status(200).json({
-      sucess: true,
-      message: "successfully",
+      success: true,
+      message: "Successfully",
       data: newPost,
+      createdBy,
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -201,7 +243,6 @@ export const likePostComment = async (req, res, next) => {
 
   try {
     if (rid === undefined || rid === null || rid === `false`) {
-      console.log("rid error")
       const comment = await Comments.findById(id);
 
       const index = comment.likes.findIndex((el) => el === String(userId));
@@ -263,25 +304,48 @@ export const commentPost = async (req, res, next) => {
   try {
     const { comment, from } = req.body;
     const { userId } = req.body.user;
-    const { id } = req.params;
-
-    if (comment === null) {
+    const { postId } = req.params;
+    const createdBy = await Users.findById(userId);
+    // Kiểm tra comment
+    if (!comment) {
       return res.status(404).json({ message: "Comment is required." });
     }
 
-    const newComment = new Comments({ comment, from, userId, postId: id });
-
+    // Tạo một comment mới và lưu vào cơ sở dữ liệu
+    const newComment = new Comments({ comment, from, userId, postId });
     await newComment.save();
 
-    //updating the post with the comments id
-    const post = await Posts.findById(id);
+    // Tìm bài post
+    const post = await Posts.findById(postId);
 
+    // Thêm ID của comment vào mảng comments của bài post
     post.comments.push(newComment._id);
+    await post.save();
 
-    const updatedPost = await Posts.findByIdAndUpdate(id, post, {
-      new: true,
+    // Tìm người chủ sở hữu của bài post
+    const postOwner = post.userId; // Đây là người chủ sở hữu bài post
+
+    // Kiểm tra xem đã có thông báo nào cho comment này chưa
+    const existingNotification = await Notification.findOne({
+      postId,
+      commentId: newComment._id,
     });
 
+    if (!existingNotification && String(postOwner) !== userId) {
+      // Nếu chưa có thông báo và người comment không phải là chủ sở hữu của bài post, tạo thông báo mới
+      const notification = new Notification({
+        userId: postOwner,
+        content: `${from} commented on your post`,
+        postId,
+        commentId: newComment._id,
+        createdBy,
+      });
+
+      // Lưu thông báo vào cơ sở dữ liệu
+      await notification.save();
+    }
+
+    // Trả về response cho client
     res.status(201).json(newComment);
   } catch (error) {
     console.log(error);
@@ -293,28 +357,53 @@ export const replyPostComment = async (req, res, next) => {
   const { userId } = req.body.user;
   const { comment, replyAt, from } = req.body;
   const { id } = req.params;
-
-  if (comment === null) {
-    return res.status(404).json({ message: "Comment is required." });
+  const createdBy = await Users.findById(userId);
+  if (!comment) {
+    return res.status(400).json({ message: "Comment is required." });
   }
 
   try {
     const commentInfo = await Comments.findById(id);
+    if (!commentInfo) {
+      return res.status(404).json({ message: "Comment not found." });
+    }
 
-    commentInfo.replies.push({
-      comment,
-      replyAt,
-      from,
+    const commentOwner = commentInfo.userId;
+
+    const newReply = {
       userId,
+      from,
+      replyAt,
+      comment,
       created_At: Date.now(),
+      updated_At: Date.now(),
+      likes: [], // Initialize likes array for the reply
+    };
+
+    commentInfo.replies.push(newReply);
+
+    const savedCommentInfo = await commentInfo.save();
+
+    // Get the index of the newly added reply (assuming it's the most recent one)
+    const lastReplyIndex = savedCommentInfo.replies.length - 1;
+
+    // Retrieve the _id (rid) of the newly added reply
+    const newReplyId = savedCommentInfo.replies[lastReplyIndex]._id;
+
+    const notification = new Notification({
+      userId: commentOwner,
+      content: `${from} replied to your comment in post`,
+      commentId: id,
+      replyId: newReplyId,
+      createdBy,
     });
 
-    commentInfo.save();
+    await notification.save();
 
-    res.status(200).json(commentInfo);
+    res.status(200).json(savedCommentInfo);
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

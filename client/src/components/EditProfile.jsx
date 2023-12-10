@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import TextInput from "./TextInput";
 import Loading from "./Loading";
 import CustomButton from "./CustomButton";
-import { UpdateProfile } from "../redux/userSlice";
+import { UpdateProfile, UserLogin } from "../redux/userSlice";
+import { apiRequest, handFileUpload } from "../until";
 
 const EditProfile = () => {
   const { user } = useSelector((state) => state.user);
@@ -23,7 +24,46 @@ const EditProfile = () => {
     defaultValues: { ...user },
   });
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    setisSubmitting(true);
+    seterrMsg("");
+    try {
+      const uri = picture && (await handFileUpload(picture));
+      const { firstName, lastName, location, profession } = data;
+
+      const res = await apiRequest({
+        url: "/users/update-user",
+        data: {
+          firstName,
+          lastName,
+          location,
+          profileUrl: uri ? uri : user?.profileUrl,
+          profession,
+        },
+        method: "PUT",
+        token: user?.token,
+      });
+
+      console.log(res);
+      if (res?.status === "failed") {
+        seterrMsg(res);
+      } else {
+        seterrMsg(res);
+
+        const newUser = { token: res?.token, ...res?.user };
+
+        dispatch(UserLogin(newUser));
+
+        setTimeout(() => {
+          dispatch(UpdateProfile(false));
+        }, 3000);
+      }
+      setisSubmitting(false);
+    } catch (error) {
+      console.log(error);
+      setisSubmitting(false);
+    }
+  };
 
   const handleClose = () => {
     dispatch(UpdateProfile(false));
@@ -32,6 +72,7 @@ const EditProfile = () => {
   const handleSelect = (e) => {
     setPicuter(e.target.files[0]);
   };
+
   return (
     <div>
       <div className="fixed z-50 inset-0 overflow-y-auto">
@@ -74,20 +115,20 @@ const EditProfile = () => {
                 placeholder="First Name"
                 type="text"
                 styles="w-full"
-                register={register("firstname", {
+                register={register("firstName", {
                   required: "First name is required",
                 })}
-                error={errors.location ? errors.location?.message : ""}
+                error={errors.firstName ? errors.firstName?.message : ""}
               />
               <TextInput
                 label="Last Name"
                 placeholder="Last Name"
                 type="text"
                 styles="w-full"
-                register={register("lastname", {
+                register={register("lastName", {
                   required: "Last name is required!",
                 })}
-                error={errors.lastname ? errors.lastname?.message : ""}
+                error={errors.lastName ? errors.lastName?.message : ""}
               />
               <TextInput
                 label="Profession"
@@ -105,7 +146,7 @@ const EditProfile = () => {
                 placeholder="Location"
                 type="text"
                 styles="w-full"
-                register={register("loication", {
+                register={register("location", {
                   required: "Location do no match",
                 })}
                 error={errors.location ? errors.location?.message : ""}
@@ -128,7 +169,7 @@ const EditProfile = () => {
               {errMsg?.message && (
                 <span
                   role="alert"
-                  className={`tẽt-sm ${
+                  className={`text-sm ${
                     errMsg?.status === "failed"
                       ? "text-[#f64949fe]"
                       : "text-[#2ba150fe]"
