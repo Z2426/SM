@@ -1,4 +1,4 @@
-import Notification from "../models/Notification.js";
+import Notification from "../models/notification.js"
 import {calculatePostTime} from "../untils/index.js"
 export const changeStatusViewedNotificaion = async (req, res) => {
   const notificationId = req.params.notificationId;

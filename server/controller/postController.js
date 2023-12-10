@@ -1,7 +1,7 @@
 import Comments from "../models/commentModel.js";
 import Posts from "../models/postModel.js";
 import Users from "../models/userModel.js";
-import Notification from "../models/Notification.js";
+import Notification from "../models/notification.js"
 import {calculatePostTime} from "../untils/index.js"
 export const getCommentAndReplyCount = async (req, res, next) => {
   try {
@@ -24,9 +24,6 @@ export const getCommentAndReplyCount = async (req, res, next) => {
     res.status(500).json({ message: 'Error fetching comments and replies' });
   }
 };
-
-
-
 export const getTimeCreatePost =async(req,res,next)=>{
   try {
     const postId = req.params.postId;
@@ -46,7 +43,6 @@ export const getTimeCreatePost =async(req,res,next)=>{
     res.status(500).json({ error: error.message });
   }
 }
-
 export const createPost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
@@ -73,7 +69,6 @@ export const createPost = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
-
 export const getPosts = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
@@ -124,7 +119,6 @@ export const getPosts = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
-
 export const getPost = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -143,7 +137,6 @@ export const getPost = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
-
 export const getUserPost = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -165,7 +158,6 @@ export const getUserPost = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
-
 export const getComments = async (req, res, next) => {
   try {
     const { postId } = req.params;
@@ -191,8 +183,6 @@ export const getComments = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-
 export const likePost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
@@ -239,23 +229,26 @@ export const likePost = async (req, res, next) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
 export const likePostComment = async (req, res, next) => {
   const { userId } = req.body.user;
   const { id, rid } = req.params;
+  const createdBy = await Users.findById(userId);
 
   try {
     if (rid === undefined || rid === null || rid === `false`) {
       const comment = await Comments.findById(id);
-
       const index = comment.likes.findIndex((el) => el === String(userId));
-
       if (index === -1) {
         comment.likes.push(userId);
-
-        
-
+        const commentOwner = await Users.findById(comment.userId);
+        const notification = new Notification({
+          userId: commentOwner._id,
+          content: `${createdBy.firstName} ${createdBy.lastName} liked your comment.`,
+          commentId: id,
+          createdBy,
+        });
+        console.log(notification)
+        await notification.save();
       } else {
         comment.likes = comment.likes.filter((i) => i !== String(userId));
       }
@@ -265,7 +258,8 @@ export const likePostComment = async (req, res, next) => {
       });
 
       res.status(201).json(updated);
-    } else {
+    } 
+    else {
       const replyComments = await Comments.findOne(
         { _id: id },
         {
@@ -283,30 +277,37 @@ export const likePostComment = async (req, res, next) => {
 
       if (index === -1) {
         replyComments.replies[0].likes.push(userId);
+        const replyOwner = await Users.findById(replyComments.replies[0].userId);
+        const notification = new Notification({
+          userId: replyOwner._id,
+          content: `${createdBy.firstName} ${createdBy.lastName} liked your reply.`,
+          commentId: id,
+          replyId: rid,
+          createdBy,
+        });
+        console.log(notification)
+        await notification.save();
       } else {
         replyComments.replies[0].likes = replyComments.replies[0]?.likes.filter(
           (i) => i !== String(userId)
         );
       }
-
       const query = { _id: id, "replies._id": rid };
-
       const updated = {
         $set: {
           "replies.$.likes": replyComments.replies[0].likes,
         },
       };
 
-      const result = await Comments.updateOne(query, updated, { new: true });
+      await Comments.updateOne(query, updated, { new: true });
 
-      res.status(201).json(result);
+      res.status(201).json({ message: "Successfully updated like on reply." });
     }
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: error.message });
   }
 };
-
 export const commentPost = async (req, res, next) => {
   try {
     const { comment, from } = req.body;

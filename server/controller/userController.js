@@ -6,7 +6,7 @@ import {compareString, hashString} from "../untils/index.js"
 import passwordReset from "../models/passwordResetModel.js"
 import {resetPasswordLink} from "../untils/sendEmail.js"
 import { createJWT } from "../untils/index.js";
-import Notification from "../models/Notification.js";
+import Notification from "../models/notification.js"
 //Tim kiem ban be
 export const searchUsersByName = async (req, res) => {
   try {
