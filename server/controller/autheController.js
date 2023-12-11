@@ -61,11 +61,15 @@ export const login = async (req, res, next) => {
             success: true,
             message: "Login successfully",
             user,
-            token
+            token,
+            status:"success"
         })
 
     } catch (error) {
         console.log(error)
-        res.status(404).json({ message: error.message })
+        res.status(404).json({ 
+            message: error.message ,
+            status:"error"
+        })
     }
 }
