@@ -49,7 +49,7 @@ export const fetchPosts = async (token, dispatch, uri, data) => {
       method: "POST",
       data: data || {},
     });
-    // console.log(res.data);
+    console.log(res.data);
     dispatch(SetPosts(res?.data));
     return;
   } catch (error) {

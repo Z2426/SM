@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { UseSelector, useSelector } from "react-redux/es/hooks/useSelector";
+import { useSelector } from "react-redux/es/hooks/useSelector";
 import {
   CustomButton,
   EditProfile,
@@ -11,100 +11,151 @@ import {
   TopBar,
 } from "../components";
 import Profile from "./Profile";
-import {  requests, suggest } from "../assets/data";
+// import { requests, suggest } from "../assets/data";
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
 import { BsPersonFillAdd, BsFiletypeGif } from "react-icons/bs";
 import { useForm } from "react-hook-form";
 import { BiImages, BiSolidVideo } from "react-icons/bi";
-import {apiRequest,fetchPosts,handFileUpload} from "../until/index.js"
+import {
+  apiRequest,
+  deletePost,
+  fetchPosts,
+  getUserInfo,
+  handFileUpload,
+  likePost,
+  sendFriendRequest,
+} from "../until";
 import { dispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
+import { UserLogin } from "../redux/userSlice";
 const Home = () => {
-  const {posts} =useSelector(state => state.posts)
+  const { posts } = useSelector((state) => state.posts);
   const { user, edit } = useSelector((state) => state.user);
-  const [friendRequest, setfriendRequest] = useState(requests);
-  const [suggestedFriends, setsuggestedFriends] = useState(suggest);
+  const [friendRequest, setfriendRequest] = useState();
+  const [suggestedFriends, setsuggestedFriends] = useState();
   const [errMsg, seterrMsg] = useState("");
-  const { file, setFile } = useState(null);
+  const [file, setFile] = useState(null);
   const [posting, setPosting] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const {
     register,
-    handleSubmit,reset,
+    handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
   const handlePostSubmit = async (data) => {
-    setPosting(true)
-    seterrMsg("")
+    setPosting(true);
+    seterrMsg("");
     try {
-      const uri = file && (await handFileUpload(file))
-      const newData = uri ?{...data,image:uri}:data
-      const res =await  apiRequest({
-        url :"/posts/create-post",
-        data : newData,
+      const uri = file && (await handFileUpload(file));
+      const newData = uri ? { ...data, image: uri } : data;
+      const res = await apiRequest({
+        url: "/posts/create-post",
+        data: newData,
         token: user?.token,
-        method:"POST"
-      })
-      if(res?.status ==="failed"){
-        seterrMsg(res)
-      }else{
+        method: "POST",
+      });
+      if (res?.status === "failed") {
+        seterrMsg(res);
+      } else {
         reset({
-         description:""
-        })
-        setFile(null)
-        seterrMsg("")
-        await fetchPost()
+          description: "",
+        });
+        setFile(null);
+        seterrMsg("");
+        await fetchPost();
       }
-      setPosting(false)
-
-    }catch(error){
-      console.log(error)
-      setPosting(false)
+      setPosting(false);
+    } catch (error) {
+      console.log(error);
+      setPosting(false);
     }
   };
-  const fetchPost =async()=>{
-    await fetchPosts(user?.token,dispatch)
-    setLoading(false)
-  }
-  const handleLikePost =async()=>{
-      
-  }
-  const handleDelete = async ()=>{
+  const fetchPost = async () => {
+    await fetchPosts(user?.token, dispatch);
+    setLoading(false);
+  };
 
-  }
-  const fetchSuggestedFriend = async()=>{
+  const handleLikePost = async (uri) => {
+    await likePost({ uri: uri, token: user?.token });
+    await fetchPost();
+  };
+  const handleDeletePost = async (id) => {
+    await deletePost(id, user?.token);
+    await fetchPost();
+  };
+  const fetchFriendRequest = async () => {
+    try {
+      const res = await apiRequest({
+        url: "/users/get-friend-request",
+        token: user?.token,
+        method: "POST",
+      });
+      setfriendRequest(res?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchSuggestFriends = async () => {
+    try {
+      const res = await apiRequest({
+        url: "/users/suggested-friends",
+        token: user?.token,
+        method: "POST",
+      });
 
-  }
-  const fetchFriendRequests =async ()=>{
+      console.log(res);
+      setsuggestedFriends(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleFriendRequest = async (id) => {
+    try {
+      const res = await sendFriendRequest(user.token, id);
+      await fetchSuggestFriends();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const acceptFriendRequest = async (id, status) => {
+    try {
+      const res = apiRequest({
+        url: "/users/accept-request",
+        token: user?.token,
+        method: "POST",
+        data: { rid: id, status },
+      });
+      setfriendRequest(res?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getUser = async () => {
+    //console.log(user?.token);
+    const res = await getUserInfo(user?.token);
+    const newData = { token: user?.token, ...res };
+    //console.log(user);
+    dispatch(UserLogin(newData));
+  };
 
-  }
-  const handleFriendRequests =async ()=>{
-
-  }
-  const getUser =async()=>{
-
-  }
-  const acceptFriendRequest = async ()=>{
-
-
-  }
-  useEffect(()=>{
-    setLoading(true)
-    getUser()
-    fetchPost()
-    fetchFriendRequests()
-    fetchSuggestedFriend()
-  },[])
+  useEffect(() => {
+    setLoading(true);
+    getUser();
+    fetchPost();
+    fetchFriendRequest();
+    fetchSuggestFriends();
+  }, []);
   return (
     <div>
       <div
         className="home w-full px-0 lg:px-10 pb-20 2xl-40 bg-bgColor 
     lg:rounded-lg h-screen overflow-hidden"
       >
-        <TopBar />
+        <TopBar user={user} />
 
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* {LEFT} */}
@@ -221,8 +272,8 @@ const Home = () => {
                   key={post._id}
                   post={post}
                   user={user}
-                  deletePost={() => {}}
-                  likePost={() => {}}
+                  deletePost={handleDeletePost}
+                  likePost={handleLikePost}
                 />
               ))
             ) : (
@@ -267,11 +318,13 @@ const Home = () => {
                     <div className="flex gap-1">
                       <CustomButton
                         tittle="Accept"
+                        onClick={() => acceptFriendRequest(_id, "Accepted")}
                         containerStyles="bg-[#0444a4] text-xs text-white px-1.5
                     py-1 rounded-full"
                       />
                       <CustomButton
                         tittle="Deny"
+                        onClick={() => acceptFriendRequest(_id, "Denied")}
                         containerStyles="border border-[#666] text-xs
                     text-ascent-1 px-1.5 py-1 rounded-full"
                       />
@@ -316,7 +369,7 @@ const Home = () => {
                     <div className="flex gap-1">
                       <button
                         className="bg-[#0444a430] text-sm text-white p-1 rounded"
-                        onClick={() => {}}
+                        onClick={() => handleFriendRequest(friend?._id)}
                       >
                         <BsPersonFillAdd size={20} className="text-[#0f52b6]" />
                       </button>
