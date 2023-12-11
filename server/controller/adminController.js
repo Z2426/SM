@@ -1,9 +1,9 @@
 import Users from "../models/userModel.js"
-import { calculatesTime } from "../untils/index.js"
+import { calculatesTime,isValidEmail } from "../untils/index.js"
 //get all user 
 export const getAllUsers = async (req, res) => {
   try {
-    const nonAdminUsers = await Users.find({ role: { $ne: 'admin' } });
+    const nonAdminUsers = await Users.find({ role: { $ne: 'Admin' } });
     const nonAdminUsersWithTime = nonAdminUsers.map((user) => {
       return {
         ...user.toObject(),
@@ -77,3 +77,33 @@ export const ShowDetailUser = async (req, res) => {
     })
   }
 }
+//tim kiem user ( ko co quyen admin)
+export const searchOnlyUserByEmailOrName =async(req,res)=>{
+  try {
+    const { keyword } = req.query;
+    console.log(keyword)
+    let result;
+    if (isValidEmail(keyword)) {
+        result = await Users.find({ email: keyword });
+    } else {
+        result = await Users.find({ firstName: keyword });
+    }
+    res.json({
+      type:"search",
+      data:result
+    }); // Trả về kết quả dưới dạng JSON
+} catch (error) {
+    // Xử lý lỗi nếu có
+    console.error(error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm kiếm người dùng.' });
+}
+}
+//sort field 
+export const sortUserWithCritical =async(req,res)=>{
+  const { type, typeSort } = req.query
+  console.log(`${type}-${typeSort}`)
+  const sortCriteria = {}
+  sortCriteria[type] = typeSort === 'asc' ? 1 : -1
+  const userList = await Users.find().sort(sortCriteria);
+  res.json({ users: userList });
+  }
