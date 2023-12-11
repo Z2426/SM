@@ -1,6 +1,6 @@
 import express from "express"
 import path from "path"
-import { userAuth } from "../middleware/authMiddleware.js"
+import { userAuth,isAdmin } from "../middleware/authMiddleware.js"
 import {
   requestPaswordReset,
   verifyEmail,
@@ -17,6 +17,12 @@ import {
 } from "../controller/userController.js"
 const router = express.Router()
 const __dirname = path.resolve(path.dirname(""))
+
+// -----ADMIN-------
+router.get("/admin",userAuth,isAdmin,(req,res)=>{
+  res.send("123")
+})
+// -----USER-------
 //view profile
 router.post("/profile-view", userAuth, profileViews)
 //suggested friends

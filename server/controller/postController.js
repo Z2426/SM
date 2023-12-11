@@ -1,8 +1,9 @@
 import Comments from "../models/commentModel.js";
 import Posts from "../models/postModel.js";
 import Users from "../models/userModel.js";
-import Notification from "../models/notification.js"
-import { calculatePostTime } from "../untils/index.js"
+import Notification from "../models/NotificationModel.js";
+import { calculatesTime } from "../untils/index.js"
+import { recordActivity } from "../controller/historyActivityController.js"
 export const getCommentAndReplyCount = async (req, res, next) => {
   try {
     const postId = req.params.postId
@@ -31,7 +32,7 @@ export const getTimeCreatePost = async (req, res, next) => {
       return res.status(404).json({ message: "Bài viết không tồn tại" })
     }
     // Tính toán thời gian tạo của bài viết
-    const postTime = calculatePostTime(post.createdAt)
+    const postTime = calculatesTime(post.createdAt)
     console.log(`createdAt :${post.createdAt} + postime:${postTime}`)
     res.status(200).json({ timeCreated: postTime })
   } catch (error) {
@@ -41,6 +42,7 @@ export const getTimeCreatePost = async (req, res, next) => {
 export const createPost = async (req, res, next) => {
   try {
     const { userId } = req.body.user
+    const user = await Users.findById(userId)
     const { description, image } = req.body
     if (!description) {
       next("You must provide a description")
@@ -51,6 +53,9 @@ export const createPost = async (req, res, next) => {
       description,
       image,
     })
+    const type = "post"
+    const message = `You created post  `
+    recordActivity(user._id, type, message)
     res.status(200).json({
       sucess: true,
       message: "Post created successfully",
@@ -183,8 +188,10 @@ export const likePost = async (req, res, next) => {
         postId: postId,
         createdBy,
       });
-
       await notification.save()
+      const type = "post"
+      const message = `${createdBy.firstName} ${createdBy.lastName} liked post for  ${postOwner.lastName} `
+      recordActivity(createdBy._id, type, message)
     } else {
       post.likes = post.likes.filter((pid) => pid !== String(userId))
     }
@@ -221,6 +228,9 @@ export const likePostComment = async (req, res, next) => {
         })
         console.log(notification)
         await notification.save()
+        const type = "post"
+        const message = `You liked comment for ${commentOwner.lastName} `
+        recordActivity(createdBy._id, type, message)
       } else {
         comment.likes = comment.likes.filter((i) => i !== String(userId))
       }
@@ -255,6 +265,9 @@ export const likePostComment = async (req, res, next) => {
         })
         console.log(notification)
         await notification.save()
+        const type = "post"
+        const message = `You liked comment for ${replyOwner.lastName} `
+        recordActivity(createdBy._id, type, message)
       } else {
         replyComments.replies[0].likes = replyComments.replies[0]?.likes.filter(
           (i) => i !== String(userId)
@@ -295,6 +308,7 @@ export const commentPost = async (req, res, next) => {
     await post.save()
     // Tìm người chủ sở hữu của bài post
     const postOwner = post.userId // Đây là người chủ sở hữu bài post
+    const userOwner = await Users.findById(postOwner)
     // Kiểm tra xem đã có thông báo nào cho comment này chưa
     const existingNotification = await Notification.findOne({
       postId,
@@ -311,6 +325,9 @@ export const commentPost = async (req, res, next) => {
       })
       // Lưu thông báo vào cơ sở dữ liệu
       await notification.save()
+      const type = "post"
+      const message = `You commented post  for ${userOwner.firstName} `
+      recordActivity(createdBy._id, type, message)
     }
 
     // Trả về response cho client
@@ -360,6 +377,9 @@ export const replyPostComment = async (req, res, next) => {
       createdBy,
     });
     await notification.save()
+    const type = "post"
+    const message = `You reply comment  ${replyAt} `
+    recordActivity(createdBy._id, type, message)
     res.status(200).json(savedCommentInfo)
   } catch (error) {
     console.error(error);
@@ -371,11 +391,19 @@ export const replyPostComment = async (req, res, next) => {
 export const deletePost = async (req, res, next) => {
   try {
     const { id } = req.params
-    await Posts.findByIdAndDelete(id)
-    res.status(200).json({
-      success: true,
-      message: "Deleted successfully",
-    })
+    const posts = await Posts.findByIdAndDelete(id)
+    if(posts){
+      const user = await Users.findById(posts.userId)
+      const type = "post"
+      const message = `You deleted post  `
+      recordActivity(user._id, type, message)
+      res.status(200).json({
+        success: true,
+        message: "Deleted successfully",
+      })
+    }
+    res.status(404).json({message:"Post not exits",status:"Failed"})
+   
   } catch (error) {
     console.log(error)
     res.status(404).json({ message: error.message })

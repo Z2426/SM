@@ -27,9 +27,15 @@ const userSchema = new mongoose.Schema({
     verified: { type: Boolean, default: false },
     birthDate: { type: Date },
     workplace: { type: String },
-    friends: [{ type: Schema.Types.ObjectId, ref: 'Users' }]
-
-
+    friends: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
+    role: {
+        type: String,
+        default: 'User'
+      },
+      statusActive: {
+        type: Boolean,
+        default: true
+      }
 }, {
     timestamps: true
 }

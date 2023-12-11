@@ -1,5 +1,5 @@
-import Notification from "../models/notification.js"
-import { calculatePostTime } from "../untils/index.js"
+import { calculatesTime } from "../untils/index.js"
+import Notification from "../models/NotificationModel.js"
 export const changeStatusViewedNotificaion = async (req, res) => {
   const notificationId = req.params.notificationId
   const { userId } = req.body.user
@@ -29,7 +29,7 @@ export const getAllNotifications = async (req, res) => {
       .limit(10)
       .populate('createdBy', '-password')
     notifications = notifications.map(notification => {
-      const postTime = calculatePostTime(notification.createdAt)
+      const postTime = calculatesTime (notification.createdAt)
       return {
         ...notification.toObject(),
         Timecreated: postTime

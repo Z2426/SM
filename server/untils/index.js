@@ -20,7 +20,7 @@ export function createJWT(id) {
     }
   )
 }
-export function calculatePostTime(postTimestamp) {
+export function calculatesTime(postTimestamp) {
   const now = new Date() // Thời gian hiện tại
   const postDate = new Date(postTimestamp) // Thời gian đăng bài post
   const timeDifference = now.getTime() - postDate.getTime() // Độ chênh lệch thời gian
