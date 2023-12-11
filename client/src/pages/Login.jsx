@@ -31,7 +31,7 @@ const Login = () => {
         method: "POST",
       });
       console.log(res);
-      if (res?.status === "failed") {
+      if (res?.status === false) {
         seterrMsg(res);
       } else {
         seterrMsg("");
