@@ -10,10 +10,11 @@ import { createJWT } from "../untils/index.js";
 //Tim kiem ban be
 export const searchUsersByName = async (req, res) => {
   try {
-    const { userId } = req.body.user
-    const keyword = req.params.keyword
-    const user = await Users.findById(userId).populate("friends")
-    const userFriends = user.friends.map((friend) => friend._id)
+    const { userId } = req.body.user;
+    const keyword = req.params.keyword;
+    console.log(keyword);
+    const user = await Users.findById(userId).populate("friends");
+    const userFriends = user.friends.map((friend) => friend._id);
     // Tạo biểu thức chính quy từ keyword (tên người dùng)
     const regex = new RegExp(keyword, "i"); // 'i' để không phân biệt chữ hoa chữ thường
     // Tìm kiếm người dùng theo tên và các điều kiện khác
@@ -46,17 +47,17 @@ export const searchUsersByName = async (req, res) => {
                   // Thêm điều kiện ngày sinh nếu tồn tại và là một ngày hợp lệ
                   user.birthDate instanceof Date && !isNaN(user.birthDate)
                     ? {
-                      birthDate: {
-                        $gte: new Date(
-                          user.birthDate.getTime() -
-                          5 * 365 * 24 * 60 * 60 * 1000
-                        ),
-                        $lte: new Date(
-                          user.birthDate.getTime() +
-                          5 * 365 * 24 * 60 * 60 * 1000
-                        ),
-                      },
-                    }
+                        birthDate: {
+                          $gte: new Date(
+                            user.birthDate.getTime() -
+                              5 * 365 * 24 * 60 * 60 * 1000
+                          ),
+                          $lte: new Date(
+                            user.birthDate.getTime() +
+                              5 * 365 * 24 * 60 * 60 * 1000
+                          ),
+                        },
+                      }
                     : {},
                   user.profession ? { profession: user.profession } : {},
                   user.location ? { location: user.location } : {},
@@ -73,9 +74,9 @@ export const searchUsersByName = async (req, res) => {
         $sort: { isFriend: -1, matchedInfo: -1 },
       },
       {
-        $project: { firstName: 1, lastName: 1, email: 1 },
+        $project: { firstName: 1, lastName: 1, email: 1, profileUrl: 1 },
       },
-    ])
+    ]);
 
     // Nếu không có người dùng phù hợp, lấy danh sách tất cả người dùng có tên khớp với từ khóa
     if (suggestedUsers.length === 0) {
@@ -88,26 +89,26 @@ export const searchUsersByName = async (req, res) => {
             ],
           },
         },
-        { $project: { firstName: 1, lastName: 1, email: 1 } },
+        { $project: { firstName: 1, lastName: 1, email: 1, profileUrl: 1 } },
       ]);
     }
 
-    res.status(200).json(suggestedUsers)
+    res.status(200).json(suggestedUsers);
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-}
+};
 // API để gợi ý bạn bè theo các điều kiện
 export const suggestedFriends = async (req, res) => {
   try {
-    const { userId } = req.body.user
-    const user = await Users.findById(userId).populate("friends")
-    const userFriends = user.friends.map((friend) => friend._id)
+    const { userId } = req.body.user;
+    const user = await Users.findById(userId).populate("friends");
+    const userFriends = user.friends.map((friend) => friend._id);
     // Tạo một đối tượng để lọc điều kiện
     const filterConditions = [
       { _id: { $nin: userFriends, $ne: userId } },
       { friends: { $nin: userFriends } }, // Loại bỏ những người đã là bạn bè
-    ]
+    ];
     // Thêm điều kiện ngày sinh nếu tồn tại và là một ngày hợp lệ
     if (user.birthDate instanceof Date && !isNaN(user.birthDate)) {
       filterConditions.push({
@@ -126,8 +127,8 @@ export const suggestedFriends = async (req, res) => {
       user.profession ? { profession: user.profession } : {},
       user.location ? { location: user.location } : {},
       user.workplace ? { workplace: user.workplace } : {},
-    ].filter((condition) => Object.keys(condition).length !== 0)
-    filterConditions.push(...additionalConditions)
+    ].filter((condition) => Object.keys(condition).length !== 0);
+    filterConditions.push(...additionalConditions);
     // Tìm người dùng theo điều kiện lọc
     let suggestedUsers = await Users.aggregate([
       {
@@ -138,88 +139,88 @@ export const suggestedFriends = async (req, res) => {
       {
         $project: { firstName: 1, lastName: 1, email: 1 },
       },
-    ])
+    ]);
     // Nếu không có người dùng phù hợp, lấy danh sách 15 người dùng ngẫu nhiên
     if (suggestedUsers.length === 0) {
       suggestedUsers = await Users.aggregate([
         { $match: { _id: { $nin: userFriends, $ne: userId } } },
         { $sample: { size: 15 } },
         { $project: { firstName: 1, lastName: 1, email: 1 } },
-      ])
+      ]);
     }
-    res.status(200).json(suggestedUsers)
+    res.status(200).json(suggestedUsers);
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-}
+};
 export const profileViews = async (req, res, next) => {
   try {
-    const { userId } = req.body.user
-    const { id } = req.body
-    const user = await Users.findById(id)
-    user.views.push(userId)
-    await user.save()
+    const { userId } = req.body.user;
+    const { id } = req.body;
+    const user = await Users.findById(id);
+    user.views.push(userId);
+    await user.save();
     res.status(201).json({
       success: true,
       message: "Successfully",
-    })
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-}
+};
 export const acceptRequest = async (req, res, next) => {
   try {
-    const id = req.body.user.userId
-    const { rid, status } = req.body
-    const requestExist = await FriendsRequest.findById(rid)
+    const id = req.body.user.userId;
+    const { rid, status } = req.body;
+    const requestExist = await FriendsRequest.findById(rid);
     if (!requestExist) {
-      next("No Friend Request Found.")
-      return
+      next("No Friend Request Found.");
+      return;
     }
     const newRes = await FriendsRequest.findByIdAndUpdate(
       { _id: rid },
       { requestStatus: status }
-    )
+    );
     if (status === "Accepted") {
-      const user = await Users.findById(id)
-      user.friends.push(newRes?.requestFrom)
-      await user.save()
-      const friend = await Users.findById(newRes?.requestFrom)
-      friend.friends.push(id)
-      await friend.save()
+      const user = await Users.findById(id);
+      user.friends.push(newRes?.requestFrom);
+      await user.save();
+      const friend = await Users.findById(newRes?.requestFrom);
+      friend.friends.push(id);
+      await friend.save();
     }
     res.status(201).json({
       success: true,
       message: "Friend Request " + status,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
       message: "auth error",
       success: false,
       error: error.message,
-    })
+    });
   }
-}
+};
 export const verifyEmail = async (req, res) => {
-  const { userId, token } = req.params
+  const { userId, token } = req.params;
   try {
-    const verificationResult = await Verification.findOne({ userId })
+    const verificationResult = await Verification.findOne({ userId });
     if (verificationResult) {
-      const { expiresAt, token: hashedToken } = verificationResult
+      const { expiresAt, token: hashedToken } = verificationResult;
       if (expiresAt < Date.now()) {
-        console.log("Token has expired")
-        await Verification.findOneAndDelete({ userId })
-        await Users.findOneAndDelete({ _id: userId })
-        const message = "Verification token has expired"
-        return res.redirect(`/users/verified?status=error&message=${message}`)
+        console.log("Token has expired");
+        await Verification.findOneAndDelete({ userId });
+        await Users.findOneAndDelete({ _id: userId });
+        const message = "Verification token has expired";
+        return res.redirect(`/users/verified?status=error&message=${message}`);
       } else {
-        const isMatch = await compareString(token, hashedToken)
+        const isMatch = await compareString(token, hashedToken);
         if (isMatch) {
-          console.log("Token is a match")
-          await Users.findOneAndUpdate({ _id: userId }, { verified: true })
-          await Verification.findOneAndDelete({ userId })
-          const message = "Email verified successfully"
+          console.log("Token is a match");
+          await Users.findOneAndUpdate({ _id: userId }, { verified: true });
+          await Verification.findOneAndDelete({ userId });
+          const message = "Email verified successfully";
           return res.redirect(
             `/users/verified?status=success&message=${message}`
           );
@@ -227,29 +228,29 @@ export const verifyEmail = async (req, res) => {
           const message = "Verification failed or link is invalid";
           return res.redirect(
             `/users/verified?status=error&message=${message}`
-          )
+          );
         }
       }
     } else {
-      const message = "Invalid verification link. Try again later"
-      return res.redirect(`/users/verified?status=error&message=${message}`)
+      const message = "Invalid verification link. Try again later";
+      return res.redirect(`/users/verified?status=error&message=${message}`);
     }
   } catch (error) {
     console.log(error);
-    return res.redirect(`/users/verified?message=`)
+    return res.redirect(`/users/verified?message=`);
   }
-}
-export const requestPaswordReset = async (req, res) =>{
+};
+export const requestPaswordReset = async (req, res) => {
   try {
-    const { email } = req.body
-    const user = await Users.findOne({ email })
+    const { email } = req.body;
+    const user = await Users.findOne({ email });
     if (!user) {
       return res.status(404).json({
         status: "FAILED",
         message: "Email address not found",
       });
     }
-    const existngRequest = await passwordReset.findOne({ email })
+    const existngRequest = await passwordReset.findOne({ email });
     if (existngRequest) {
       if (existngRequest.expiresAt > Date.now()) {
         return res.status(201).json({
@@ -257,114 +258,114 @@ export const requestPaswordReset = async (req, res) =>{
           message: "Reset password link has already been sent to your email",
         });
       }
-      await passwordReset.findOneAndDelete({ email })
+      await passwordReset.findOneAndDelete({ email });
     }
-    await resetPasswordLink(user, res)
+    await resetPasswordLink(user, res);
   } catch (error) {
-    console.log(error)
-    res.status(404).json({ message: error.message })
+    console.log(error);
+    res.status(404).json({ message: error.message });
   }
-}
+};
 export const resetPassword = async (req, res) => {
-  const { userId, token } = req.params
-  console.log("Reset password")
+  const { userId, token } = req.params;
+  console.log("Reset password");
   try {
     //find record
-    const user = await Users.findById(userId)
-    console.log(user)
+    const user = await Users.findById(userId);
+    console.log(user);
     if (!user) {
       const message = "Invalid password reset link .Try again";
       res.redirect(`
             /users/resetpassword?type=reset&status=error&message=${message}
-            `)
+            `);
     }
-    const resetPassword = await passwordReset.findOne({ userId })
+    const resetPassword = await passwordReset.findOne({ userId });
 
     if (!resetPassword) {
-      const message = "Invalid password reset link .Try again"
-      console.log(message)
-      res.redirect(`/users/resetpassword?status=error&message=${message}`)
+      const message = "Invalid password reset link .Try again";
+      console.log(message);
+      res.redirect(`/users/resetpassword?status=error&message=${message}`);
     }
     const { expiresAt, token: resetToken } = resetPassword;
     if (expiresAt < Date.now()) {
-      const message = "Reset Password link has expired .please try again"
-      console.log(message)
-      res.redirect(`/users/resetpassword?status=error&message=${message}`)
+      const message = "Reset Password link has expired .please try again";
+      console.log(message);
+      res.redirect(`/users/resetpassword?status=error&message=${message}`);
     } else {
-      const isMatch = await compareString(token, resetToken)
+      const isMatch = await compareString(token, resetToken);
       if (!isMatch) {
-        const message = "Invalid reset password link .Please try again"
-        console.log(message)
-        res.redirect(`/users/resetpassword?status=error&message=${message}`)
+        const message = "Invalid reset password link .Please try again";
+        console.log(message);
+        res.redirect(`/users/resetpassword?status=error&message=${message}`);
       } else {
-        console.log("Reset sucess")
-        res.redirect(`/users/resetpassword?type=reset&id=${userId}`)
+        console.log("Reset sucess");
+        res.redirect(`/users/resetpassword?type=reset&id=${userId}`);
       }
     }
   } catch (error) {
-    console.log(error)
-    res.status(404).json({ message: error.message })
+    console.log(error);
+    res.status(404).json({ message: error.message });
   }
-}
+};
 export const changePassword = async (req, res) => {
   try {
-    console.log("change password")
-    const { userId, password } = req.body
-    const hashedpassword = await hashString(password)
+    console.log("change password");
+    const { userId, password } = req.body;
+    const hashedpassword = await hashString(password);
     const user = await Users.findByIdAndUpdate(
       { _id: userId },
       { password: hashedpassword }
-    )
+    );
     if (user) {
-      await passwordReset.findOneAndDelete({ userId })
-      const message = "Password successfully reset"
-      res.redirect(`/users/resetpassword?status=success&message=${message}`)
-      return
+      await passwordReset.findOneAndDelete({ userId });
+      const message = "Password successfully reset";
+      res.redirect(`/users/resetpassword?status=success&message=${message}`);
+      return;
     }
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message })
+    res.status(404).json({ message: error.message });
   }
-}
+};
 export const friendRequest = async (req, res, next) => {
   try {
-    const { userId } = req.body.user
-    console.log(`friendrequest: userID:${userId}`)
-    const createdBy = await Users.findById(userId)
-    const { requestTo } = req.body
+    const { userId } = req.body.user;
+    console.log(`friendrequest: userID:${userId}`);
+    const createdBy = await Users.findById(userId);
+    const { requestTo } = req.body;
     const requestExist = await FriendsRequest.findOne({
       requestTo,
       requestFrom: userId,
-    })
-    console.log("requestExist ")
-    console.log(requestExist)
+    });
+    console.log("requestExist ");
+    console.log(requestExist);
     if (requestExist) {
-      next("Fiend request already sent.")
-      return
+      next("Fiend request already sent.");
+      return;
     }
-    const user_send = await Users.findById(userId)
+    const user_send = await Users.findById(userId);
     const notification = new Notification({
       userId: requestTo,
       content: `${user_send.lastName} ${user_send.firstName} send you a friend request`,
       createdBy,
-    })
-    await notification.save()
+    });
+    await notification.save();
     res.status(201).json({
       success: true,
       message: "Fiend request successfully",
-    })
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "auth error",
       success: false,
       error: error.message,
-    })
+    });
   }
-}
+};
 export const getFriendRequest = async (req, res, next) => {
   try {
-    const { userId } = req.body.user
+    const { userId } = req.body.user;
     const request = await FriendsRequest.find({
       requestTo: userId,
       requestStatus: "Pending",
@@ -376,58 +377,58 @@ export const getFriendRequest = async (req, res, next) => {
       .limit(10)
       .sort({
         _id: -1,
-      })
+      });
     res.status(200).json({
       success: true,
       data: request,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
       message: "auth error",
       success: false,
       error: error.message,
-    })
+    });
   }
-}
+};
 export const getUser = async (req, res, next) => {
   try {
-    const { userId } = req.body.user
-    const { id } = req.params
-    console.log(req)
+    const { userId } = req.body.user;
+    const { id } = req.params;
+    console.log(req);
     const user = await Users.findById(id ?? userId).populate({
       path: "friends",
       select: "-password",
-    })
+    });
     if (!user) {
       return res.status(200).send({
         message: "User Not Found",
         success: false,
-      })
+      });
     }
-    user.password = undefined
+    user.password = undefined;
     res.status(200).json({
       success: true,
       user: user,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
       message: "auth error",
       success: false,
       error: error.message,
-    })
+    });
   }
-}
+};
 export const updateUser = async (req, res, next) => {
   try {
-    const { firstName, lastName, location, profileUrl, profession } = req.body
+    const { firstName, lastName, location, profileUrl, profession } = req.body;
 
     if (!(firstName || lastName || profession || location)) {
       next("Please provide all required fields");
-      return
+      return;
     }
-    const { userId } = req.body.user
+    const { userId } = req.body.user;
     const updateUser = {
       firstName,
       lastName,
@@ -435,22 +436,22 @@ export const updateUser = async (req, res, next) => {
       profileUrl,
       profession,
       _id: userId,
-    }
+    };
     const user = await Users.findByIdAndUpdate(userId, updateUser, {
       new: true,
-    })
-    await user.populate({ path: "friends", select: "-password" })
-    const token = createJWT(user?._id)
-    user.password = undefined
-    console.log(user, "/n", token)
+    });
+    await user.populate({ path: "friends", select: "-password" });
+    const token = createJWT(user?._id);
+    user.password = undefined;
+    console.log(user, "/n", token);
     res.status(200).json({
       sucess: true,
       message: "User updated successfully",
       user,
       token,
-    })
+    });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message })
+    res.status(404).json({ message: error.message });
   }
-}
+};

@@ -8,7 +8,7 @@ export const API = axios.create({
 });
 export const apiRequest = async ({ url, token, data, method }) => {
   try {
-    //console.log(url, token, data, method);
+    console.log(url, token, data, method);
     const result = await API(url, {
       method: method || "GET",
       data: data,
@@ -17,11 +17,11 @@ export const apiRequest = async ({ url, token, data, method }) => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
-    //console.log(result?.data);
+    console.log(result?.data);
     return result?.data;
   } catch (error) {
     const err = error.response.data;
-    //console.log(err);
+    console.log(err);
     return { status: err.success, message: err.message };
   }
 };

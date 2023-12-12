@@ -39,6 +39,7 @@ const Home = () => {
   const [suggestedFriends, setsuggestedFriends] = useState();
   const [errMsg, seterrMsg] = useState("");
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(false);
   const [search, setSearch] = useState("");
   const [posting, setPosting] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -78,6 +79,16 @@ const Home = () => {
       setPosting(false);
     }
   };
+
+  const handlePreview = async (file) => {
+    if (file) {
+      await setFile(file);
+      setPreview(true);
+    }
+  };
+
+  console.log(preview);
+
   const fetchPost = async () => {
     await fetchPosts(user?.token, dispatch);
     setLoading(false);
@@ -160,9 +171,25 @@ const Home = () => {
     dispatch(UserLogin(newData));
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    console.log(search);
+    if (search === "") {
+      fetchSuggestFriends();
+    } else {
+      try {
+        console.log(`/users/search/${search}`);
+        const res = await apiRequest({
+          url: `/users/search/${search}`,
+          token: user?.token,
+          data: {},
+          method: "POST",
+        });
+        console.log(res);
+        setsuggestedFriends(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -212,6 +239,22 @@ const Home = () => {
                   error={errors.description ? errors.description.message : ""}
                 />
               </div>
+              {preview && (
+                <>
+                  <span className="text-ascent-1">Preview Image</span>
+                  <img
+                    className="w-full mt-2 rounded-lg"
+                    src={`${URL.createObjectURL(file)} `}
+                    onClick={() => {
+                      {
+                        setPreview(false);
+                        setFile(null);
+                      }
+                    }}
+                  />
+                </>
+              )}
+              {file != null && <img src="" />}
               {errMsg?.message && (
                 <span
                   role="alert"
@@ -232,7 +275,7 @@ const Home = () => {
                 >
                   <input
                     type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => handlePreview(e.target.files[0])}
                     className="hidden"
                     id="imgUpload"
                     data-max-size="5120"
@@ -264,7 +307,7 @@ const Home = () => {
                 >
                   <input
                     type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => handlePreview(e.target.files[0])}
                     className="hidden"
                     id="vgifUpload"
                     data-max-size="5120"
