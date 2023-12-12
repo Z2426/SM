@@ -8,7 +8,7 @@ export const API = axios.create({
 });
 export const apiRequest = async ({ url, token, data, method }) => {
   try {
-    console.log(url, token, data, method);
+    //console.log(url, token, data, method);
     const result = await API(url, {
       method: method || "GET",
       data: data,
@@ -17,11 +17,11 @@ export const apiRequest = async ({ url, token, data, method }) => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
-    console.log(result?.data);
+    //console.log(result?.data);
     return result?.data;
   } catch (error) {
     const err = error.response.data;
-    console.log(err);
+    //console.log(err);
     return { status: err.success, message: err.message };
   }
 };
@@ -44,12 +44,12 @@ export const handFileUpload = async (uploadFile) => {
 export const fetchPosts = async (token, dispatch, uri, data) => {
   try {
     const res = await apiRequest({
-      url: uri || "posts",
+      url: uri || "/posts",
       token: token,
       method: "POST",
       data: data || {},
     });
-    console.log(res.data);
+    //console.log(res.data);
     dispatch(SetPosts(res?.data));
     return;
   } catch (error) {
@@ -82,16 +82,16 @@ export const deletePost = async (id, token) => {
 };
 export const getUserInfo = async (token, id) => {
   try {
-    console.log(id);
-    console.log(token);
+    //console.log(id);
+    //console.log(token);
     const uri = id === undefined ? "/users/get-user" : "/users/get-user/" + id;
-    console.log(uri);
+    //console.log(uri);
     const res = await apiRequest({
       url: uri,
       token: token,
       method: "POST",
     });
-    console.log(res);
+    //console.log(res);
     if (res?.message === "Authetication fail") {
       localStorage.removeItem("user");
       window.alert("User session expired .Login again");
@@ -125,6 +125,21 @@ export const viewUserProfile = async (token, id) => {
       data: { id },
     });
     return;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const fetchNotifications = async ({ token, dispatch, userId, data }) => {
+  try {
+    const res = await apiRequest({
+      url: "/notifications",
+      token: token,
+      method: "GET",
+      data: data || {},
+    });
+    //console.log(res);
+    //dispatch(SetPosts(res?.data));
+    return res;
   } catch (error) {
     console.log(error);
   }

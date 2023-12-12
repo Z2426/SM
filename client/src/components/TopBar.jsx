@@ -9,10 +9,11 @@ import { BsMoon, BsSunFill } from "react-icons/bs";
 import { IoChatboxOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { setTheme } from "../redux/theme";
-import { Logout } from "../redux/userSlice";
+import { Logout, Setnotification } from "../redux/userSlice";
 import { fetchPosts } from "../until";
 const TopBar = ({ user }) => {
   const { theme } = useSelector((state) => state.theme);
+  const { notification } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const {
     register,
@@ -68,7 +69,10 @@ const TopBar = ({ user }) => {
             <IoChatboxOutline />
           </Link>
         </div>
-        <div className="hidden lg:flex">
+        <div
+          className="hidden lg:flex"
+          onClick={() => dispatch(Setnotification(!notification))}
+        >
           {" "}
           <IoMdNotificationsOutline />
         </div>
