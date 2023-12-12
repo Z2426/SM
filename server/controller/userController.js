@@ -203,43 +203,39 @@ export const acceptRequest = async (req, res, next) => {
   }
 };
 export const verifyEmail = async (req, res) => {
-  const { userId, token } = req.params;
+  const { userId, token } = req.params
   try {
-    const verificationResult = await Verification.findOne({ userId });
+    const verificationResult = await Verification.findOne({ userId })
     if (verificationResult) {
-      const { expiresAt, token: hashedToken } = verificationResult;
+      const { expiresAt, token: hashedToken } = verificationResult
       if (expiresAt < Date.now()) {
-        console.log("Token has expired");
-        await Verification.findOneAndDelete({ userId });
-        await Users.findOneAndDelete({ _id: userId });
-        const message = "Verification token has expired";
-        return res.redirect(`/users/verified?status=error&message=${message}`);
+        console.log("Token has expired")
+        await Verification.findOneAndDelete({ userId })
+        await Users.findOneAndDelete({ _id: userId })
+        const message = "Verification token has expired"
+        return res.status(200).json({ status: "error", message })
       } else {
-        const isMatch = await compareString(token, hashedToken);
+        const isMatch = await compareString(token, hashedToken)
         if (isMatch) {
-          console.log("Token is a match");
-          await Users.findOneAndUpdate({ _id: userId }, { verified: true });
-          await Verification.findOneAndDelete({ userId });
-          const message = "Email verified successfully";
-          return res.redirect(
-            `/users/verified?status=success&message=${message}`
-          );
+          console.log("Token is a match")
+          await Users.findOneAndUpdate({ _id: userId }, { verified: true })
+          await Verification.findOneAndDelete({ userId })
+          const message = "Email verified successfully"
+          return res.status(200).json({ status: "success", message })
         } else {
-          const message = "Verification failed or link is invalid";
-          return res.redirect(
-            `/users/verified?status=error&message=${message}`
-          );
+          const message = "Verification failed or link is invalid"
+          return res.status(200).json({ status: "error", message })
         }
       }
     } else {
-      const message = "Invalid verification link. Try again later";
-      return res.redirect(`/users/verified?status=error&message=${message}`);
+      const message = "Invalid verification link. Try again later"
+      return res.status(200).json({ status: "error", message })
     }
   } catch (error) {
-    console.log(error);
-    return res.redirect(`/users/verified?message=`);
+    console.log(error)
+    return res.status(500).json({ message: "Internal Server Error" })
   }
-};
+}
 export const requestPaswordReset = async (req, res) => {
   try {
     const { email } = req.body;
@@ -276,7 +272,7 @@ export const resetPassword = async (req, res) => {
     if (!user) {
       const message = "Invalid password reset link .Try again";
       res.redirect(`
-            /users/resetpassword?type=reset&status=error&message=${message}
+            /users/resetpassword?status=error&message=${message}
             `);
     }
     const resetPassword = await passwordReset.findOne({ userId });
@@ -299,7 +295,7 @@ export const resetPassword = async (req, res) => {
         res.redirect(`/users/resetpassword?status=error&message=${message}`);
       } else {
         console.log("Reset sucess");
-        res.redirect(`/users/resetpassword?type=reset&id=${userId}`);
+        res.redirect(`/users/resetpassword?type=reset&status=success&id=${userId}`);
       }
     }
   } catch (error) {
@@ -324,7 +320,8 @@ export const changePassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(404).json({ status:"error" ,
+      message: error.message });
   }
 };
 export const friendRequest = async (req, res, next) => {
