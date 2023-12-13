@@ -16,23 +16,23 @@ const ResetPassword = () => {
   });
 
   const handleresetSubmit = async (data) => {
-    console.log(data)
-    setisSubmitting(true)
-    try{
-    const res =await apiRequest({
-      url:"/users/request-passwordreset",
-      data:data,
-      method:"POST"
-    })
-    if(res?.status==="failed"){
-      seterrMsg(res)
-    }else{
-      seterrMsg(res)
-    }
-    setisSubmitting(false)
-    }catch(error){
-      console.log(error)
-      setisSubmitting(false)
+    console.log(data);
+    setisSubmitting(true);
+    try {
+      const res = await apiRequest({
+        url: "/users/request-passwordreset",
+        data: data,
+        method: "POST",
+      });
+      if (res?.status === "failed") {
+        seterrMsg(res);
+      } else {
+        seterrMsg(res);
+      }
+      setisSubmitting(false);
+    } catch (error) {
+      console.log(error);
+      setisSubmitting(false);
     }
   };
   return (
@@ -53,7 +53,7 @@ const ResetPassword = () => {
         >
           <TextInput
             name="email"
-            placeholdert="email@example.com"
+            placeholder="email@example.com"
             type="email"
             register={register("email", {
               required: "Email Address is required!",

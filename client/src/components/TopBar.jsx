@@ -70,7 +70,7 @@ const TopBar = ({ user }) => {
           </Link>
         </div>
         <div
-          className="hidden lg:flex"
+          className="hidden lg:flex cursor-pointer"
           onClick={() => dispatch(Setnotification(!notification))}
         >
           {" "}

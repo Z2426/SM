@@ -137,7 +137,7 @@ export const suggestedFriends = async (req, res) => {
         },
       },
       {
-        $project: { firstName: 1, lastName: 1, email: 1 ,profileUrl : 1},
+        $project: { firstName: 1, lastName: 1, email: 1, profileUrl: 1 },
       },
     ]);
     // Nếu không có người dùng phù hợp, lấy danh sách 15 người dùng ngẫu nhiên
@@ -145,7 +145,7 @@ export const suggestedFriends = async (req, res) => {
       suggestedUsers = await Users.aggregate([
         { $match: { _id: { $nin: userFriends, $ne: userId } } },
         { $sample: { size: 15 } },
-        { $project: { firstName: 1, lastName: 1, email: 1  ,profileUrl : 1} },
+        { $project: { firstName: 1, lastName: 1, email: 1, profileUrl: 1 } },
       ]);
     }
     res.status(200).json(suggestedUsers);
@@ -203,39 +203,50 @@ export const acceptRequest = async (req, res, next) => {
   }
 };
 export const verifyEmail = async (req, res) => {
-  const { userId, token } = req.params
+  const { userId, token } = req.params;
   try {
-    const verificationResult = await Verification.findOne({ userId })
+    const verificationResult = await Verification.findOne({ userId });
     if (verificationResult) {
-      const { expiresAt, token: hashedToken } = verificationResult
+      const { expiresAt, token: hashedToken } = verificationResult;
       if (expiresAt < Date.now()) {
-        console.log("Token has expired")
-        await Verification.findOneAndDelete({ userId })
-        await Users.findOneAndDelete({ _id: userId })
-        const message = "Verification token has expired"
-        return res.status(200).json({ status: "error", message })
+        console.log("Token has expired");
+        await Verification.findOneAndDelete({ userId });
+        await Users.findOneAndDelete({ _id: userId });
+        const message = "Verification token has expired";
+        return res.status(200).json({ status: "error", message });
       } else {
-        const isMatch = await compareString(token, hashedToken)
+        const isMatch = await compareString(token, hashedToken);
         if (isMatch) {
-          console.log("Token is a match")
-          await Users.findOneAndUpdate({ _id: userId }, { verified: true })
-          await Verification.findOneAndDelete({ userId })
-          const message = "Email verified successfully"
-          return res.status(200).json({ status: "success", message })
+          console.log("Token is a match");
+          await Users.findOneAndUpdate({ _id: userId }, { verified: true });
+          await Verification.findOneAndDelete({ userId });
+          //const message = "Email verified successfully";
+          return res.redirect("http://localhost:3000/login");
+          // return res.status(200).json({
+          //   status: "success",
+          //   message,
+          //   redirectTo: "http://localhost:3000/login",
+          // });
         } else {
-          const message = "Verification failed or link is invalid"
-          return res.status(200).json({ status: "error", message })
+          const message = "Verification failed or link is invalid";
+          //return res.status(200).json({ status: "error", message });
+          return res
+            .cookie("message", message)
+            .redirect("http://localhost:3000/error");
         }
       }
     } else {
-      const message = "Invalid verification link. Try again later"
-      return res.status(200).json({ status: "error", message })
+      const message = "Invalid verification link. Try again later";
+      // return res.status(200).json({ status: "error", message });
+      return res
+        .cookie("message", message)
+        .redirect("http://localhost:3000/error");
     }
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: "Internal Server Error" })
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 export const requestPaswordReset = async (req, res) => {
   try {
     const { email } = req.body;
@@ -259,6 +270,7 @@ export const requestPaswordReset = async (req, res) => {
     await resetPasswordLink(user, res);
   } catch (error) {
     console.log(error);
+
     res.status(404).json({ message: error.message });
   }
 };
@@ -271,31 +283,64 @@ export const resetPassword = async (req, res) => {
     console.log(user);
     if (!user) {
       const message = "Invalid password reset link .Try again";
-      res.redirect(`
-            /users/resetpassword?status=error&message=${message}
-            `);
+      return res.status(404).json({
+        success: "FAILED",
+        message: message,
+      });
+      // return res
+      //   .cookie("message", message)
+      //   .redirect("http://localhost:3000/error");
+      // res.redirect(`
+      //       /users/resetpassword?status=error&message=${message}
+      //       `);
     }
     const resetPassword = await passwordReset.findOne({ userId });
 
     if (!resetPassword) {
       const message = "Invalid password reset link .Try again";
       console.log(message);
-      res.redirect(`/users/resetpassword?status=error&message=${message}`);
+      return res.status(404).json({
+        success: "FAILED",
+        message: message,
+      });
+      // return res
+      //   .cookie("message", message)
+      //   .redirect("http://localhost:3000/error");
+      // res.redirect(`/users/resetpassword?status=error&message=${message}`);
     }
     const { expiresAt, token: resetToken } = resetPassword;
     if (expiresAt < Date.now()) {
       const message = "Reset Password link has expired .please try again";
       console.log(message);
-      res.redirect(`/users/resetpassword?status=error&message=${message}`);
+      return res.status(404).json({
+        success: "FAILED",
+        message: message,
+      });
+      // return res
+      //   .cookie("message", message)
+      //   .redirect("http://localhost:3000/error");
+      // res.redirect(`/users/resetpassword?status=error&message=${message}`);
     } else {
       const isMatch = await compareString(token, resetToken);
       if (!isMatch) {
         const message = "Invalid reset password link .Please try again";
         console.log(message);
-        res.redirect(`/users/resetpassword?status=error&message=${message}`);
+        return res.status(404).json({
+          success: "FAILED",
+          message: message,
+        });
+        // return res
+        //   .cookie("message", message)
+        //   .redirect("http://localhost:3000/error");
+        // res.redirect(`/users/resetpassword?status=error&message=${message}`);
       } else {
         console.log("Reset sucess");
-        res.redirect(`/users/resetpassword?type=reset&status=success&id=${userId}`);
+        res.status(201).json({
+          success: "success",
+        });
+        // res.redirect(
+        //   `/users/resetpassword?type=reset&status=success&id=${userId}`
+        // );
       }
     }
   } catch (error) {
@@ -315,13 +360,13 @@ export const changePassword = async (req, res) => {
     if (user) {
       await passwordReset.findOneAndDelete({ userId });
       const message = "Password successfully reset";
-      res.redirect(`/users/resetpassword?status=success&message=${message}`);
+      res.status(201).json({ success: "true", message: message });
+      //res.redirect(`/users/resetpassword?status=success&message=${message}`);
       return;
     }
   } catch (error) {
     console.log(error);
-    res.status(404).json({ status:"error" ,
-      message: error.message });
+    res.status(404).json({ status: "error", message: error.message });
   }
 };
 export const friendRequest = async (req, res, next) => {

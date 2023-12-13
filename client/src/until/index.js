@@ -41,6 +41,19 @@ export const handFileUpload = async (uploadFile) => {
     console.log(error);
   }
 };
+export const checkresetpassword = async (uri) => {
+  try {
+    const res = await apiRequest({
+      url: uri,
+      method: "GET",
+      data: {},
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const fetchPosts = async (token, dispatch, uri, data) => {
   try {
     const res = await apiRequest({
