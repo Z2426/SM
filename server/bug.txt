@@ -1,5 +1,0 @@
-BE
-1.  page verify err ( 1:18:00)
-=> not show ion base on  parama
-2. 
-
