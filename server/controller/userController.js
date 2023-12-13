@@ -137,7 +137,7 @@ export const suggestedFriends = async (req, res) => {
         },
       },
       {
-        $project: { firstName: 1, lastName: 1, email: 1 },
+        $project: { firstName: 1, lastName: 1, email: 1 ,profileUrl : 1},
       },
     ]);
     // Nếu không có người dùng phù hợp, lấy danh sách 15 người dùng ngẫu nhiên
@@ -145,7 +145,7 @@ export const suggestedFriends = async (req, res) => {
       suggestedUsers = await Users.aggregate([
         { $match: { _id: { $nin: userFriends, $ne: userId } } },
         { $sample: { size: 15 } },
-        { $project: { firstName: 1, lastName: 1, email: 1 } },
+        { $project: { firstName: 1, lastName: 1, email: 1  ,profileUrl : 1} },
       ]);
     }
     res.status(200).json(suggestedUsers);
