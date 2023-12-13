@@ -53,6 +53,7 @@ const Home = () => {
 
   const handlePostSubmit = async (data) => {
     setPosting(true);
+    setPreview(false);
     seterrMsg("");
     try {
       const uri = file && (await handFileUpload(file));
@@ -74,6 +75,7 @@ const Home = () => {
         await fetchPost();
       }
       setPosting(false);
+      setFile(null);
     } catch (error) {
       console.log(error);
       setPosting(false);
