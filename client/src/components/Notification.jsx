@@ -13,7 +13,7 @@ const Notification = ({ notify }) => {
         <span>{notify?.length}</span>
       </div>
       <div className="w-full flex flex-col gap-4 pt-4">
-        {notify?.map(({ _id, content, createdBy: from }) => (
+        {notify?.map(({ _id, content, createdBy: from, createdAt }) => (
           <div key={_id} className="flex items-center justify-between">
             <div
               className="w-full flex gap-4 items-center 
@@ -29,7 +29,7 @@ const Notification = ({ notify }) => {
                   {from?.firstName} {from?.lastName}{" "}
                 </p>
                 <span className="hidden md:flex text-ascent-2">
-                  {moment(from?.createdAt ?? "2023-05-25").fromNow()}
+                  {moment(createdAt ?? "2023-05-25").fromNow()}
                 </span>
                 <span className="text-sm text-ascent-2">
                   {content ?? "Something Wrong"}
