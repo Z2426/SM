@@ -8,6 +8,7 @@ import {
   Chat,
   ErrorPage,
   ChangePassword,
+  Admin,
 } from "./pages";
 import { useSelector } from "react-redux";
 import PrivateRoute from "./until/privateroute";
@@ -32,6 +33,7 @@ function App() {
         <Route element={<Layout />}>
           {/* <PrivateRoute path="/" component={Home} allowedRoles={[]}/> */}
           <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/profile/:id?" element={<Profile />} />
           <Route path="/chat/:id?" element={<Chat />} />
         </Route>

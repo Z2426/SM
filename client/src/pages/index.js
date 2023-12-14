@@ -6,6 +6,7 @@ import Login from "./Login";
 import Chat from "./Chat";
 import ErrorPage from "./ErrorPage";
 import ChangePassword from "./ChangePassword";
+import Admin from "./Admin";
 
 export {
   Home,
@@ -16,4 +17,5 @@ export {
   Chat,
   ErrorPage,
   ChangePassword,
+  Admin,
 };

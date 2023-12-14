@@ -7,7 +7,7 @@ import FriendsCard from "./FriendsCard";
 import PostCard from "./PostCard";
 import EditProfile from "./EditProfile";
 import Notification from "./Notification";
-
+import ListUser from "./ListUser";
 export {
   TextInput,
   Loading,
@@ -18,4 +18,5 @@ export {
   PostCard,
   EditProfile,
   Notification,
+  ListUser,
 };

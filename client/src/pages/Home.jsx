@@ -89,7 +89,7 @@ const Home = () => {
     }
   };
 
-  console.log(preview);
+  //console.log(preview);
 
   const fetchPost = async () => {
     await fetchPosts(user?.token, dispatch);
