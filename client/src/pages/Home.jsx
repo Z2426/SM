@@ -335,7 +335,7 @@ const Home = () => {
 
             {loading ? (
               <Loading />
-            ) : posts.length > 0 ? (
+            ) : posts?.length > 0 ? (
               posts?.map((post) => (
                 <PostCard
                   key={post._id}

@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FriendsCard from "./FriendsCard";
 import { useSelector } from "react-redux";
 import Loading from "./Loading";
+import { apiRequest } from "../until";
 
-const UserCard = ({ setDetails, handleHistory }) => {
+const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleloading = () => {
     setIsLoading(true);
+  };
+
+  const setUser = (user) => {
+    setUserInfo(user);
   };
   const rehandleloading = () => {
     setTimeout(() => setIsLoading(false), [3000]);
@@ -15,7 +20,11 @@ const UserCard = ({ setDetails, handleHistory }) => {
     <div className="mt-5 flex rounded border border-[#66666690]  bg-secondary gap-5 px-5 py-5 w-full">
       <img
         className="h-20 w-20 object-cover rounded-full"
-        src="https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar.jpg"
+        src={
+          user?.profileUrl
+            ? user?.profileUrl
+            : `https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar.jpg`
+        }
         alt="Avatar"
       />
       <div className="flex w-full gap-4">
@@ -29,15 +38,21 @@ const UserCard = ({ setDetails, handleHistory }) => {
         </div>
         <div className="w-full text-ascent-1 text-base flex flex-col items-start">
           <span className="max-h-6 overflow-hidden">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore
-            dicta repellat doloribus facere laborum placeat eaque corporis quod
-            accusantium suscipit quidem illo eligendi, quasi numquam perferendis
-            magni in reprehenderit obcaecati.{" "}
+            {user?.firstName ? user?.firstName : "?"}
+            {user?.lastName ? user?.lastName : "?"}
           </span>
-          <span className="max-h-6 overflow-hidden">Role: </span>
-          <span className="max-h-6 overflow-hidden">Email: </span>
-          <span className="max-h-6 overflow-hidden">Join at: </span>
-          <span className="max-h-6 overflow-hidden">Verified: </span>
+          <span className="max-h-6 overflow-hidden">
+            {user?.role ? user?.role : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {user?.email ? user?.email : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {user?.timecreated ? user?.timecreated : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {user?.verified === true ? "True" : "False"}
+          </span>
           <div>
             {isLoading ? (
               <div className="mt-2">
@@ -59,7 +74,10 @@ const UserCard = ({ setDetails, handleHistory }) => {
 
       <div className="w-1/5 flex flex-col items-center justify-center gap-2">
         <button
-          onClick={setDetails}
+          onClick={() => {
+            setDetails();
+            setUser(user);
+          }}
           className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
         >
           View Details
@@ -75,16 +93,39 @@ const UserCard = ({ setDetails, handleHistory }) => {
   );
 };
 
-const DetailUser = ({ user, setDetails }) => {
+const DetailUser = ({ user, userInfo, setDetails }) => {
+  const [info, setInfo] = useState();
+  console.log(user);
+  const fetchFriend = async () => {
+    const url = "/admin/detail-user/" + userInfo?._id;
+    const data = {
+      // user: { userId: user?._id },
+    };
+    const res = await apiRequest({
+      url: url,
+      token: user?.token,
+      data,
+      method: "GET",
+    });
+    setInfo(res?.data);
+
+    console.log(res);
+  };
+  useEffect(() => {
+    fetchFriend();
+  }, []);
   return (
     <div className="">
       <div className="w-full h-full flex gap-7 mt-7">
         <img
           className="h-20 w-20 object-cover ml-7 rounded-full"
-          src="https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar.jpg"
-          alt="Avatar"
+          src={
+            info?.profileUrl
+              ? info?.profileUrl
+              : `https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar.jpg`
+          }
         />
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-1/6 items-end">
           <span className="text-ascent-2">First name: </span>
           <span className="text-ascent-2">Last name: </span>
           <span className="text-ascent-2">Role: </span>
@@ -92,6 +133,30 @@ const DetailUser = ({ user, setDetails }) => {
           <span className="text-ascent-2">Password: </span>
           <span className="text-ascent-2">Join at: </span>
           <span className="text-ascent-2">Verified: </span>
+        </div>
+        <div className="w-full text-ascent-1 text-base flex flex-col items-start">
+          <span className="max-h-6 overflow-hidden">
+            {info?.firstName ? info?.firstName : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {info?.lastName ? info?.lastName : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {info?.role ? info?.role : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {info?.email ? info?.email : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {info?.password ? info?.password : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {info?.timecreated ? info?.timecreated : "?"}
+          </span>
+          <span className="max-h-6 overflow-hidden">
+            {info?.verified === true ? "True" : "False"}
+          </span>
+          <div></div>
         </div>
         <div className="w-1/5 flex flex-col items-center justify-center gap-2">
           <button
@@ -102,7 +167,7 @@ const DetailUser = ({ user, setDetails }) => {
           </button>
         </div>
       </div>
-      <FriendsCard friends={user?.friends} />
+      <FriendsCard friends={info?.friends} />
     </div>
   );
 };
@@ -147,17 +212,22 @@ const ListUser = ({ listUser }) => {
   const { user } = useSelector((state) => state.user);
   const [detail, setDetails] = useState(false);
   const [history, setHistory] = useState(false);
+  const [userInfo, setUserInfo] = useState();
   const handledetails = () => {
     setDetails(!detail);
   };
   const handleHistory = () => {
     setHistory(!history);
   };
-  // /console.log(detail);
+  console.log(listUser);
   return (
     <div className="w-full h-full flex flex-col">
       {detail ? (
-        <DetailUser user={user} setDetails={handledetails} />
+        <DetailUser
+          user={user}
+          userInfo={userInfo}
+          setDetails={handledetails}
+        />
       ) : (
         <>
           {history ? (
@@ -168,8 +238,10 @@ const ListUser = ({ listUser }) => {
                 listUser?.map((user) => (
                   <UserCard
                     key={user?._id}
+                    user={user}
                     setDetails={handledetails}
                     handleHistory={handleHistory}
+                    setUserInfo={setUserInfo}
                   />
                 ))
               ) : (
