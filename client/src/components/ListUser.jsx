@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import FriendsCard from "./FriendsCard";
 import { useSelector } from "react-redux";
+import Loading from "./Loading";
 
 const UserCard = ({ setDetails, handleHistory }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const handleloading = () => {
+    setIsLoading(true);
+  };
+  const rehandleloading = () => {
+    setTimeout(() => setIsLoading(false), [3000]);
+  };
   return (
     <div className="mt-5 flex rounded border border-[#66666690]  bg-secondary gap-5 px-5 py-5 w-full">
       <img
@@ -17,8 +25,9 @@ const UserCard = ({ setDetails, handleHistory }) => {
           <span className="text-ascent-2">Email: </span>
           <span className="text-ascent-2">Join at: </span>
           <span className="text-ascent-2">Verified: </span>
+          <span className="text-ascent-2">Activity: </span>
         </div>
-        <div className="w-full text-ascent-1 text-base flex flex-col">
+        <div className="w-full text-ascent-1 text-base flex flex-col items-start">
           <span className="max-h-6 overflow-hidden">
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore
             dicta repellat doloribus facere laborum placeat eaque corporis quod
@@ -29,6 +38,22 @@ const UserCard = ({ setDetails, handleHistory }) => {
           <span className="max-h-6 overflow-hidden">Email: </span>
           <span className="max-h-6 overflow-hidden">Join at: </span>
           <span className="max-h-6 overflow-hidden">Verified: </span>
+          <div>
+            {isLoading ? (
+              <div className="mt-2">
+                <Loading />
+              </div>
+            ) : (
+              <input
+                className=""
+                type="checkbox"
+                onChange={() => {
+                  handleloading();
+                  rehandleloading();
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -105,21 +130,11 @@ const History = ({ handleHistory }) => {
           </thead>
           <tbody>
             <tr>
-              <td className="h-20 overflow-hidden">
+              <td className="h-20 overflow-hidden cursor-default">
                 The Sliding Mr. Bones (Next Stop, Pottersville)
               </td>
               <td>Malcolm Lockyer</td>
               <td>1961</td>
-            </tr>
-            <tr>
-              <td>Witchy Woman</td>
-              <td>The Eagles</td>
-              <td>1972</td>
-            </tr>
-            <tr>
-              <td>Shining Star</td>
-              <td>Earth, Wind, and Fire</td>
-              <td>1975</td>
             </tr>
           </tbody>
         </table>
@@ -128,7 +143,7 @@ const History = ({ handleHistory }) => {
   );
 };
 
-const ListUser = () => {
+const ListUser = ({ listUser }) => {
   const { user } = useSelector((state) => state.user);
   const [detail, setDetails] = useState(false);
   const [history, setHistory] = useState(false);
@@ -148,10 +163,19 @@ const ListUser = () => {
           {history ? (
             <History handleHistory={handleHistory} />
           ) : (
-            <UserCard
-              setDetails={handledetails}
-              handleHistory={handleHistory}
-            />
+            <div>
+              {listUser?.length > 0 ? (
+                listUser?.map((user) => (
+                  <UserCard
+                    key={user?._id}
+                    setDetails={handledetails}
+                    handleHistory={handleHistory}
+                  />
+                ))
+              ) : (
+                <div>Something was wrong</div>
+              )}
+            </div>
           )}
         </>
       )}
