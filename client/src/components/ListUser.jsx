@@ -73,15 +73,11 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
                 <Loading />
               </div>
             ) : (
-              <div className="mt-1 ">
+              <div className="">
                 {user?.statusActive === true ? (
-                  <div>
-                    <CiUnlock />
-                  </div>
+                  <div>Active</div>
                 ) : (
-                  <div>
-                    <CiLock />
-                  </div>
+                  <div>Wait</div>
                 )}
                 {/* <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
                   <CiLock /> Lock
@@ -125,7 +121,7 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
   );
 };
 
-const DetailUser = ({ user, userInfo, setDetails, setUserInfo }) => {
+const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
   const [info, setInfo] = useState();
   console.log(userInfo);
   console.log(user);
@@ -139,6 +135,7 @@ const DetailUser = ({ user, userInfo, setDetails, setUserInfo }) => {
       });
       console.log(res);
       setUserInfo(res?.data);
+      fetchUser();
     } catch (error) {
       console.log(error);
     }
@@ -288,7 +285,7 @@ const History = ({ user, userInfo, handleHistory }) => {
   );
 };
 
-const ListUser = ({ listUser }) => {
+const ListUser = ({ listUser, fetchUser }) => {
   const { user } = useSelector((state) => state.user);
   const [detail, setDetails] = useState(false);
   const [history, setHistory] = useState(false);
@@ -309,6 +306,7 @@ const ListUser = ({ listUser }) => {
           userInfo={userInfo}
           setDetails={handledetails}
           setUserInfo={setUserInfo}
+          fetchUser={fetchUser}
         />
       ) : (
         <>

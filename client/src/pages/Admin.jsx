@@ -107,7 +107,7 @@ lg:rounded-lg h-screen overflow-hidden"
               </form>
             </div>
 
-            <ListUser listUser={listUser} />
+            <ListUser listUser={listUser} fetchUser={fetchUser} />
           </div>
         </div>
       </div>
