@@ -131,7 +131,7 @@ const EditProfile = () => {
                 error={errors.lastName ? errors.lastName?.message : ""}
               />
               <TextInput
-                label="Profession"
+                label="profession"
                 placeholder="Profession"
                 type="text"
                 styles="w-full"

@@ -111,7 +111,9 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
           View Details
         </button>
         <button
-          onClick={handleHistory}
+          onClick={() => {
+            handleHistory();
+          }}
           className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
         >
           History
@@ -123,6 +125,7 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
 
 const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
   const [info, setInfo] = useState();
+
   console.log(userInfo);
   console.log(user);
   const changeStatususer = async () => {
@@ -202,19 +205,18 @@ const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
           </span>
           <div></div>
         </div>
-        <div
-          className="w-1/5 flex flex-col items-center justify-center gap-2"
-          onClick={changeStatususer}
-        >
-          {userInfo?.statusActive ? (
-            <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
-              <CiLock /> Lock
-            </div>
-          ) : (
-            <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
-              <CiUnlock /> Unlock
-            </div>
-          )}
+        <div className="w-1/5 flex flex-col items-center justify-center gap-2">
+          <div onClick={changeStatususer}>
+            {userInfo?.statusActive ? (
+              <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
+                <CiLock /> Lock
+              </div>
+            ) : (
+              <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
+                <CiUnlock /> Unlock
+              </div>
+            )}
+          </div>
 
           <button
             onClick={setDetails}
@@ -245,7 +247,7 @@ const History = ({ user, userInfo, handleHistory }) => {
     });
     setInfo(res?.Activities);
 
-    console.log(info);
+    console.log(res);
   };
 
   useEffect(() => {
@@ -296,10 +298,30 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
   const [history, setHistory] = useState(false);
   const [userInfo, setUserInfo] = useState();
   const [search, setSearch] = useState("");
+  const [role, setRole] = useState("email");
+  const [type, setType] = useState("asc");
+  console.log(role);
+  console.log(type);
+
   const handledetails = () => {
     setDetails(!detail);
   };
-
+  const handleFilter = async () => {
+    try {
+      const url = `/admin/sort-user?type=${role}&typeSort=${type}`;
+      console.log(url);
+      const res = await apiRequest({
+        url: url,
+        token: "",
+        data: {},
+        method: "GET",
+      });
+      console.log(res?.users);
+      setListUser(res?.users);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleHistory = () => {
     setHistory(!history);
   };
@@ -324,7 +346,7 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
       }
     }
   };
-  console.log(listUser);
+  //console.log(listUser);
   return (
     <div className="w-full h-full flex flex-col">
       {detail ? (
@@ -345,7 +367,7 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
             />
           ) : (
             <div>
-              <div className="w-full justify-center flex">
+              <div className="w-full justify-center flex flex-col items-center">
                 <div className="w-1/2">
                   <form
                     className="hidden md:flex items-center justify-center gap-5 mt-2"
@@ -367,6 +389,38 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
                       search
                     </button>
                   </form>
+                </div>
+                <div className="flex gap-1 items-center w-1/2 justify-center">
+                  <label className="text-ascent-1">Filter:</label>
+                  <select
+                    className="bg-primary text-ascent-1 border rounded-full "
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <option value="email">Email</option>
+                    <option value="firstName">First Name</option>
+                    <option value="timeCreated">Time Join</option>
+                  </select>
+                  <select
+                    className=" bg-primary text-ascent-1 border rounded-full "
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                  >
+                    <option value="asc">Asc</option>
+                    <option value="desc">Desc</option>
+                  </select>
+                  <button
+                    onClick={handleFilter}
+                    className={`inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 rounded-full`}
+                  >
+                    Apply
+                  </button>
+                  <button
+                    onClick={fetchUser}
+                    className={`inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 rounded-full`}
+                  >
+                    Reset
+                  </button>
                 </div>
               </div>
 

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ProfileCard, TopBar } from "../components";
+import { EditProfile, ProfileCard, TopBar } from "../components";
 import { ListUser } from "../components/index";
 import { useSelector } from "react-redux";
 import { apiRequest } from "../until";
 
 const Admin = () => {
-  const { user } = useSelector((state) => state.user);
+  const { user, edit } = useSelector((state) => state.user);
   const [listUser, setListUser] = useState();
 
+  const [type, setType] = useState("");
   const fetchUser = async () => {
     const uri = "/admin/show-all-user";
     const data = {
@@ -23,6 +24,7 @@ const Admin = () => {
     setListUser(res?.data);
     console.log(res);
   };
+  // fetchUser();
   useEffect(() => {
     fetchUser();
   }, []);
@@ -70,6 +72,7 @@ lg:rounded-lg h-screen overflow-hidden"
           </div>
         </div>
       </div>
+      {edit && <EditProfile />}
     </div>
   );
 };
