@@ -232,6 +232,7 @@ const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
 const History = ({ user, userInfo, handleHistory }) => {
   const [info, setInfo] = useState();
   const fetchHistory = async () => {
+    // http://localhost:8800/admin/history-activity/:idUser
     const url = "/admin/history-activity/" + userInfo?._id;
     const data = {
       // user: { userId: user?._id },
@@ -242,9 +243,9 @@ const History = ({ user, userInfo, handleHistory }) => {
       data,
       method: "GET",
     });
-    setInfo(res?.data);
+    setInfo(res?.Activities);
 
-    console.log(res);
+    console.log(info);
   };
 
   useEffect(() => {
@@ -271,13 +272,15 @@ const History = ({ user, userInfo, handleHistory }) => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="h-20 overflow-hidden cursor-default">
-                The Sliding Mr. Bones (Next Stop, Pottersville)
-              </td>
-              <td>Malcolm Lockyer</td>
-              <td>1961</td>
-            </tr>
+            {info?.map((one) => (
+              <tr key={one?._id}>
+                <td className="h-20 overflow-hidden cursor-default">
+                  {one?.formattedDate}
+                </td>
+                <td>{one?.formattedTime}</td>
+                <td>{one?.message}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
