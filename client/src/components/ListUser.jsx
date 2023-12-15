@@ -254,7 +254,9 @@ const History = ({ user, userInfo, handleHistory }) => {
   return (
     <div className="text-ascent-1 w-full h-full flex flex-col gap-5">
       <div className="mt-5 flex flex-col w-fit">
-        <span className="border-b text-center">History user</span>
+        <span className="border-b text-center">
+          {userInfo?.firstName + " " + userInfo?.lastName}
+        </span>
         <button
           onClick={handleHistory}
           className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
@@ -288,17 +290,39 @@ const History = ({ user, userInfo, handleHistory }) => {
   );
 };
 
-const ListUser = ({ listUser, fetchUser }) => {
+const ListUser = ({ listUser, fetchUser, setListUser }) => {
   const { user } = useSelector((state) => state.user);
   const [detail, setDetails] = useState(false);
   const [history, setHistory] = useState(false);
   const [userInfo, setUserInfo] = useState();
+  const [search, setSearch] = useState("");
   const handledetails = () => {
     setDetails(!detail);
   };
 
   const handleHistory = () => {
     setHistory(!history);
+  };
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (search === "") {
+      fetchUser();
+    } else {
+      try {
+        console.log(`/admin/search?${search}`);
+        const res = await apiRequest({
+          url: `/admin/search?keyword=${search}`,
+          token: user?.token,
+          data: {},
+          method: "GET",
+        });
+        console.log(res);
+        //setsuggestedFriends(res);
+        setListUser(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
   console.log(listUser);
   return (
@@ -321,6 +345,31 @@ const ListUser = ({ listUser, fetchUser }) => {
             />
           ) : (
             <div>
+              <div className="w-full justify-center flex">
+                <div className="w-1/2">
+                  <form
+                    className="hidden md:flex items-center justify-center gap-5 mt-2"
+                    onSubmit={(e) => handleSearch(e)}
+                  >
+                    <input
+                      className="bg-primary placeholder:text-[#666] pl-1 border-[#66666690] border-b w-full 
+                      outline-none text-ascent-2"
+                      placeholder="Search"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+
+                    <button
+                      onClick={() => {}}
+                      type={"submit"}
+                      className={`inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full`}
+                    >
+                      search
+                    </button>
+                  </form>
+                </div>
+              </div>
+
               {listUser?.length > 0 ? (
                 listUser?.map((user) => (
                   <UserCard

@@ -7,28 +7,7 @@ import { apiRequest } from "../until";
 const Admin = () => {
   const { user } = useSelector((state) => state.user);
   const [listUser, setListUser] = useState();
-  const [search, setSearch] = useState("");
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (search === "") {
-      fetchUser();
-    } else {
-      try {
-        console.log(`/admin/search?${search}`);
-        const res = await apiRequest({
-          url: `/admin/search?keyword=${search}`,
-          token: user?.token,
-          data: {},
-          method: "GET",
-        });
-        console.log(res);
-        //setsuggestedFriends(res);
-        setListUser(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+
   const fetchUser = async () => {
     const uri = "/admin/show-all-user";
     const data = {
@@ -45,7 +24,6 @@ const Admin = () => {
     console.log(res);
   };
   useEffect(() => {
-    console.log("something");
     fetchUser();
   }, []);
   return (
@@ -84,30 +62,11 @@ lg:rounded-lg h-screen overflow-hidden"
           {/* {CENTTER} */}
 
           <div className="flex-1 h-full bg-primary px-4 flex flex-col overflow-y-auto rounded-lg items-center">
-            <div className="w-1/2">
-              <form
-                className="hidden md:flex items-center justify-center gap-5 mt-2"
-                onSubmit={(e) => handleSearch(e)}
-              >
-                <input
-                  className="bg-primary placeholder:text-[#666] pl-1 border-[#66666690] border-b w-full 
-                      outline-none text-ascent-2"
-                  placeholder="Search"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-
-                <button
-                  onClick={() => {}}
-                  type={"submit"}
-                  className={`inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full`}
-                >
-                  search
-                </button>
-              </form>
-            </div>
-
-            <ListUser listUser={listUser} fetchUser={fetchUser} />
+            <ListUser
+              listUser={listUser}
+              fetchUser={fetchUser}
+              setListUser={setListUser}
+            />
           </div>
         </div>
       </div>
