@@ -3,6 +3,22 @@ import { FriendsCard, ProfileCard, TextInput, TopBar } from "../components";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+const UserCard = (user) => {
+  return (
+    <div className="w-full border  gap-4 flex py-5 px-5 rounded-2xl border-[#66666690] items-center">
+      <img
+        src={user?.profileUrl}
+        alt={user?.firstName}
+        className="w-14 h-14 object-cover rounded-full"
+      />
+      <div className="flex-col flex h-full justify-center">
+        <span className="text-ascent-1">Name</span>
+        <span className="text-ascent-2">Nội dung gần nhất</span>
+      </div>
+    </div>
+  );
+};
+
 const Chat = () => {
   const { user, edit } = useSelector((state) => state.user);
   const { id } = useParams();
@@ -16,21 +32,20 @@ const Chat = () => {
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* {LEFT} */}
           <div
-            className="hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6
+            className="hidden w-1/3 lg:w-1/4 h-full bg-primary md:flex flex-col gap-6
         overflow-y-auto rounded"
           >
-            <div className="w-full h-full bg-primary  pt-2">
-              <div className="w-full border  gap-4 flex py-5 px-5 rounded-2xl border-[#66666690] items-center">
-                <img
-                  src={user?.profileUrl}
-                  alt={user?.firstName}
-                  className="w-14 h-14 object-cover rounded-full"
-                />
-                <div className="flex-col flex h-full justify-center">
-                  <span className="text-ascent-1">Name</span>
-                  <span className="text-ascent-2">Nội dung gần nhất</span>
-                </div>
-              </div>
+            <div className="w-full h-full  gap-3 flex flex-col pt-2">
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
+              <UserCard user={user} />
             </div>
             {/* <FriendsCard friends={user?.friends} /> */}
           </div>
