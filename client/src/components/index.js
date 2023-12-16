@@ -8,6 +8,7 @@ import PostCard from "./PostCard";
 import EditProfile from "./EditProfile";
 import Notification from "./Notification";
 import ListUser from "./ListUser";
+import TopBarAdmin from "./TopBarAdmin";
 export {
   TextInput,
   Loading,
@@ -19,4 +20,5 @@ export {
   EditProfile,
   Notification,
   ListUser,
+  TopBarAdmin,
 };
