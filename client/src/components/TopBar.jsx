@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { BsMoon, BsSunFill } from "react-icons/bs";
 import { IoChatboxOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { FaTools } from "react-icons/fa";
 import { setTheme } from "../redux/theme";
 import { Logout, Setnotification } from "../redux/userSlice";
 import { fetchPosts } from "../until";
@@ -41,6 +42,7 @@ const TopBar = ({ user }) => {
           SOCIAL MEIDA
         </span>
       </Link>
+      {/* <FaTools /> */}
 
       <form
         className="hidden md:flex items-center justify-center"
@@ -60,6 +62,11 @@ const TopBar = ({ user }) => {
 
       {/* {ICON} */}
       <div className="flex gap-4 items-center text-ascent-1 text-md md:text-xl">
+        <div className="hidden lg:flex cursor-pointer">
+          <Link to={`/admin`}>
+            <FaTools />
+          </Link>
+        </div>
         <button onClick={() => handleTheme()}>
           {theme ? <BsMoon /> : <BsSunFill />}
         </button>

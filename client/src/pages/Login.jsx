@@ -12,6 +12,7 @@ import { apiRequest } from "../until";
 import { UserLogin } from "../redux/userSlice";
 const Login = () => {
   const [errMsg, seterrMsg] = useState("");
+  const [isAdmin, setIsAdmin] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
   const {

@@ -38,7 +38,7 @@ const TopBarAdmin = ({ user }) => {
           <TbSocial />
         </div>
         <span className="text-xl md:text-2xl text-[#065ad8] rounded ">
-          SOCIAL MEIDA
+          ADMIN
         </span>
       </Link>
 
@@ -47,19 +47,17 @@ const TopBarAdmin = ({ user }) => {
         <button onClick={() => handleTheme()}>
           {theme ? <BsMoon /> : <BsSunFill />}
         </button>
-        <div className="hidden lg:flex">
-          {" "}
+        {/* <div className="hidden lg:flex">
           <Link to={`/chat/${user?._id}`}>
             <IoChatboxOutline />
           </Link>
-        </div>
-        <div
+        </div> */}
+        {/* <div
           className="hidden lg:flex cursor-pointer"
           onClick={() => dispatch(Setnotification(!notification))}
         >
-          {" "}
           <IoMdNotificationsOutline />
-        </div>
+        </div> */}
 
         <CustomButton
           onClick={() => dispatch(Logout())}
