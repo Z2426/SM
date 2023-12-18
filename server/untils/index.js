@@ -11,11 +11,12 @@ export const compareString = async (userPassword, password) => {
 }
 //JSON WEBTOKEN
 export function createJWT(id) {
+  const sixMonthsInSeconds = 6 * 30 * 24 * 60 * 60; // Số giây trong 6 tháng
+
   const token = JWT.sign(
     {
       userId: id,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // Thời gian hết hạn: 1 ngày
-     // exp: Math.floor(Date.now() / 1000) + 60 // test token 1ph
+      exp: Math.floor(Date.now() / 1000) + sixMonthsInSeconds, // Thời gian hết hạn: 6 tháng
     },
     process.env.JWT_SECRET_KEY
   );
