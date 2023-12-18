@@ -11,14 +11,15 @@ export const compareString = async (userPassword, password) => {
 }
 //JSON WEBTOKEN
 export function createJWT(id) {
-  return JWT.sign({
-    userId: id
-  },
-    process.env.JWT_SECRET_KEY,
+  const token = JWT.sign(
     {
-      expiresIn: "1d"
-    }
-  )
+      userId: id,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // Thời gian hết hạn: 1 ngày
+     // exp: Math.floor(Date.now() / 1000) + 60 // test token 1ph
+    },
+    process.env.JWT_SECRET_KEY
+  );
+  return token;
 }
 export function calculatesTime(postTimestamp) {
   const now = new Date() // Thời gian hiện tại

@@ -19,32 +19,46 @@ export const isAdmin =async(req,res,next)=>{
     })
   }
 }
+import jwt from 'jsonwebtoken';
+
 export const userAuth = async (req, res, next) => {
-  console.log(req.body);
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader?.startsWith("Bearer")) {
-    return res.status(401).json({
-      status: "failed",
-      message: "Authentication failed"
-    });
-  }
-  const token = authHeader?.split(" ")[1];
   try {
-    const userToken = JWT.verify(token, process.env.JWT_SECRET_KEY);
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Authentication failed"
+      });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const userToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    const user = await Users.findById(userToken.userId);
+    if (!user || !user.statusActive) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Authentication failed because the account has been blocked or does not exist"
+      });
+    }
+
+    // Check token expiration
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (userToken.exp <= currentTimestamp) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Token has expired. Please log in again"
+      });
+    }
+
     req.body.user = {
       userId: userToken.userId,
     };
-    const user = await Users.findById(req.body.user.userId)
-    if(!user.statusActive){
-      return res.status(401).json({
-        status: "failed",
-        message: "Authentication failed  because account your been block"
-      });
-    }
-    console.log(`authe :${req.body.user.userId} `);
+    
+    console.log(`Authentication successful for user: ${req.body.user.userId}`);
     next();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(401).json({
       status: "failed",
       message: "Authentication failed"
