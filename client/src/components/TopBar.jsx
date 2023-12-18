@@ -61,12 +61,16 @@ const TopBar = ({ user }) => {
       </form>
 
       {/* {ICON} */}
+
       <div className="flex gap-4 items-center text-ascent-1 text-md md:text-xl">
-        <div className="hidden lg:flex cursor-pointer">
-          <Link to={`/admin`}>
-            <FaTools />
-          </Link>
-        </div>
+        {user?.role === "Admin" && (
+          <div className="hidden lg:flex cursor-pointer">
+            <Link to={`/admin`}>
+              <FaTools />
+            </Link>
+          </div>
+        )}
+
         <button onClick={() => handleTheme()}>
           {theme ? <BsMoon /> : <BsSunFill />}
         </button>

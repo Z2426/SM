@@ -14,13 +14,11 @@ import { deletePost, fetchPosts, getUserInfo, likePost } from "../until";
 
 const Profile = () => {
   const { id } = useParams();
-
   const dispatch = useDispatch();
   const { user, edit } = useSelector((state) => state.user);
   const { posts } = useSelector((state) => state.posts);
   const [userInfor, setUserInfor] = useState(user);
   const [loading, setLoading] = useState(false);
-
   const uri = "/posts/get-user-post/" + id;
   const getUser = async () => {
     const res = await getUserInfo(user?.token, id);
