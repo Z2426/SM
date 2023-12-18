@@ -16,7 +16,7 @@ import PrivateRoute from "./until/privateroute";
 function Layout() {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
-  //console.log(user);
+  console.log(user?.token);
 
   return user?.token ? (
     <Outlet />
@@ -31,19 +31,31 @@ function App() {
   return (
     <div className="w-full min-h-[100vh]" data-theme={theme.theme}>
       <Routes>
-        <Route element={<Layout />}>
+        {user?.role === "Admin" ? (
+          <Route element={<Layout />}>
+            <Route path="/admin" element={<Admin />} />
+
+            <Route path="/" element={<Home />} />
+            <Route path="/profile/:id?" element={<Profile />} />
+            <Route path="/chat/:id?" element={<Chat />} />
+          </Route>
+        ) : (
+          <Route element={<Layout />}>
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/profile/:id?" element={<Profile />} />
+            <Route path="/chat/:id?" element={<Chat />} />
+          </Route>
+        )}
+
+        {/* <Route element={<Layout />}>
           {user?.role === "Admin" && (
-            <Route element={<Layout />}>
-              {/* <PrivateRoute path="/" component={Home} allowedRoles={[]}/> */}
-              <Route path="/admin" element={<Admin />} />
-            </Route>
+            <Route path="/admin" element={<Admin />} />
           )}
-          {/* <PrivateRoute path="/" component={Home} allowedRoles={[]}/> */}
           <Route path="/" element={<Home />} />
           <Route path="/profile/:id?" element={<Profile />} />
           <Route path="/chat/:id?" element={<Chat />} />
-        </Route>
-
+        </Route> */}
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
