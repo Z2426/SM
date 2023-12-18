@@ -4,11 +4,12 @@ import { useSelector } from "react-redux";
 import Loading from "./Loading";
 import { apiRequest } from "../until";
 import { CiLock, CiUnlock } from "react-icons/ci";
+import moment from "moment";
 
 const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
   const [isLoading, setIsLoading] = useState(false);
   console.log(user);
-
+  // console.log(moment(user?.createdAt).format("MMMM Do YYYY, h:mm:ss a"));
   const handleloading = () => {
     setIsLoading(true);
   };
@@ -62,7 +63,9 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
             {user?.email ? user?.email : "?"}
           </span>
           <span className="max-h-6 overflow-hidden">
-            {user?.timecreated ? user?.timecreated : "?"}
+            {user?.createdAt
+              ? moment(user?.createdAt).format("MMMM Do YYYY")
+              : "?"}
           </span>
           <span className="max-h-6 overflow-hidden">
             {user?.verified === true ? "True" : "False"}
@@ -177,7 +180,7 @@ const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
           <span className="text-ascent-2">Last name: </span>
           <span className="text-ascent-2">Role: </span>
           <span className="text-ascent-2">Email: </span>
-          <span className="text-ascent-2">Password: </span>
+          {/* <span className="text-ascent-2">Password: </span> */}
           <span className="text-ascent-2">Join at: </span>
           <span className="text-ascent-2">Verified: </span>
         </div>
@@ -194,11 +197,13 @@ const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
           <span className="max-h-6 overflow-hidden">
             {userInfo?.email ? userInfo?.email : "?"}
           </span>
-          <span className="max-h-6 overflow-hidden">
+          {/* <span className="max-h-6 overflow-hidden">
             {userInfo?.password ? userInfo?.password : "?"}
-          </span>
+          </span> */}
           <span className="max-h-6 overflow-hidden">
-            {userInfo?.timecreated ? userInfo?.timecreated : "?"}
+            {userInfo?.createdAt
+              ? moment(user?.createdAt).format("MMMM Do YYYY")
+              : "?"}
           </span>
           <span className="max-h-6 overflow-hidden">
             {userInfo?.verified === true ? "True" : "False"}
