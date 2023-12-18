@@ -1,18 +1,13 @@
 import Users from "../models/userModel.js"
-import { calculatesTime,isValidEmail } from "../untils/index.js"
+import {isValidEmail } from "../untils/index.js"
 //get all user 
 export const getAllUsers = async (req, res) => {
   try {
-    const nonAdminUsers = await Users.find({ role: { $ne: 'Admin' } });
-    const nonAdminUsersWithTime = nonAdminUsers.map((user) => {
-      return {
-        ...user.toObject(),
-        timecreated: calculatesTime(user.createdAt),
-      }})
+    const usersWithUserRole = await Users.find({ role: 'User' }).select('-password')
     res.status(200).json({
       status: 'success',
       message: 'Get all users successfully.',
-      data: nonAdminUsersWithTime,
+      data: usersWithUserRole,
     });
   } catch (error) {
     console.error(error);
@@ -23,11 +18,9 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
-
 //block/unlock user
 export const changeUserStatus = async (req, res) => {
   const userId = req.params.userId
-  
   try {
     const userToUpdate = await Users.findById(userId)
     if (!userToUpdate) {
