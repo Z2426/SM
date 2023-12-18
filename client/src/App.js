@@ -31,13 +31,13 @@ function App() {
   return (
     <div className="w-full min-h-[100vh]" data-theme={theme.theme}>
       <Routes>
-        {user?.role === "Admin" && (
-          <Route element={<Layout />}>
-            {/* <PrivateRoute path="/" component={Home} allowedRoles={[]}/> */}
-            <Route path="/admin" element={<Admin />} />
-          </Route>
-        )}
         <Route element={<Layout />}>
+          {user?.role === "Admin" && (
+            <Route element={<Layout />}>
+              {/* <PrivateRoute path="/" component={Home} allowedRoles={[]}/> */}
+              <Route path="/admin" element={<Admin />} />
+            </Route>
+          )}
           {/* <PrivateRoute path="/" component={Home} allowedRoles={[]}/> */}
           <Route path="/" element={<Home />} />
           <Route path="/profile/:id?" element={<Profile />} />
