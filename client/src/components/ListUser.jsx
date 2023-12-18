@@ -115,6 +115,7 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
         </button>
         <button
           onClick={() => {
+            setUser(user);
             handleHistory();
           }}
           className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
