@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux/es/hooks/useSelector";
+import Cookies from "js-cookie";
 import {
   CustomButton,
   EditProfile,
@@ -13,7 +14,7 @@ import {
 } from "../components";
 import Profile from "./Profile";
 // import { requests, suggest } from "../assets/data";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { NoProfile } from "../assets";
 import { BsPersonFillAdd, BsFiletypeGif } from "react-icons/bs";
 import { useForm } from "react-hook-form";
@@ -44,6 +45,7 @@ const Home = () => {
   const [posting, setPosting] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -92,8 +94,12 @@ const Home = () => {
   //console.log(preview);
 
   const fetchPost = async () => {
-    await fetchPosts(user?.token, dispatch);
-    setLoading(false);
+    try {
+      await fetchPosts(user?.token, dispatch);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleLikePost = async (uri) => {
@@ -124,7 +130,11 @@ const Home = () => {
         token: user?.token,
         method: "POST",
       });
-
+      console.log(res);
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
       setfriendRequest(res?.data);
     } catch (error) {
       //console.log(error);
@@ -137,7 +147,10 @@ const Home = () => {
         token: user?.token,
         method: "POST",
       });
-
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
       //console.log(res);
       setsuggestedFriends(res);
     } catch (error) {
@@ -148,6 +161,10 @@ const Home = () => {
     try {
       const res = await sendFriendRequest(user.token, id);
       await fetchSuggestFriends();
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -161,16 +178,24 @@ const Home = () => {
         data: { rid: id, status },
       });
       setfriendRequest(res?.data);
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
     } catch (error) {
       console.log(error);
     }
   };
   const getUser = async () => {
     //console.log(user?.token);
-    const res = await getUserInfo(user?.token);
-    const newData = { token: user?.token, ...res };
-    //console.log(user);
-    dispatch(UserLogin(newData));
+    try {
+      const res = await getUserInfo(user?.token);
+      const newData = { token: user?.token, ...res };
+      console.log(user);
+      dispatch(UserLogin(newData));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSearch = async (e) => {

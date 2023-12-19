@@ -16,6 +16,7 @@ import PrivateRoute from "./until/privateroute";
 function Layout() {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
+  console.log(location);
   console.log(user?.token);
 
   return user?.token ? (
@@ -27,6 +28,7 @@ function Layout() {
 function App() {
   const theme = useSelector((state) => state.theme);
   const { user } = useSelector((state) => state.user);
+  console.log(user);
   console.log(user?.role);
   return (
     <div className="w-full min-h-[100vh]" data-theme={theme.theme}>

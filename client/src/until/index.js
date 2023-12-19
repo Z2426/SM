@@ -1,5 +1,6 @@
 import axios from "axios";
 import { SetPosts } from "../redux/postSlice";
+import { redirect } from "react-router-dom";
 
 const API_URL = "http://localhost:8800";
 export const API = axios.create({
@@ -21,8 +22,16 @@ export const apiRequest = async ({ url, token, data, method }) => {
     return result?.data;
   } catch (error) {
     const err = error.response.data;
+
     console.log(err);
-    return { status: err.success, message: err.message };
+    // if(err?.status === )
+    // if (err?.status === "failed") {
+    //   console.log(1);
+    //   //return redirect("http://localhost:3000/error");
+    // }
+    return { status: err.status, message: err.message };
+    //return <Redirect  to="/error" error={error} />;
+    //return history.push("/error", error={err?.message})
   }
 };
 export const handFileUpload = async (uploadFile) => {
