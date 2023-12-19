@@ -1,5 +1,6 @@
 import JWT from "jsonwebtoken"
 import Users from "../models/userModel.js"
+import {createJWT} from "../untils/index.js"
 export const isAdmin =async(req,res,next)=>{
   try {
     const userId =  req.body.user.userId
@@ -19,8 +20,6 @@ export const isAdmin =async(req,res,next)=>{
     })
   }
 }
-import jwt from 'jsonwebtoken';
-
 export const userAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -30,24 +29,30 @@ export const userAuth = async (req, res, next) => {
         message: "Authentication failed"
       });
     }
-
     const token = authHeader.split(" ")[1];
-    const userToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  var userToken = {}
+  try {
+  userToken = JWT.verify(token, process.env.JWT_SECRET_KEY);
+  } catch (error) {
+  if (error.name === 'TokenExpiredError') {
+    return res.status(401).json({
+      status: "failed token",
+      message: "Token has expired. Please log in again"
+    });
+  }
+  console.error(error);
+  return res.status(401).json({
+    status: "failed",
+    message: "Authentication failed"
+  });
+}
+
 
     const user = await Users.findById(userToken.userId);
     if (!user || !user.statusActive) {
       return res.status(401).json({
         status: "failed",
         message: "Authentication failed because the account has been blocked or does not exist"
-      });
-    }
-
-    // Check token expiration
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    if (userToken.exp <= currentTimestamp) {
-      return res.status(401).json({
-        status: "failed",
-        message: "Token has expired. Please log in again"
       });
     }
 
@@ -65,4 +70,3 @@ export const userAuth = async (req, res, next) => {
     });
   }
 };
-
