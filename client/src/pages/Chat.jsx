@@ -4,10 +4,11 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 const UserCard = (user) => {
+  //console.log(user);
   return (
     <div className="w-full border  gap-4 flex py-5 px-5 rounded-2xl border-[#66666690] items-center">
       <img
-        src={user?.profileUrl}
+        src={user?.user?.profileUrl}
         alt={user?.firstName}
         className="w-14 h-14 object-cover rounded-full"
       />
@@ -22,6 +23,7 @@ const UserCard = (user) => {
 const Chat = () => {
   const { user, edit } = useSelector((state) => state.user);
   const { id } = useParams();
+  console.log(user);
   return (
     <div>
       <div
