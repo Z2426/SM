@@ -385,6 +385,10 @@ export const friendRequest = async (req, res, next) => {
       next("Fiend request already sent.");
       return;
     }
+    const newRes = await FriendsRequest.create({
+      requestTo,
+      requestFrom: userId,
+    });
     const user_send = await Users.findById(userId);
     const notification = new Notification({
       userId: requestTo,
