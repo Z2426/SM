@@ -39,6 +39,8 @@ const Profile = () => {
     await getPosts();
   };
 
+  console.log(posts);
+
   useEffect(() => {
     setLoading(true);
     getUser();

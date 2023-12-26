@@ -91,7 +91,7 @@ const Home = () => {
     }
   };
 
-  //console.log(preview);
+  //console.log(user);
 
   const fetchPost = async () => {
     try {
@@ -137,7 +137,7 @@ const Home = () => {
       }
       setfriendRequest(res?.data);
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   };
   const fetchSuggestFriends = async () => {
@@ -165,6 +165,7 @@ const Home = () => {
         Cookies.set("message", res?.message, { expires: 7 });
         navigate("/error");
       }
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -191,7 +192,7 @@ const Home = () => {
     try {
       const res = await getUserInfo(user?.token);
       const newData = { token: user?.token, ...res };
-      console.log(user);
+      //console.log(user);
       dispatch(UserLogin(newData));
     } catch (error) {
       console.log(error);

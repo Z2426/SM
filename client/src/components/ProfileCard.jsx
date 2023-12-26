@@ -14,10 +14,28 @@ import {
 } from "react-icons/bs";
 import { FaTwitterSquare } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
+import { sendFriendRequest } from "../until";
 
 const ProfileCard = ({ user }) => {
   const { user: data, edit } = useSelector((state) => state.user);
+  const token = useSelector((state) => state.user);
+  console.log(token?.user?.token);
   const dispatch = useDispatch();
+  console.log(user);
+
+  const handleFriendRequest = async (id) => {
+    try {
+      const res = await sendFriendRequest(token?.user?.token, id);
+
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <div
@@ -51,7 +69,9 @@ const ProfileCard = ({ user }) => {
             ) : (
               <button
                 className="bg-[#0444a430] text-sm text-white p-1 rounded"
-                onClick={() => {}}
+                onClick={() => {
+                  handleFriendRequest(user?._id);
+                }}
               >
                 <BsPersonFillAdd size={20} className="text-[#0f52b6]" />
               </button>

@@ -133,6 +133,7 @@ export const sendFriendRequest = async (token, id) => {
       method: "POST",
       data: { requestTo: id },
     });
+    console.log(res);
     return;
   } catch (error) {
     console.log(error);
