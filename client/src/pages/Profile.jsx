@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 import {
   EditProfile,
   FriendsCard,
@@ -9,7 +10,15 @@ import {
   ProfileCard,
   TopBar,
 } from "../components";
-import { deletePost, fetchPosts, getUserInfo, likePost } from "../until";
+import {
+  checktoken,
+  deletePost,
+  fetchPosts,
+  getUserInfo,
+  likePost,
+  viewUserProfile,
+} from "../until";
+import Cookies from "js-cookie";
 // import { posts } from "../assets/data";
 
 const Profile = () => {
@@ -20,6 +29,7 @@ const Profile = () => {
   const [userInfor, setUserInfor] = useState(user);
   const [loading, setLoading] = useState(false);
   const uri = "/posts/get-user-post/" + id;
+  const navigate = useNavigate();
   const getUser = async () => {
     const res = await getUserInfo(user?.token, id);
     setUserInfor(res);
@@ -28,6 +38,20 @@ const Profile = () => {
   const getPosts = async () => {
     await fetchPosts(user.token, dispatch, uri);
     setLoading(false);
+  };
+
+  const test = async () => {
+    console.log(user);
+    const res = await checktoken({
+      token: user?.token,
+    });
+    if (res?.status === "failed") {
+      const message = res?.message?.message;
+      console.log(res?.message);
+      Cookies.set("message", message, { expires: 7 });
+      navigate("/error");
+    }
+    console.log(res);
   };
 
   const handleDelete = async (id) => {
@@ -45,6 +69,7 @@ const Profile = () => {
     setLoading(true);
     getUser();
     getPosts();
+    test();
   }, [id]);
   return (
     <div>

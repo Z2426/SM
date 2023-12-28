@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { BiImages, BiSolidVideo } from "react-icons/bi";
 import {
   apiRequest,
+  checktoken,
   deletePost,
   fetchNotifications,
   fetchPosts,
@@ -123,6 +124,19 @@ const Home = () => {
       console.log(error);
     }
   };
+  const test = async () => {
+    console.log(user);
+    const res = await checktoken({
+      token: user?.token,
+    });
+    if (res?.status === "failed") {
+      const message = res?.message?.message;
+      console.log(res?.message);
+      Cookies.set("message", message, { expires: 7 });
+      navigate("/error");
+    }
+    console.log(res);
+  };
   const fetchFriendRequest = async () => {
     try {
       const res = await apiRequest({
@@ -130,7 +144,7 @@ const Home = () => {
         token: user?.token,
         method: "POST",
       });
-      console.log(res);
+      //console.log(res);
       if (res?.status === "failed") {
         Cookies.set("message", res?.message, { expires: 7 });
         navigate("/error");
@@ -222,6 +236,7 @@ const Home = () => {
 
   useEffect(() => {
     setLoading(true);
+    test();
     getUser();
     fetchPost();
     fetchFriendRequest();

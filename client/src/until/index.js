@@ -19,6 +19,7 @@ export const apiRequest = async ({ url, token, data, method }) => {
       },
     });
     console.log(result);
+
     return result?.data;
   } catch (error) {
     const err = error.response.data;
@@ -147,7 +148,23 @@ export const viewUserProfile = async (token, id) => {
       method: "POST",
       data: { id },
     });
-    return;
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const checktoken = async ({ token }) => {
+  console.log(token);
+  try {
+    const res = await apiRequest({
+      url: "/test/token-valid",
+      method: "GET",
+      data: {},
+      token: token,
+    });
+    console.log(res);
+    return res;
   } catch (error) {
     console.log(error);
   }
