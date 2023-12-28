@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FriendsCard, ProfileCard, TextInput, TopBar } from "../components";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";

@@ -91,7 +91,7 @@ const Home = () => {
     }
   };
 
-  //console.log(preview);
+  //console.log(user);
 
   const fetchPost = async () => {
     try {
@@ -137,7 +137,7 @@ const Home = () => {
       }
       setfriendRequest(res?.data);
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   };
   const fetchSuggestFriends = async () => {
@@ -165,6 +165,7 @@ const Home = () => {
         Cookies.set("message", res?.message, { expires: 7 });
         navigate("/error");
       }
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -191,7 +192,7 @@ const Home = () => {
     try {
       const res = await getUserInfo(user?.token);
       const newData = { token: user?.token, ...res };
-      console.log(user);
+      //console.log(user);
       dispatch(UserLogin(newData));
     } catch (error) {
       console.log(error);
@@ -378,144 +379,132 @@ const Home = () => {
           </div>
           {/* {RIGHT} */}
           <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
-            {notification ? (
-              <Notification notify={notifications} />
-            ) : (
-              <>
-                {/* {FRIEND REQUEST} */}
-                <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
-                  <div
-                    className="flex items-center justify-between text-xl text-ascent-1 
+            {/* {FRIEND REQUEST} */}
+            <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
+              <div
+                className="flex items-center justify-between text-xl text-ascent-1 
             pb-2 border-b border-[#66666645f]"
-                  >
-                    <span>Friend Request</span>
-                    <span>{friendRequest?.length}</span>
-                  </div>
+              >
+                <span>Friend Request</span>
+                <span>{friendRequest?.length}</span>
+              </div>
 
-                  <div className="w-full flex flex-col gap-4 pt-4">
-                    {friendRequest?.map(({ _id, requestFrom: from }) => (
-                      <div
-                        key={_id}
-                        className="flex items-center justify-between"
-                      >
-                        <Link
-                          to={"/profile/" + from._id}
-                          className="w-full flex gap-4 items-center 
+              <div className="w-full flex flex-col gap-4 pt-4">
+                {friendRequest?.map(({ _id, requestFrom: from }) => (
+                  <div key={_id} className="flex items-center justify-between">
+                    <Link
+                      to={"/profile/" + from._id}
+                      className="w-full flex gap-4 items-center 
                           cursor-pointer "
-                        >
-                          <img
-                            src={from?.profileUrl ?? NoProfile}
-                            alt={from?.firstName}
-                            className="w-10 h-10 object-cover rounded-full"
-                          />
-                          <div className="flex-1">
-                            <p className="text-base font-medium text-ascent-1">
-                              {from?.firstName} {from?.lastName}
-                            </p>
-                            <span className="text-sm text-ascent-2">
-                              {from?.profession ?? "No Profession"}
-                            </span>
-                          </div>
-                        </Link>
-                        <div className="flex gap-1">
-                          <CustomButton
-                            tittle="Accept"
-                            onClick={() => acceptFriendRequest(_id, "Accepted")}
-                            containerStyles="bg-[#0444a4] text-xs text-white px-1.5
-                    py-1 rounded-full"
-                          />
-                          <CustomButton
-                            tittle="Deny"
-                            onClick={() => acceptFriendRequest(_id, "Denied")}
-                            containerStyles="border border-[#666] text-xs
-                    text-ascent-1 px-1.5 py-1 rounded-full"
-                          />
-                        </div>
+                    >
+                      <img
+                        src={from?.profileUrl ?? NoProfile}
+                        alt={from?.firstName}
+                        className="w-10 h-10 object-cover rounded-full"
+                      />
+                      <div className="flex-1">
+                        <p className="text-base font-medium text-ascent-1">
+                          {from?.firstName} {from?.lastName}
+                        </p>
+                        <span className="text-sm text-ascent-2">
+                          {from?.profession ?? "No Profession"}
+                        </span>
                       </div>
-                    ))}
+                    </Link>
+                    <div className="flex gap-1">
+                      <CustomButton
+                        tittle="Accept"
+                        onClick={() => acceptFriendRequest(_id, "Accepted")}
+                        containerStyles="bg-[#0444a4] text-xs text-white px-1.5
+                    py-1 rounded-full"
+                      />
+                      <CustomButton
+                        tittle="Deny"
+                        onClick={() => acceptFriendRequest(_id, "Denied")}
+                        containerStyles="border border-[#666] text-xs
+                    text-ascent-1 px-1.5 py-1 rounded-full"
+                      />
+                    </div>
                   </div>
-                </div>
-                {/* {SUGGEST FRIENDS} */}
-                <div className="w-full bg-primary shadow-sm rounded-lg px-5 py-5">
-                  <div className="flex items-center justify-between text-lg text-ascent-1 ">
-                    <span>Friend Suggestion</span>
-                  </div>
-                  <form
-                    className="hidden md:flex items-center justify-center gap-5"
-                    onSubmit={(e) => handleSearch(e)}
-                  >
-                    {/* <TextInput
+                ))}
+              </div>
+            </div>
+            {/* {SUGGEST FRIENDS} */}
+            <div className="w-full bg-primary shadow-sm rounded-lg px-5 py-5">
+              <div className="flex items-center justify-between text-lg text-ascent-1 ">
+                <span>Friend Suggestion</span>
+              </div>
+              <form
+                className="hidden md:flex items-center justify-center gap-5"
+                onSubmit={(e) => handleSearch(e)}
+              >
+                {/* <TextInput
                       styles="w-full rounded-l-full py-5"
                       placeholder="What's on your mind...."
                       register={register("search")}
                     /> */}
-                    <input
-                      className="bg-primary placeholder:text-[#666] pl-1 border-[#66666690] border-b w-full 
+                <input
+                  className="bg-primary placeholder:text-[#666] pl-1 border-[#66666690] border-b w-full 
                       outline-none text-ascent-2"
-                      placeholder="Search"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                    {/* <CustomButton
+                  placeholder="Search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                {/* <CustomButton
                       tittle="search"
                       type="submit"
                       containerStyles="bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
                     /> */}
 
-                    <button
-                      onClick={() => {}}
-                      type={"submit"}
-                      className={`inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full`}
-                    >
-                      search
-                    </button>
-                  </form>
+                <button
+                  onClick={() => {}}
+                  type={"submit"}
+                  className={`inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full`}
+                >
+                  search
+                </button>
+              </form>
 
-                  <div className="w-full flex flex-col gap-4 pt-4">
-                    {suggestedFriends?.map((friend) => (
-                      <div
-                        className="flex items-center justify-between"
-                        key={friend._id}
-                      >
-                        <Link
-                          to={"/profile/" + friend?._id}
-                          key={friend._id}
-                          className="w-full flex gap-4 items-center 
+              <div className="w-full flex flex-col gap-4 pt-4">
+                {suggestedFriends?.map((friend) => (
+                  <div
+                    className="flex items-center justify-between"
+                    key={friend._id}
+                  >
+                    <Link
+                      to={"/profile/" + friend?._id}
+                      key={friend._id}
+                      className="w-full flex gap-4 items-center 
                   cursor-pointer"
-                        >
-                          <img
-                            src={friend?.profileUrl ?? NoProfile}
-                            alt={friend?.firstName}
-                            className="w-10 h-10 object-cover rounded-full"
-                          />
+                    >
+                      <img
+                        src={friend?.profileUrl ?? NoProfile}
+                        alt={friend?.firstName}
+                        className="w-10 h-10 object-cover rounded-full"
+                      />
 
-                          <div className="flex-1">
-                            <p className="text-base font-medium text-ascent-1">
-                              {friend?.firstName} {friend?.lastName}
-                            </p>
-                            <span className="text-sm text-ascent-2">
-                              {friend?.profession ?? "No Profession"}
-                            </span>
-                          </div>
-                        </Link>
-
-                        <div className="flex gap-1">
-                          <button
-                            className="bg-[#0444a430] text-sm text-white p-1 rounded"
-                            onClick={() => handleFriendRequest(friend?._id)}
-                          >
-                            <BsPersonFillAdd
-                              size={20}
-                              className="text-[#0f52b6]"
-                            />
-                          </button>
-                        </div>
+                      <div className="flex-1">
+                        <p className="text-base font-medium text-ascent-1">
+                          {friend?.firstName} {friend?.lastName}
+                        </p>
+                        <span className="text-sm text-ascent-2">
+                          {friend?.profession ?? "No Profession"}
+                        </span>
                       </div>
-                    ))}
+                    </Link>
+
+                    <div className="flex gap-1">
+                      <button
+                        className="bg-[#0444a430] text-sm text-white p-1 rounded"
+                        onClick={() => handleFriendRequest(friend?._id)}
+                      >
+                        <BsPersonFillAdd size={20} className="text-[#0f52b6]" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

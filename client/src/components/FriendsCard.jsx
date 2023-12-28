@@ -2,8 +2,10 @@ import React from "react";
 // import { friends } from "../assets/data";
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
+import { Login } from "../pages";
 
 const FriendsCard = ({ friends }) => {
+  console.log(friends);
   return (
     <div>
       <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
@@ -15,7 +17,6 @@ const FriendsCard = ({ friends }) => {
         <div className="w-full flex flex-col gap-4 pt-4">
           {friends?.map((friend) => (
             <Link
-              key={friend._id}
               to={"/profile/" + friend?._id}
               className="w-full flex gap-4 items-center cursor-pointer"
             >
