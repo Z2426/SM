@@ -51,6 +51,7 @@ export const handFileUpload = async (uploadFile) => {
     console.log(error);
   }
 };
+
 export const checkresetpassword = async (uri) => {
   try {
     const res = await apiRequest({
@@ -180,6 +181,26 @@ export const fetchNotifications = async ({ token, dispatch, userId, data }) => {
     //console.log(res);
     //dispatch(SetPosts(res?.data));
     return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const uploadVideo = async (videoFile) => {
+  const formData = new FormData();
+  formData.append("file", videoFile);
+  formData.append("upload_preset", "social_media_video"); // Sử dụng một preset cụ thể cho video
+  formData.append("resource_type", "video"); // Chỉ định loại tài nguyên là video
+  console.log(formData);
+
+  try {
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_ID}/video/upload/`,
+      formData
+    );
+
+    console.log(response);
+    return response.data.secure_url;
   } catch (error) {
     console.log(error);
   }

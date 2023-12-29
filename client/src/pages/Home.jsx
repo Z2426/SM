@@ -29,6 +29,7 @@ import {
   handFileUpload,
   likePost,
   sendFriendRequest,
+  uploadVideo,
 } from "../until";
 import { dispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
@@ -59,8 +60,17 @@ const Home = () => {
     setPosting(true);
     setPreview(false);
     seterrMsg("");
+
     try {
+      // if (file.type === "video/mp4") {
+      //   console.log(file);
+      //   const uri = file && (await uploadVideo(file));
+      // } else {
+      //   console.log(file);
+      //   const uri = file && (await handFileUpload(file));
+      // }
       const uri = file && (await handFileUpload(file));
+
       const newData = uri ? { ...data, image: uri } : data;
       const res = await apiRequest({
         url: "/posts/create-post",
@@ -80,6 +90,7 @@ const Home = () => {
       }
       setPosting(false);
       setFile(null);
+      setPreview(false);
     } catch (error) {
       console.log(error);
       setPosting(false);
@@ -186,16 +197,7 @@ const Home = () => {
       console.log(error);
     }
   };
-  const pauseVideo = () => {
-    console.log(videoRef.current);
-    if (videoRef.current) {
-      try {
-        videoRef.current.pause();
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+
   const acceptFriendRequest = async (id, status) => {
     try {
       const res = apiRequest({
@@ -375,7 +377,7 @@ const Home = () => {
                   <span>Image</span>
                 </label>
 
-                <label
+                {/* <label
                   htmlFor="videoUpload"
                   className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
                 >
@@ -389,7 +391,7 @@ const Home = () => {
                   />
                   <BiSolidVideo />
                   <span>Video</span>
-                </label>
+                </label> */}
 
                 <label
                   htmlFor="vgifUpload"
