@@ -12,7 +12,7 @@ export const searchUsersByName = async (req, res) => {
   try {
     const { userId } = req.body.user;
     const keyword = req.params.keyword;
-    console.log(keyword);
+    //console.log(keyword);
     const user = await Users.findById(userId).populate("friends");
     const userFriends = user.friends.map((friend) => friend._id);
     // Tạo biểu thức chính quy từ keyword (tên người dùng)
@@ -441,7 +441,7 @@ export const getUser = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
     const { id } = req.params;
-    console.log(req);
+    //console.log(req);
     const user = await Users.findById(id ?? userId).populate({
       path: "friends",
       select: "-password",
@@ -469,7 +469,7 @@ export const getUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const { firstName, lastName, location, profileUrl, profession } = req.body;
-
+    console.log("Profession", profession);
     if (!(firstName || lastName || profession || location)) {
       next("Please provide all required fields");
       return;
@@ -489,7 +489,7 @@ export const updateUser = async (req, res, next) => {
     await user.populate({ path: "friends", select: "-password" });
     const token = createJWT(user?._id);
     user.password = undefined;
-    console.log(user, "/n", token);
+    //console.log(user, "/n", token);
     res.status(200).json({
       sucess: true,
       message: "User updated successfully",

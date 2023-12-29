@@ -36,6 +36,7 @@ const Login = () => {
         seterrMsg(res);
       } else {
         seterrMsg("");
+        console.log(res);
         const newData = { token: res?.token, ...res?.user };
         dispatch(UserLogin(newData));
         window.location.replace("/");
