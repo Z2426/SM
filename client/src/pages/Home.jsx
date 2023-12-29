@@ -313,7 +313,7 @@ const Home = () => {
               {preview && (
                 <>
                   <span
-                    className="text-ascent-1 cursor-pointer border rounded px-2 py-1"
+                    className="text-ascent-1 cursor-pointer rounded-full px-4 py-1 bg-[#0444a4]"
                     onClick={() => {
                       setPreview(false);
                       setFile(null);
@@ -328,21 +328,12 @@ const Home = () => {
                     <img
                       className="w-full mt-2 rounded-lg"
                       src={`${URL.createObjectURL(file)}`}
-                      // onClick={() => {
-                      //   setPreview(false);
-                      //   setFile(null);
-                      // }}
                     />
                   ) : (
                     <video
                       ref={videoRef}
                       controls
                       className="w-full mt-2 rounded-lg"
-                      // onClick={() => {
-                      //   pauseVideo();
-                      //   setPreview(false);
-                      //   setFile(null);
-                      // }}
                     >
                       <source
                         src={`${URL.createObjectURL(file)}`}
@@ -384,7 +375,7 @@ const Home = () => {
                   <span>Image</span>
                 </label>
 
-                {/* <label
+                <label
                   htmlFor="videoUpload"
                   className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
                 >
@@ -398,7 +389,7 @@ const Home = () => {
                   />
                   <BiSolidVideo />
                   <span>Video</span>
-                </label> */}
+                </label>
 
                 <label
                   htmlFor="vgifUpload"
