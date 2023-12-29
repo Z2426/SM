@@ -32,7 +32,7 @@ const Login = () => {
         method: "POST",
       });
       console.log(res);
-      if (res?.status === false) {
+      if (res?.status === "failed") {
         seterrMsg(res);
       } else {
         seterrMsg("");
@@ -113,7 +113,7 @@ const Login = () => {
               <span
                 className={`text-sm ${
                   errMsg?.status == "failed"
-                    ? "test-[#f64949fe]"
+                    ? "text-[#f64949fe]"
                     : "text-[#2ba150fe]"
                 } mt-0.5`}
               >
