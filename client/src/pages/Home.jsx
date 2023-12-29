@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import Cookies from "js-cookie";
 import {
@@ -47,6 +47,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const videoRef = useRef(null);
   const {
     register,
     handleSubmit,
@@ -87,6 +88,7 @@ const Home = () => {
 
   const handlePreview = async (file) => {
     if (file) {
+      console.log(file);
       await setFile(file);
       setPreview(true);
     }
@@ -125,7 +127,7 @@ const Home = () => {
     }
   };
   const test = async () => {
-    console.log(user);
+    //console.log(user);
     const res = await checktoken({
       token: user?.token,
     });
@@ -135,7 +137,7 @@ const Home = () => {
       Cookies.set("message", message, { expires: 7 });
       navigate("/error");
     }
-    console.log(res);
+    //console.log(res);
   };
   const fetchFriendRequest = async () => {
     try {
@@ -182,6 +184,16 @@ const Home = () => {
       console.log(res);
     } catch (error) {
       console.log(error);
+    }
+  };
+  const pauseVideo = () => {
+    console.log(videoRef.current);
+    if (videoRef.current) {
+      try {
+        videoRef.current.pause();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   const acceptFriendRequest = async (id, status) => {
@@ -282,7 +294,7 @@ const Home = () => {
                   error={errors.description ? errors.description.message : ""}
                 />
               </div>
-              {preview && (
+              {/* {preview && (
                 <>
                   <span className="text-ascent-1">Preview Image</span>
                   <img
@@ -295,6 +307,50 @@ const Home = () => {
                       }
                     }}
                   />
+                </>
+              )}
+               */}
+              {preview && (
+                <>
+                  <span
+                    className="text-ascent-1 cursor-pointer border rounded px-2 py-1"
+                    onClick={() => {
+                      setPreview(false);
+                      setFile(null);
+                    }}
+                  >
+                    Close
+                  </span>
+                  {/* <span className="text-ascent-1">
+                    Preview {file.type.includes("image") ? "Image" : "Video"}
+                  </span> */}
+                  {file.type.includes("image") ? (
+                    <img
+                      className="w-full mt-2 rounded-lg"
+                      src={`${URL.createObjectURL(file)}`}
+                      // onClick={() => {
+                      //   setPreview(false);
+                      //   setFile(null);
+                      // }}
+                    />
+                  ) : (
+                    <video
+                      ref={videoRef}
+                      controls
+                      className="w-full mt-2 rounded-lg"
+                      // onClick={() => {
+                      //   pauseVideo();
+                      //   setPreview(false);
+                      //   setFile(null);
+                      // }}
+                    >
+                      <source
+                        src={`${URL.createObjectURL(file)}`}
+                        type={file.type}
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
                 </>
               )}
               {file != null && <img src="" />}
@@ -328,13 +384,13 @@ const Home = () => {
                   <span>Image</span>
                 </label>
 
-                <label
+                {/* <label
                   htmlFor="videoUpload"
                   className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
                 >
                   <input
                     type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => handlePreview(e.target.files[0])}
                     className="hidden"
                     id="videoUpload"
                     data-max-size="5120"
@@ -342,7 +398,7 @@ const Home = () => {
                   />
                   <BiSolidVideo />
                   <span>Video</span>
-                </label>
+                </label> */}
 
                 <label
                   htmlFor="vgifUpload"
