@@ -1,0 +1,22 @@
+{
+    "parameters": {
+        "PostIdParam": {
+            "in": "path",
+            "name": "idPost",
+            "required": true,
+            "description": "ID of the post to retrieve",
+            "schema": {
+                "type": "string"
+            }
+        },
+        "UserIdParam": {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID of the user to retrieve",
+            "schema": {
+                "type": "string"
+            }
+        }
+    }
+}

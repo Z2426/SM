@@ -1,0 +1,201 @@
+{
+    "/api/posts/{idPost}": {
+        "get": {
+            "summary": "Get a post by ID",
+            "description": "Retrieve a single post using its ID.",
+            "tags": [
+                "Posts"
+            ],
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PostIdParam"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success - Post retrieved successfully.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Success"
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/Post"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Post not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Post not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Server error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Server error"
+                                    },
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Detailed error message"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "post": {
+            "summary": "Create a new post",
+            "description": "Create a new post.",
+            "tags": [
+                "Posts"
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Post"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "Post created successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Post"
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Invalid input",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Invalid input"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "summary": "Delete a post by ID",
+            "description": "Delete a post using its ID.",
+            "tags": [
+                "Posts"
+            ],
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PostIdParam"
+                }
+            ],
+            "responses": {
+                "204": {
+                    "description": "Post deleted successfully"
+                },
+                "404": {
+                    "description": "Post not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Post not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "put": {
+            "summary": "Update a post by ID",
+            "description": "Update a post using its ID.",
+            "tags": [
+                "Posts"
+            ],
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PostIdParam"
+                }
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Post"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Post updated successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Post"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Post not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Post not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

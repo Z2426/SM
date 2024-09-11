@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Optional: specify a custom Dockerfile name
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production  # Optional: Set environment variables
+    volumes:
+      - .:/usr/src/app  # Optional: Mount local directory to container (useful for development)
+    networks:
+      - app-network  # Optional: Attach to a specific network
+
+networks:
+  app-network:
+    driver: bridge  # Optional: specify network driver
