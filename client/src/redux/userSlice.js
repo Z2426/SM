@@ -4,6 +4,7 @@ import { user } from "../assets/data";
 const initialState = {
   user: JSON.parse(window?.localStorage.getItem("user")) ?? {},
   edit: false,
+  post: false,
   notification: false,
 };
 
@@ -26,6 +27,9 @@ const userSlice = createSlice({
     updateProfile(state, action) {
       state.edit = action.payload;
     },
+    updatePost(state, action) {
+      state.post = action.payload;
+    },
     setnotification(state, action) {
       state.notification = action.payload;
     },
@@ -46,6 +50,12 @@ export function Logout() {
 export function UpdateProfile(val) {
   return (dispatch, getState) => {
     dispatch(userSlice.actions.updateProfile(val));
+  };
+}
+
+export function UpdatePost(val) {
+  return (dispatch, getState) => {
+    dispatch(userSlice.actions.updatePost(val));
   };
 }
 

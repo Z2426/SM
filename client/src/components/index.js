@@ -9,6 +9,8 @@ import EditProfile from "./EditProfile";
 import Notification from "./Notification";
 import ListUser from "./ListUser";
 import TopBarAdmin from "./TopBarAdmin";
+import Post from "./Post";
+import EditFix from "./EditFix";
 export {
   TextInput,
   Loading,
@@ -21,4 +23,6 @@ export {
   Notification,
   ListUser,
   TopBarAdmin,
+  Post,
+  EditFix,
 };

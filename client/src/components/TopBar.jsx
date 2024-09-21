@@ -95,11 +95,11 @@ const TopBar = ({ user }) => {
           <button onClick={() => handleTheme()}>
             {theme ? <BsMoon /> : <BsSunFill />}
           </button>
-          {/* <div className="hidden lg:flex">
+          <div className="hidden lg:flex">
             <Link to={`/chat/${user?._id}`}>
               <IoChatboxOutline />
             </Link>
-          </div> */}
+          </div>
           <div
             className="hidden lg:flex cursor-pointer"
             onClick={() => dispatch(Setnotification(!notification))}

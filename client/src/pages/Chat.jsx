@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { FriendsCard, ProfileCard, TextInput, TopBar } from "../components";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { BsBriefcase } from "react-icons/bs";
+import { IoIosChatbubbles, IoIosSettings, IoMdContact } from "react-icons/io";
+import { IoCallSharp } from "react-icons/io5";
 
 const UserCard = (user) => {
   //console.log(user);
@@ -33,11 +36,23 @@ const Chat = () => {
         <TopBar />
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* {LEFT} */}
+          <div className="h-full w-20 rounded-xl bg-primary overflow-hidden">
+            <div className="w-full h-2/3 gap-7 flex flex-col items-center content-end justify-start py-10 ">
+              <IoIosChatbubbles className="text-ascent-1 " size={30} />
+              <IoCallSharp className="text-ascent-1 " size={30} />
+              <IoMdContact className="text-ascent-1 " size={30} />
+              {/* <IoIosSettings className=" text-ascent-1 " size={30} /> */}
+            </div>
+
+            <div className="h-1/3 w-full bg-primary flex justify-center items-end py-10">
+              <IoIosSettings className=" text-ascent-1 " size={30} />
+            </div>
+          </div>
           <div
             className="hidden w-1/3 lg:w-1/4 h-full bg-primary md:flex flex-col gap-6
-        overflow-y-auto rounded"
+        overflow-y-auto rounded-xl"
           >
-            <div className="w-full h-full  gap-3 flex flex-col pt-2">
+            <div className="w-full h-full gap-3 flex flex-col pt-2">
               <UserCard user={user} />
               <UserCard user={user} />
               <UserCard user={user} />

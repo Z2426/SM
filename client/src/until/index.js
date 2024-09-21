@@ -164,7 +164,7 @@ export const checktoken = async ({ token }) => {
       data: {},
       token: token,
     });
-    console.log(res);
+    console.log(this.res);
     return res;
   } catch (error) {
     console.log(error);

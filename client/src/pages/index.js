@@ -7,6 +7,7 @@ import Chat from "./Chat";
 import ErrorPage from "./ErrorPage";
 import ChangePassword from "./ChangePassword";
 import Admin from "./Admin";
+import ProfileFix from "./ProfileFix";
 
 export {
   Home,
@@ -18,4 +19,5 @@ export {
   ErrorPage,
   ChangePassword,
   Admin,
+  ProfileFix,
 };

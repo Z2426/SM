@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import {
   CustomButton,
   EditProfile,
+  EditFix,
   FriendsCard,
   Loading,
   PostCard,
@@ -11,6 +12,7 @@ import {
   TextInput,
   TopBar,
   Notification,
+  Post,
 } from "../components";
 import Profile from "./Profile";
 // import { requests, suggest } from "../assets/data";
@@ -32,11 +34,12 @@ import {
   uploadVideo,
 } from "../until";
 import { dispatch } from "../redux/store";
+import { UpdatePost } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { UserLogin } from "../redux/userSlice";
 const Home = () => {
   const { posts } = useSelector((state) => state.posts);
-  const { user, edit, notification } = useSelector((state) => state.user);
+  const { user, edit, notification, post } = useSelector((state) => state.user);
   const [friendRequest, setfriendRequest] = useState();
   const [notifications, setNotifications] = useState();
   const [suggestedFriends, setsuggestedFriends] = useState();
@@ -97,13 +100,13 @@ const Home = () => {
     }
   };
 
-  const handlePreview = async (file) => {
-    if (file) {
-      console.log(file);
-      await setFile(file);
-      setPreview(true);
-    }
-  };
+  // const handlePreview = async (file) => {
+  //   if (file) {
+  //     console.log(file);
+  //     await setFile(file);
+  //     setPreview(true);
+  //   }
+  // };
 
   //console.log(user);
 
@@ -286,7 +289,8 @@ const Home = () => {
                   alt="User Image"
                   className="w-14 h-14 rounded-full object-cover"
                 />
-                <TextInput
+
+                {/* <TextInput
                   styles="w-full rounded-full py-5"
                   placeholder="What's on your mind...."
                   name="description"
@@ -294,8 +298,18 @@ const Home = () => {
                     required: "Write something about post",
                   })}
                   error={errors.description ? errors.description.message : ""}
-                />
+                /> */}
+                <div
+                  className=" text-ascent-2 rounded-full py-5 w-full bg-secondary hover:cursor-text"
+                  onClick={() => {
+                    // console.log("!solem");
+                    dispatch(UpdatePost(true));
+                  }}
+                >
+                  <div className="px-8">What's on your mind....</div>
+                </div>
               </div>
+
               {/* {preview && (
                 <>
                   <span className="text-ascent-1">Preview Image</span>
@@ -312,6 +326,8 @@ const Home = () => {
                 </>
               )}
                */}
+              {"After"}
+
               {preview && (
                 <>
                   <span
@@ -346,6 +362,7 @@ const Home = () => {
                   )}
                 </>
               )}
+
               {file != null && <img src="" />}
               {errMsg?.message && (
                 <span
@@ -365,14 +382,14 @@ const Home = () => {
                   htmlFor="imgUpload"
                   className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
                 >
-                  <input
+                  {/* <input
                     type="file"
                     onChange={(e) => handlePreview(e.target.files[0])}
                     className="hidden"
                     id="imgUpload"
                     data-max-size="5120"
                     accept=".jpg, .png, .jpeg"
-                  />
+                  /> */}
                   <BiImages />
                   <span>Image</span>
                 </label>
@@ -397,14 +414,14 @@ const Home = () => {
                   htmlFor="vgifUpload"
                   className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
                 >
-                  <input
+                  {/* <input
                     type="file"
                     onChange={(e) => handlePreview(e.target.files[0])}
                     className="hidden"
                     id="vgifUpload"
                     data-max-size="5120"
                     accept=".gif"
-                  />
+                  /> */}
                   <BsFiletypeGif />
                   <span>Gif</span>
                 </label>
@@ -573,7 +590,8 @@ const Home = () => {
         </div>
       </div>
 
-      {edit && <EditProfile />}
+      {edit && <EditFix />}
+      {post && <Post onEvent={fetchPost} />}
     </div>
   );
 };
