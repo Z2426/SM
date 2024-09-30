@@ -9,9 +9,6 @@ export const compareString = async (userPassword, password) => {
   const isMatch = await bcrypt.compare(userPassword, password)
   return isMatch
 }
-//JSON WEBTOKEN
-import JWT from 'jsonwebtoken';
-
 export function createJWT(userId) {
   try {
     const sixMonthsInSeconds = 6 * 30 * 24 * 60 * 60; // Số giây trong 6 tháng
