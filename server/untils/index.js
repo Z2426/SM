@@ -10,17 +10,22 @@ export const compareString = async (userPassword, password) => {
   return isMatch
 }
 //JSON WEBTOKEN
-export function createJWT(id) {
-  const sixMonthsInSeconds = 6 * 30 * 24 * 60 * 60; // Số giây trong 6 tháng
+import JWT from 'jsonwebtoken';
 
-  const token = JWT.sign(
-    {
-      userId: id,
-      exp: Math.floor(Date.now() / 1000) + sixMonthsInSeconds, // Thời gian hết hạn: 6 tháng
-    },
-    process.env.JWT_SECRET_KEY
-  );
-  return token;
+export function createJWT(userId) {
+  try {
+    const sixMonthsInSeconds = 6 * 30 * 24 * 60 * 60; // Số giây trong 6 tháng
+    const payload = {
+      userId,
+      exp: Math.floor(Date.now() / 1000) + sixMonthsInSeconds, // Thời gian hết hạn
+    };
+    // Tạo token
+    const token = JWT.sign(payload, process.env.JWT_SECRET_KEY);
+    return token;
+  } catch (error) {
+    console.error("Error creating JWT:", error);
+    throw new Error("Unable to create JWT");
+  }
 }
 export function calculatesTime(postTimestamp) {
   const now = new Date() // Thời gian hiện tại
