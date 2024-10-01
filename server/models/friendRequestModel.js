@@ -1,11 +1,23 @@
-import mongoose, { Schema } from "mongoose"
-const requestSchema = Schema({
-    requestTo: { type: Schema.Types.ObjectId, ref: "Users" },
-    requestFrom: { type: Schema.Types.ObjectId, ref: "Users" },
-    requestStatus: { type: String, default: "Pending" }
+import mongoose, { Schema } from "mongoose";
 
+const requestSchema = new Schema({
+    requestTo: { 
+        type: Schema.Types.ObjectId, 
+        ref: "Users", 
+        required: true 
+    },
+    requestFrom: { 
+        type: Schema.Types.ObjectId, 
+        ref: "Users", 
+        required: true 
+    },
+    requestStatus: { 
+        type: String, 
+        default: "Pending" 
+    }
 }, {
-    timestamp: true
-})
-const FriendsRequest = mongoose.model("FriendRequest", requestSchema)
-export default FriendsRequest
+    timestamps: true 
+});
+requestSchema.index({ requestTo: 1, requestFrom: 1 });
+const FriendRequest = mongoose.model("FriendRequest", requestSchema);
+export default FriendRequest;
