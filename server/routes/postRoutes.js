@@ -37,5 +37,4 @@ router.post("/comment/:postId", userAuth, commentPost)
 router.post("/reply-comment/:id", userAuth, replyPostComment)
 //delete post
 router.delete("/:id", userAuth, deletePost)
-
 export default router

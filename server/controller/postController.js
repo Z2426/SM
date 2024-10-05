@@ -41,31 +41,42 @@ export const getTimeCreatePost = async (req, res, next) => {
 };
 export const createPost = async (req, res, next) => {
   try {
-    const { userId } = req.body.user;
-    const user = await Users.findById(userId);
-    const { description, image } = req.body;
+    const { userId } = req.body.user; // Lấy userId từ thông tin người dùng trong body
+    const user = await Users.findById(userId); // Tìm người dùng
+    const { description, image, accessMode, allowedUsers } = req.body; // Thêm accessMode và allowedUsers
+
+    // Kiểm tra mô tả
     if (!description) {
       next("You must provide a description");
       return;
     }
+
+    // Tạo bài viết mới
     const post = await Posts.create({
       userId,
       description,
       image,
+      accessMode, // Chế độ truy cập
+      allowedUsers, // Danh sách người dùng được phép xem bài viết
     });
+
+    // Ghi lại hoạt động
     const type = "post";
-    const message = `You created post  `;
+    const message = `You created a post`;
     recordActivity(user._id, type, message);
-    res.status(200).json({
-      sucess: true,
+
+    // Trả về phản hồi
+    res.status(201).json({
+      success: true, // Sửa từ 'sucess' thành 'success'
       message: "Post created successfully",
       data: post,
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: error.message }); // Thay đổi mã trạng thái về 500 cho lỗi server
   }
 };
+
 export const getPosts = async (req, res, next) => {
   try {
     const { userId } = req.body.user;

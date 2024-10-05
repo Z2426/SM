@@ -1,6 +1,5 @@
 import JWT from "jsonwebtoken";
 import Users from "../models/userModel.js";
-import { createJWT } from "../untils/index.js";
 export const userAuth = async (req, res, next) => {
   try {
       const authHeader = req.headers.authorization;

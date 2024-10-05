@@ -14,6 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+// app.use(errorMiddleware);
 app.use(router);
 dbConnection();
 app.listen(PORT, () => {
