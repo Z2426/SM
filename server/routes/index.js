@@ -8,9 +8,7 @@ const router = express.Router();
 router.use("/auth", authRoute);
 router.use("/users", userRoute);
 router.use("/posts", postRoute);
-router.use("/message", messageRoutes);
-router.use("/notifications", notificationRoute);
 router.get("/", (req, res) => {
-  res.send("Welcome fen");
+  res.send("HAVE A NICE GOOD DAY");
 });
 export default router;
