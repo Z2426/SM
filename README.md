@@ -1,4 +1,4 @@
-# SM
-use mern : mongodb, nodejs, react,....
+# SM V1
 * I/ SETUP EVIROMENT
 - npm i
+  

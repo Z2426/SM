@@ -1,40 +1,27 @@
 import express from "express"
-import {
-  createPost,
-  getPost,
-  getPosts,
-  getUserPost,
-  getComments,
-  likePost,
-  likePostComment,
-  replyPostComment,
-  commentPost,
-  deletePost,
-  getTimeCreatePost,
-  getCommentAndReplyCount,
-} from "../controller/postController.js"
+import* as postController from "../controller/postController.js"
 import { userAuth } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
-router.get("/count-all-comment-post/:postId", getCommentAndReplyCount)
-router.post("/get-time-create-post/:postId", getTimeCreatePost)
-// crete post
-router.post("/create-post", userAuth, createPost)
-// get posts
-
-router.post("/:id", userAuth, getPost)
-router.post("/", userAuth, getPosts)
-router.post("/", userAuth, getPosts)
-router.post("/get-user-post/:id", userAuth, getUserPost);
-// get comments
-router.get("/comments/:postId", getComments)
-//like and comment on posts
-router.post("/like/:postId", userAuth, likePost)
-router.post("/like/:postId", userAuth, likePost)
-router.post("/like-comment/:id/:rid?", userAuth, likePostComment)
-router.post("/comment/:postId", userAuth, commentPost)
-router.post("/comment/:postId", userAuth, commentPost)
-router.post("/reply-comment/:id", userAuth, replyPostComment)
-//delete post
-router.delete("/:id", userAuth, deletePost)
+//handle route reply
+router.put("/comments/:commentId/replies/:replyId",userAuth,postController.editReply)
+router.delete("/comments/:commentId/replies/:replyId",userAuth,postController.deleteReply)
+router.get("/comments/:commentId/replies",userAuth,postController.getRepliesByComment)
+router.post("/comments/:commentId/replies",userAuth,postController.replyPostComment)
+//hanle route comment 
+router.delete("/comments/:commentId",userAuth,postController.deleteComment)
+router.put("/comments/:commentId",userAuth,postController.editComment)
+router.put("/comments/:commentId",userAuth,postController.editComment)
+router.post("/:postId/comments",userAuth,postController.commentPost)
+router.get("/:postId/comments",userAuth,postController.getComments)
+//like post  #chưa test comment ,reply
+router.put("/like/:entityId/:type",userAuth,postController.toggleLike)
+//view post
+router .put("/view/:postId",userAuth,postController.viewPost)
+// API  CRUD POST
+router.get("/user/:userId",userAuth,postController.getUserPost)
+router.post("/", userAuth, postController.createPost)
+router.put('/:postId', userAuth,postController.updatePost);
+router.delete('/:postId',userAuth, postController.deletePost);
+router.get('/:postId',userAuth, postController.getPost);
 export default router
