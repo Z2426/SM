@@ -2,8 +2,6 @@ import express from "express";
 import authRoute from "./authRoutes.js";
 import userRoute from "./userRoute.js";
 import postRoute from "./postRoutes.js";
-import notificationRoute from "./notification.js";
-import messageRoutes from "./messageRoutes.js";
 const router = express.Router();
 router.use("/auth", authRoute);
 router.use("/users", userRoute);

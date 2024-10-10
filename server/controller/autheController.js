@@ -4,12 +4,12 @@ import { sendVerificationEmail } from '../untils/sendEmail.js'
 export const register = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     if (!firstName || !lastName || !email || !password) {
-        return res.status(400).json({ message: "Provide required fields!" });
+        return res.status(400).json({ message: "Provide all required fields!" });
     }
     try {
         const userExist = await Users.findOne({ email });
         if (userExist) {
-            return res.status(409).json({ message: "Email address already exists" });
+            return res.status(409).json({ message: "Email address already exists." });
         }
         const hashedPassword = await hashString(password);
         const user = await Users.create({
@@ -18,10 +18,10 @@ export const register = async (req, res) => {
             email,
             password: hashedPassword,
         });
-        await sendVerificationEmail(user);
-        return res.status(201).json({ message: "User registered successfully." });
+        await sendVerificationEmail(user); 
+        return res.status(201).json({ message: "User registered successfully. Please check your email for verification." });
     } catch (error) {
-        console.error(error);
+        console.error("Error during registration:", error);
         return res.status(500).json({ message: "Internal server error." });
     }
 };

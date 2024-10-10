@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import Users from "../models/userModel.js";
-import Notification from "../models/NotificationModel.js";
 import FriendsRequest from "../models/friendRequestModel.js";
 import Verification from "../models/emailVerificationModel.js";
 import { compareString, hashString } from "../untils/index.js";
@@ -157,17 +156,31 @@ export const profileViews = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
     const { id } = req.body;
+
+    // Kiểm tra xem người dùng có tồn tại không
     const user = await Users.findById(id);
-    user.views.push(userId);
-    await user.save();
-    res.status(201).json({
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Kiểm tra xem userId đã có trong mảng views chưa
+    if (!user.views.includes(userId)) {
+      user.views.push(userId);
+      await user.save();
+    }
+
+    res.status(200).json({
       success: true,
-      message: "Successfully",
+      message: "Profile views updated successfully",
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 export const acceptRequest = async (req, res, next) => {
   try {
     const id = req.body.user.userId;
@@ -213,34 +226,23 @@ export const verifyEmail = async (req, res) => {
         await Verification.findOneAndDelete({ userId });
         await Users.findOneAndDelete({ _id: userId });
         const message = "Verification token has expired";
-        return res.status(200).json({ status: "error", message });
+        return res.status(200).json({ status: "error", message, redirectTo: "/error" });
       } else {
         const isMatch = await compareString(token, hashedToken);
         if (isMatch) {
           console.log("Token is a match");
           await Users.findOneAndUpdate({ _id: userId }, { verified: true });
           await Verification.findOneAndDelete({ userId });
-          //const message = "Email verified successfully";
-          return res.redirect("http://localhost:3000/login");
-          // return res.status(200).json({
-          //   status: "success",
-          //   message,
-          //   redirectTo: "http://localhost:3000/login",
-          // });
+          const message = "Email verified successfully";
+          return res.status(200).json({ status: "success", message, redirectTo: "/login" });
         } else {
           const message = "Verification failed or link is invalid";
-          //return res.status(200).json({ status: "error", message });
-          return res
-            .cookie("message", message)
-            .redirect("http://localhost:3000/error");
+          return res.status(200).json({ status: "error", message, redirectTo: "/error" });
         }
       }
     } else {
       const message = "Invalid verification link. Try again later";
-      // return res.status(200).json({ status: "error", message });
-      return res
-        .cookie("message", message)
-        .redirect("http://localhost:3000/error");
+      return res.status(200).json({ status: "error", message, redirectTo: "/error" });
     }
   } catch (error) {
     console.log(error);
@@ -431,12 +433,12 @@ export const getFriendRequest = async (req, res, next) => {
     });
   }
 };
+
 export const getUser = async (req, res, next) => {
   try {
-    const { userId } = req.body.user;
-    const { id } = req.params;
-    //console.log(req);
-    const user = await Users.findById(id ?? userId).populate({
+    const { userId } = req.body.user; 
+    const { userId: targetUserId } = req.params; 
+    const user = await Users.findById(targetUserId ?? userId).populate({
       path: "friends",
       select: "-password",
     });
@@ -446,7 +448,7 @@ export const getUser = async (req, res, next) => {
         success: false,
       });
     }
-    user.password = undefined;
+    user.password = undefined; 
     res.status(200).json({
       success: true,
       user: user,
@@ -460,38 +462,30 @@ export const getUser = async (req, res, next) => {
     });
   }
 };
-export const updateUser = async (req, res, next) => {
-  try {
-    const { firstName, lastName, location, profileUrl, profession } = req.body;
-    console.log("Profession", profession);
-    if (!(firstName || lastName || profession || location)) {
-      next("Please provide all required fields");
-      return;
-    }
+
+
+export const updateUser = async (req, res) => {
     const { userId } = req.body.user;
-    const updateUser = {
-      firstName,
-      lastName,
-      location,
-      profileUrl,
-      profession,
-      _id: userId,
-    };
-    const user = await Users.findByIdAndUpdate(userId, updateUser, {
-      new: true,
-    });
-    await user.populate({ path: "friends", select: "-password" });
-    const token = createJWT(user?._id);
-    user.password = undefined;
-    //console.log(user, "/n", token);
-    res.status(200).json({
-      sucess: true,
-      message: "User updated successfully",
-      user,
-      token,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: error.message });
-  }
+    const updates = req.body; 
+    const allowedUpdates = ['firstName', 'lastName', 'email', 'location', 'profileUrl', 'profession', 'workplace', 'birthDate'];
+    try {
+        const user = await Users.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        Object.keys(updates).forEach((key) => {
+            if (allowedUpdates.includes(key)) {
+                user[key] = updates[key];
+            }
+        });
+        await user.save();
+        return res.status(200).json({
+            success: true,
+            message: "User updated successfully",
+            user
+        });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 };

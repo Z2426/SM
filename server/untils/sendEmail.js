@@ -13,48 +13,41 @@ let transporter = nodemailer.createTransport({
     pass: process.env.AUTHE_PASSWORD,
   },
 });
-export const sendVerificationEmail = async (user, res) => {
+
+export const sendVerificationEmail = async (user) => {
   const { _id, email, lastName } = user;
   const token = _id + uuidv4();
-  console.log("Test app url", APP_URL);
-  console.log(user);
-  const link = APP_URL + "/users/verify/" + _id + "/" + token;
-  console.log("Link verify ", link);
-  //mail options
+  const link = `${APP_URL}/users/verify/${_id}/${token}`;
+  console.log(link)
   const mailOptions = {
-    from: AUTH_EMAIL,
-    to: email,
-    subject: "Email verification",
-    html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1>Welcome, ${lastName}!</h1>
-        <p>Thank you for creating an account. Please verify your email address to complete the registration process.</p>
-        <p>This verification link will expire in 1 hour.</p>
-        <a href="${link}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; text-decoration: none; border-radius: 5px;">Verify Email Address And Go To Login Page</a>
-        <p>If you didn't create this account, please ignore this email.</p>
-        <p>Thank you!!!</p>
-      </div>`,
+      from: AUTH_EMAIL,
+      to: email,
+      subject: "Email verification",
+      html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h1>Welcome, ${lastName}!</h1>
+          <p>Thank you for creating an account. Please verify your email address to complete the registration process.</p>
+          <p>This verification link will expire in 1 hour.</p>
+          <a href="${link}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; text-decoration: none; border-radius: 5px;">Verify Email Address And Go To Login Page</a>
+          <p>If you didn't create this account, please ignore this email.</p>
+          <p>Thank you!!!</p>
+        </div>`,
   };
   try {
-    const hashedToken = await hashString(token);
-    const newVerifiedEmail = await Verification.create({
-      userId: _id,
-      token: hashedToken,
-      createAt: Date.now(),
-      expiresAt: Date.now() + 360000,
-    });
-    if (newVerifiedEmail) {
-      transporter.sendMail(mailOptions).then(() => {
-        res.status(201).send({
-          success: "PENDING",
-          message: "Verification email has been sent to your account",
-        });
+      const hashedToken = await hashString(token);
+      await Verification.create({
+          userId: _id,
+          token: hashedToken,
+          createAt: Date.now(),
+          expiresAt: Date.now() + 3600000,
       });
-    }
-  } catch (e) {
-    console.log(e);
-    res.status(404).json({ message: "Something went wrong" });
+      await transporter.sendMail(mailOptions);
+  } catch (error) {
+      console.error("Error sending verification email:", error);
+      throw new Error("Failed to send verification email.");
   }
 };
+
+
 export const resetPasswordLink = async (user, res) => {
   const { _id, email } = user;
   const token = _id + uuidv4();

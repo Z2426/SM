@@ -27,8 +27,10 @@ router.get("/get-friend-request", userAuth, getFriendRequest)
 //view profile
 router.get("/profile-view", userAuth, profileViews)
 // user routes
-router.post("/get-user/:id?", userAuth, getUser)
+router.get("/get-user/:userId?", userAuth, getUser)
 router.put("/update-user", userAuth, updateUser)
+//verify email
+router.get("/verify/:userId/:token",verifyEmail)
 //Password reset
 router.get("/reset-password/:userId/:token", resetPassword);//2
 router.post("/request-passwordreset", requestPaswordReset) //1

@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     profileUrl: { type: String },
     profession: { type: String },
     friends: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
-    views: [{ type: Schema.Types.ObjectId, ref: 'Posts' }], // Nếu views là bài viết hoặc các đối tượng khác
+    views: [{ type: Schema.Types.ObjectId, ref: 'Users' }], // Nếu views là bài viết hoặc các đối tượng khác
     verified: { type: Boolean, default: false },
     birthDate: {
         type: Date,
