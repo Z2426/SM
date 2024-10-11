@@ -10,6 +10,7 @@ import {
   ChangePassword,
   Admin,
   ProfileFix,
+  PostPage,
 } from "./pages";
 import { useSelector } from "react-redux";
 import PrivateRoute from "./until/privateroute";
@@ -44,10 +45,11 @@ function App() {
           </Route>
         ) : (
           <Route element={<Layout />}>
-            <Route path="/admin" element={<Admin />} />
+            {/* <Route path="/admin" element={<Admin />} /> */}
             <Route path="/" element={<Home />} />
             <Route path="/profile/:id?" element={<Profile />} />
             <Route path="/chat/:id?" element={<Chat />} />
+            <Route path="/post/:id?" element={<PostPage />} />
           </Route>
         )}
 

@@ -32,7 +32,7 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
   //   setUser(user);
   // }, []);
   return (
-    <div className="mt-5 flex rounded border border-[#66666690]  bg-secondary gap-5 px-5 py-5 w-full">
+    <div className="mt-5 flex rounded border-b border-[#66666690]  bg-secondary gap-5 px-5 py-5 w-full">
       <img
         className="h-20 w-20 object-cover rounded-full"
         src={

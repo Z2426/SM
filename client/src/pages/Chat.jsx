@@ -9,7 +9,7 @@ import { IoCallSharp } from "react-icons/io5";
 const UserCard = (user) => {
   //console.log(user);
   return (
-    <div className="w-full border  gap-4 flex py-5 px-5 rounded-2xl border-[#66666690] items-center">
+    <div className="w-full border-b gap-4 flex py-5 px-5 rounded-2xl border-[#66666690] items-center">
       <img
         src={user?.user?.profileUrl}
         alt={user?.firstName}
@@ -26,7 +26,7 @@ const UserCard = (user) => {
 const Chat = () => {
   const { user, edit } = useSelector((state) => state.user);
   const { id } = useParams();
-  console.log(user);
+  // console.log(user);
   return (
     <div>
       <div

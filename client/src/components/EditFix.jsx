@@ -18,13 +18,22 @@ const EditFix = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: { ...user },
   });
+
+  console.log(user);
+
   const [checkpassword, setcheckpassword] = useState("");
 
+  const partialEmail = user?.email.replace(
+    /(\w{3})[\w.-]+@([\w.]+\w)/,
+    "$1***@$2"
+  );
+  // console.log(partialEmail);
   const onSubmit = async (data) => {
     setisSubmitting(true);
     seterrMsg("");
@@ -66,36 +75,58 @@ const EditFix = () => {
     }
   };
 
+  // const handleresetSubmit = async (data) => {
+  //   console.log(data);
+  //   if (data.pass !== data.repass) {
+  //     setcheckpassword({ status: "failed", message: "Passwords do not match" });
+  //     return;
+  //   } else {
+  //     setcheckpassword("");
+  //   }
+  //   const newData = {
+  //     userId: user.userId,
+  //     password: data.pass,
+  //   };
+
+  //   console.log(newData);
+  //   setisSubmitting(true);
+  //   try {
+  //     const res = await apiRequest({
+  //       url: `/users/reset-password`,
+  //       data: newData,
+  //       method: "POST",
+  //     });
+  //     console.log(res);
+  //     if (res?.success === "failed") {
+  //       seterrMsg(res);
+  //     } else {
+  //       setcheckpassword({ status: "success", message: res.message });
+  //       //seterrMsg(res);
+  //       setTimeout(() => {
+  //         window.location.replace("/login");
+  //       }, 5000);
+  //     }
+  //     setisSubmitting(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setisSubmitting(false);
+  //   }
+  // };
+  const validateemail = (email) => {};
+
   const handleresetSubmit = async (data) => {
     console.log(data);
-    if (data.pass !== data.repass) {
-      setcheckpassword({ status: "failed", message: "Passwords do not match" });
-      return;
-    } else {
-      setcheckpassword("");
-    }
-    const newData = {
-      userId: user.userId,
-      password: data.pass,
-    };
-
-    console.log(newData);
     setisSubmitting(true);
     try {
       const res = await apiRequest({
-        url: `/users/reset-password`,
-        data: newData,
+        url: "/users/request-passwordreset",
+        data: data,
         method: "POST",
       });
-      console.log(res);
-      if (res?.success === "failed") {
+      if (res?.status === "FAILED") {
         seterrMsg(res);
       } else {
-        setcheckpassword({ status: "success", message: res.message });
-        //seterrMsg(res);
-        setTimeout(() => {
-          window.location.replace("/login");
-        }, 5000);
+        seterrMsg(res);
       }
       setisSubmitting(false);
     } catch (error) {
@@ -284,98 +315,65 @@ const EditFix = () => {
                 </div>
               </form>
             ) : editor == 5 ? (
-              <div
-                className="w-full h-full bg-primary flex items-center
-      justify-center p-6"
-              >
-                <div className="bg-primary w-full shadow-md rounded-lg">
-                  {/* <p className="text-ascent-1 text-lg font-semibold">
-                    Reset Password
-                  </p> */}
+              <div className="bg-primary w-ful px-6 py-8 shadow-md rounded-lg">
+                <p className="text-ascent-1 text-lg font-semibold">
+                  Email Address
+                </p>
 
-                  <span className="text-sm text-ascent-2">
-                    Enter the new password
-                  </span>
+                <span className="text-sm text-ascent-2">
+                  {/* Enter email address used during registration */}
+                  {partialEmail}
+                </span>
 
-                  <form
-                    // onSubmit={handleSubmit(handleresetSubmit)}
-                    className="py-4 flex flex-col gap-5"
-                    method="post"
-                  >
-                    <TextInput
-                      name="pass"
-                      placeholder="New Password"
-                      type="password"
-                      register={register("pass", {
-                        required: "Required!",
-                      })}
-                      styles="w-full rounded-lg"
-                      labelStyles="ml-2"
-                      error={errors.pass ? errors.pass.message : ""}
-                    />
-                    {errMsg?.message && (
-                      <span
-                        role="alert"
-                        className={`text-sm ${
-                          errMsg?.status === "failed"
-                            ? "text-[#f64949fe] "
-                            : "text-[#2ba150fe]"
-                        } mt-0.5`}
-                      >
-                        {errMsg?.message}
-                      </span>
-                    )}
+                <form
+                  onSubmit={handleSubmit(handleresetSubmit)}
+                  className="py-4 flex flex-col gap-5"
+                >
+                  <TextInput
+                    name="email"
+                    placeholder="email@example.com"
+                    type="email"
+                    register={register("validate_email", {
+                      // required: "Email Address is required!",
+                      validate: (value) => {
+                        const { email } = getValues();
 
-                    <TextInput
-                      name="repass"
-                      placeholder="Enter the password"
-                      type="password"
-                      register={register("repass", {
-                        required: "Required!",
-                      })}
-                      styles="w-full rounded-lg "
-                      labelStyles="ml-2"
-                      error={errors.repass ? errors.repass.message : ""}
-                    />
-                    {errMsg?.message && (
-                      <span
-                        role="alert"
-                        className={`text-sm ${
-                          errMsg?.status === "failed"
-                            ? "text-[#f64949fe] "
-                            : "text-[#2ba150fe]"
-                        } mt-0.5`}
-                      >
-                        {errMsg?.message}
-                      </span>
-                    )}
-                    {checkpassword && (
-                      <span
-                        role="alert"
-                        className={`text-sm ${
-                          checkpassword?.status === "failed"
-                            ? "text-[#f64949fe] "
-                            : "text-[#2ba150fe]"
+                        if (email != value) {
+                          return "Email do no match";
                         }
-                 mt-0.5`}
-                      >
-                        {checkpassword?.message}
-                      </span>
-                    )}
+                      },
+                    })}
+                    styles="w-full rounded-lg"
+                    labelStyles="ml-2"
+                    error={
+                      errors.validate_email ? errors.validate_email.message : ""
+                    }
+                  />
+                  {errMsg?.message && (
+                    <span
+                      role="alert"
+                      className={`text-sm ${
+                        errMsg?.status === "failed"
+                          ? "text-[#f64949fe] "
+                          : "text-[#2ba150fe]"
+                      } mt-0.5`}
+                    >
+                      {errMsg?.message}
+                    </span>
+                  )}
 
-                    {isSubmitting ? (
-                      <Loading />
-                    ) : (
-                      <CustomButton
-                        type="submit"
-                        containerStyles={`inline-flex justify-center
-                 rounded-md bg-blue px-8 py-3 text-sm font-medium 
-                 text-white outline-non`}
-                        tittle="Submit"
-                      />
-                    )}
-                  </form>
-                </div>
+                  {isSubmitting ? (
+                    <Loading />
+                  ) : (
+                    <CustomButton
+                      type="submit"
+                      containerStyles={`inline-flex justify-center
+               rounded-md bg-blue px-8 py-3 text-sm font-medium 
+               text-white outline-non`}
+                      tittle="Submit"
+                    />
+                  )}
+                </form>
               </div>
             ) : (
               <>

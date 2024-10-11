@@ -216,34 +216,38 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
       </div>
 
       <div>
-        <p className="text-ascent-2">
-          {showAll === post?._id
-            ? post?.description
-            : post?.description.slice(0, 300)}
-          {post?.description?.length > 301 &&
-            (showAll === post?._id ? (
-              <span
-                className="text-blue ml-2 font-medium curson-pointer"
-                onClick={() => setShowAll(0)}
-              >
-                Show Less
-              </span>
-            ) : (
-              <span
-                className="text-blue ml-2 font-medium curson-pointer"
-                onClick={() => setShowAll(post?._id)}
-              >
-                Show More
-              </span>
-            ))}
-        </p>
+        <Link to={"/post/" + post?._id}>
+          <p className="text-ascent-2">
+            {showAll === post?._id
+              ? post?.description
+              : post?.description.slice(0, 300)}
+            {post?.description?.length > 301 &&
+              (showAll === post?._id ? (
+                <span
+                  className="text-blue ml-2 font-medium curson-pointer"
+                  onClick={() => setShowAll(0)}
+                >
+                  Show Less
+                </span>
+              ) : (
+                <span
+                  className="text-blue ml-2 font-medium curson-pointer"
+                  onClick={() => setShowAll(post?._id)}
+                >
+                  Show More
+                </span>
+              ))}
+          </p>
+        </Link>
 
         {post?.image && (
-          <img
-            src={post?.image}
-            alt="post image"
-            className="w-full mt-2 rounded-lg"
-          ></img>
+          <div className="h-fit w-full flex justify-center items-center">
+            <img
+              src={post?.image}
+              alt="post image"
+              className="w-3/5 mt-2 rounded-lg "
+            ></img>
+          </div>
         )}
       </div>
 

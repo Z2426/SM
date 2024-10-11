@@ -213,10 +213,12 @@ const Post = ({ onEvent }) => {
                     </div>
                     {preview && (
                       <div className="py-4 flex items-end gap-3">
-                        {/* <span className="text-ascent-1">
-                    Preview {file.type.includes("image") ? "Image" : "Video"}
-                  </span> */}
-                        {file.type.includes("image") ? (
+                        <span className="text-ascent-1">
+                          Preview{" "}
+                          {file.type.includes("image") ? "Image" : "Video"}
+                        </span>
+
+                        {/* {file.type.includes("image") ? (
                           <img
                             className="w-20 mt-2 rounded-lg border-solid border-[#345cd9]"
                             src={`${URL.createObjectURL(file)}`}
@@ -233,7 +235,7 @@ const Post = ({ onEvent }) => {
                             />
                             Your browser does not support the video tag.
                           </video>
-                        )}
+                        )} */}
                         <span
                           className="text-ascent-1 h-fit cursor-pointer rounded-full px-4 py-1 bg-[#0444a4]"
                           onClick={() => {

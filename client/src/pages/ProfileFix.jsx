@@ -48,7 +48,7 @@ const ProfileFix = () => {
   }, [id]);
 
   return (
-    <div className="home w-full  bg-bgColor text-ascent-1 overflow-hidden lg:rounded-lg h-screen items-center">
+    <div className="home w-full bg-bgColor text-ascent-1 overflow-hidden lg:rounded-lg h-screen items-center ">
       <TopBar user={user} />
       <div className="w-full h-full flex justify-center overflow-auto">
         <div className="flex flex-col  h-screen w-8/12 items-center ">
@@ -77,8 +77,8 @@ const ProfileFix = () => {
           </div>
           {/* <div className="flex overflow-auto"> */}
           <div className="w-full flex gap-6 ">
-            <div className="w-2/3 h-full">
-              <div className="w-full h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-xl  items-center  mb-36">
+            <div className="w-2/3 h-full pb-32">
+              <div className="w-full h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-xl  items-center">
                 {/* <div className="w-full mx-10">
                   <Loading />
                 </div> */}

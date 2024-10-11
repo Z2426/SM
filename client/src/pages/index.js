@@ -8,7 +8,7 @@ import ErrorPage from "./ErrorPage";
 import ChangePassword from "./ChangePassword";
 import Admin from "./Admin";
 import ProfileFix from "./ProfileFix";
-
+import PostPage from "./PostPage";
 export {
   Home,
   Register,
@@ -20,4 +20,5 @@ export {
   ChangePassword,
   Admin,
   ProfileFix,
+  PostPage,
 };
