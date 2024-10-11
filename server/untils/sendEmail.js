@@ -48,19 +48,22 @@ export const sendVerificationEmail = async (user) => {
 };
 
 
+
 export const resetPasswordLink = async (user, res) => {
   const { _id, email } = user;
+  
+  // Tạo token duy nhất
   const token = _id + uuidv4();
-  //const link = APP_URL + "/users/reset-password/" + _id + "/" + token;
-  const link = "http://localhost:3000/reset-password/" + _id + "/" + token;
-  console.log(`reset link : ${link}`);
-  //mail option
+  const link = `$${APP_URL}/users/reset-password/${_id}/${token}`; // Tạo đường dẫn reset password
+  console.log(`Reset link: ${link}`); // Ghi lại đường dẫn để kiểm tra
+  
+  // Tạo nội dung email
   const mailOptions = {
     from: AUTH_EMAIL,
     to: email,
     subject: "Password Reset",
     html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1>Password Reset</h1>
         <p>We received a request to reset your password. Please click the link below to reset your password:</p>
         <p><strong>This password reset link will expire in 10 minutes.</strong></p>
@@ -68,33 +71,29 @@ export const resetPasswordLink = async (user, res) => {
         <p>If you didn't request a password reset, you can safely ignore this email.</p>
         <p>Thank you,<br>Your Company Name</p>
       </div>
-        `,
+    `,
   };
+
   try {
-    const hasshedToken = await hashString(token);
+    const hashedToken = await hashString(token); // Băm token để bảo mật
     const resetEmail = await PasswordReset.create({
       userId: _id,
       email: email,
-      token: hasshedToken,
-      createAt: Date.now(),
-      expiresAt: Date.now() + 600000,
+      token: hashedToken,
+      createdAt: Date.now(), // Sửa 'createAt' thành 'createdAt'
+      expiresAt: Date.now() + 600000, // Thời gian hết hạn là 10 phút
     });
+
+    // Nếu tạo yêu cầu đặt lại mật khẩu thành công, gửi email
     if (resetEmail) {
-      transporter
-        .sendMail(mailOptions)
-        .then(() => {
-          res.status(201).send({
-            success: "PENDING",
-            message: "Reset Password Link has been sent to your account",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(404).json({ message: "Something went wrong" });
-        });
+      await transporter.sendMail(mailOptions); // Gửi email
+      return res.status(201).send({
+        success: "PENDING",
+        message: "Reset Password Link has been sent to your account",
+      });
     }
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: "Somethong went wrong" });
+    console.error(error); // Ghi lại lỗi để kiểm tra
+    return res.status(500).json({ message: "Something went wrong" }); // Trả về lỗi 500 cho các lỗi server
   }
 };

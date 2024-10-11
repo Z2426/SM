@@ -1,25 +1,23 @@
 import express from "express";
 import { userAuth, isAdmin } from "../middleware/authMiddleware.js";
 import {
-  requestPaswordReset,
+  requestPasswordReset,
   verifyEmail,
   resetPassword,
   changePassword,
   friendRequest,
-  acceptRequest,
+  respondToFriendRequest,
   getFriendRequest,
   profileViews,
-  suggestedFriends,
   getUser,
-  updateUser,
-  searchUsersByName,
+  updateUser,unFriend ,
 } from "../controller/userController.js";
 const router = express.Router();
 // ----MANAGE FRIEND
-//suggested friends
-router.post("/suggested-friends", userAuth, suggestedFriends)
+//unfriend
+router.post("/unfriend",userAuth,unFriend)
 //accept /deny friend request
-router.post("/accept-request", userAuth, acceptRequest)
+router.post("/friend-requests/respond", userAuth, respondToFriendRequest)
 // friend request
 router.post("/friend-request", userAuth, friendRequest)
 router.get("/get-friend-request", userAuth, getFriendRequest)
@@ -33,7 +31,7 @@ router.put("/update-user", userAuth, updateUser)
 router.get("/verify/:userId/:token",verifyEmail)
 //Password reset
 router.get("/reset-password/:userId/:token", resetPassword);//2
-router.post("/request-passwordreset", requestPaswordReset) //1
+router.post("/request-passwordreset", requestPasswordReset) //1
 router.post("/reset-password", changePassword) //3
 router.get("/", (req, res) => {
   res.send("userRoute");

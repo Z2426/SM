@@ -39,7 +39,7 @@ export const login = async (req, res) => {
             .select('+password')
             .populate({
                 path: "friends",
-                select: "firstName lastName location profileUrl -password"
+                select: "firstName lastName location profileUrl "
             });
         if (!user) {
             return res.status(401).json({
