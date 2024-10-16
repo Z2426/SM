@@ -13,10 +13,16 @@ import { setTheme } from "../redux/theme";
 import { Logout, Setnotification } from "../redux/userSlice";
 import { fetchNotifications, fetchPosts } from "../until";
 import Notification from "./Notification";
+import { UpdateProfile } from "../redux/userSlice";
+import { NoProfile } from "../assets";
+import { ProfileFix } from "../pages";
+import EditFix from "./EditFix";
 const TopBar = ({ user }) => {
   const { theme } = useSelector((state) => state.theme);
-  const { notification } = useSelector((state) => state.user);
+  const { notification, edit } = useSelector((state) => state.user);
   const [notifications, setNotifications] = useState();
+  const [profilecard, setProfilecard] = useState();
+  const [ava, setAva] = useState();
   const dispatch = useDispatch();
   const {
     register,
@@ -28,8 +34,20 @@ const TopBar = ({ user }) => {
 
     dispatch(setTheme(themeValue));
   };
+  const setcardprofile = () => {
+    setProfilecard(!profilecard);
+    console.log(profilecard);
+  };
+  const setAvatar = () => {
+    setAva(!ava);
+    console.log(ava);
+  };
   const handleSearch = async (data) => {
     await fetchPosts(user.token, dispatch, "", data);
+  };
+  const handleLogout = () => {
+    setAva(!ava);
+    dispatch(Logout());
   };
   console.log(notifications);
   const fetchNotification = async () => {
@@ -106,14 +124,21 @@ const TopBar = ({ user }) => {
           >
             <IoMdNotificationsOutline />
           </div>
+          <img
+            src={user?.profileUrl ?? NoProfile}
+            className="w-14 h-14 object-cover rounded-full px-1 py-1 z-10"
+            onClick={() => {
+              setAvatar();
+            }}
+          />
 
-          <CustomButton
+          {/* <CustomButton
             onClick={() => dispatch(Logout())}
             tittle={"Logout"}
             containerStyles={
               "text-sm text-ascent-1 px-4 md:px-6 py-1 md:py-2 border border-[#666] rounded-full"
             }
-          />
+          /> */}
         </div>
       </div>
 
@@ -121,6 +146,30 @@ const TopBar = ({ user }) => {
         <div className="bg-bgColor">
           <div className="top-20 right-32 z-50 absolute w-1/5 overflow-auto border bg-bgColor rounded text-ascent-1 h-1/2 border-[#66666690] justify-center flex">
             <Notification notify={notifications} />
+          </div>
+        </div>
+      )}
+      {ava && (
+        <div className="bg-bgColor">
+          <div className=" right-20 z-50 absolute w-fit overflow-auto border bg-bgColor rounded text-ascent-1 h-fit border-[#66666690] justify-center flex flex-col">
+            <Link to={"/profilefix/" + user?._id} className="flex gap-2">
+              <div className="w-full px-7 text-center py-3 border-b border-[#66666690] font-medium cursor-pointer">
+                Profile
+              </div>
+            </Link>
+
+            <div
+              className="w-full px-7 text-center py-3 border-b border-[#66666690] font-medium cursor-pointer"
+              onClick={() => dispatch(UpdateProfile(true))}
+            >
+              Setting
+            </div>
+            <div
+              className="w-full px-7 text-center py-3 border-b border-[#66666690] font-medium cursor-pointer"
+              onClick={() => handleLogout()}
+            >
+              Logout
+            </div>
           </div>
         </div>
       )}

@@ -194,7 +194,7 @@ const EditFix = () => {
                 }  `}
                 onClick={() => setEditor(2)}
               >
-                Social Links
+                Social
               </span>
               <span
                 className={` px-2 w-full text-center py-2 rounded-2xl hover:cursor-pointer   ${
