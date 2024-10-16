@@ -34,10 +34,7 @@ const TopBar = ({ user }) => {
 
     dispatch(setTheme(themeValue));
   };
-  const setcardprofile = () => {
-    setProfilecard(!profilecard);
-    console.log(profilecard);
-  };
+
   const setAvatar = () => {
     setAva(!ava);
     console.log(ava);

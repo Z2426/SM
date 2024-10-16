@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Loading, PostCard, TopBar } from "../components";
+import { EditProfile, Loading, PostCard, TopBar } from "../components";
 import { NoProfile } from "../assets";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -15,6 +15,7 @@ import { CiLocationOn } from "react-icons/ci";
 import { BsBriefcase, BsFacebook, BsInstagram } from "react-icons/bs";
 import { FaTwitterSquare } from "react-icons/fa";
 import moment from "moment";
+import { UpdateProfile } from "../redux/userSlice";
 const ProfileFix = () => {
   const { id } = useParams();
   const { user, edit } = useSelector((state) => state.user);
@@ -23,9 +24,18 @@ const ProfileFix = () => {
   const [loading, setLoading] = useState(false);
   const uri = "/posts/get-user-post/" + id;
   const [userInfor, setUserInfor] = useState(user);
+  const [banner, setBanner] = useState(user?.profileUrl ?? NoProfile);
   const handleDelete = async (id) => {
     await deletePost(id, user.token);
     await getPosts();
+  };
+  const handlebg = (e) => {
+    console.log(e.target.files[0]);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setBanner(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
   };
   const handleLikePost = async (uri) => {
     await likePost({ uri: uri, token: user?.token });
@@ -38,6 +48,10 @@ const ProfileFix = () => {
   const getUser = async () => {
     const res = await getUserInfo(user?.token, id);
     setUserInfor(res);
+  };
+
+  const handleedit = () => {
+    dispatch(UpdateProfile(true));
   };
   console.log(userInfor);
 
@@ -52,17 +66,26 @@ const ProfileFix = () => {
       <TopBar user={user} />
       <div className="w-full h-full flex justify-center overflow-auto">
         <div className="flex flex-col  h-screen w-8/12 items-center ">
-          <div className="flex w-full h-1/4 bg-secondary relative ">
+          <div className="flex w-full h-1/4 bg-secondary relative">
             <img
-              src={user?.profileUrl ?? NoProfile}
-              alt={user?.email}
+              src={banner}
+              alt="Banner Image"
               className="object-cover h-full w-full
-              overflow-hidden rounded-xl"
+              overflow-hidden rounded-xl z-0"
             />
-            {/* <div className="relative right-12 z-30">Edit</div> */}
+
+            <label className="absolute right-4 bottom-2 z-30 bg-primary px-6 py-2 rounded-xl border border-[#66666690] cursor-pointer">
+              Edit
+              <input
+                type="file"
+                className="hidden"
+                accept=".jpg, .png, .jpeg"
+                onInput={(e) => handlebg(e)}
+              />
+            </label>
           </div>
 
-          <div className="text-ascent-1 w-full rounded-xl mb-5 py-7 text-center bg-primary pb-8  font-bold text-4xl border-b-2 border-[#66666645] flex flex-col items-center">
+          <div className="relative text-ascent-1 w-full rounded-xl mb-5 py-7 text-center bg-primary pb-8 border-b-2 border-[#66666645] flex flex-col items-center">
             <div>
               <img
                 src={user?.profileUrl ?? NoProfile}
@@ -71,8 +94,14 @@ const ProfileFix = () => {
              rounded-full relative bottom-12 overflow-hidden outline outline-8 text-ascent-2"
               />
             </div>
-            <div className="relative bottom-4">
+            <div className="relative font-bold text-4xl bottom-4">
               {user?.firstName} {user?.lastName}
+            </div>
+            <div
+              onClick={() => handleedit()}
+              className="absolute right-4 bottom-2 z-30 bg-primary px-6 py-4 rounded-xl border border-[#66666690] cursor-pointer"
+            >
+              Edit Profile
             </div>
           </div>
           {/* <div className="flex overflow-auto"> */}
@@ -84,7 +113,7 @@ const ProfileFix = () => {
                 </div> */}
 
                 {loading ? (
-                  <div className="w-full  justify-center h-full flex">
+                  <div className="w-full justify-center h-full flex">
                     <Loading />
                   </div>
                 ) : posts?.length > 0 ? (
@@ -165,6 +194,7 @@ const ProfileFix = () => {
             </div>
           </div>
         </div>
+        {edit && <EditProfile />}
       </div>
     </div>
   );
