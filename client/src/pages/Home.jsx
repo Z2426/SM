@@ -13,6 +13,7 @@ import {
   TopBar,
   Notification,
   Post,
+  ChatCard,
 } from "../components";
 import Profile from "./Profile";
 // import { requests, suggest } from "../assets/data";
@@ -586,6 +587,9 @@ const Home = () => {
                 ))}
               </div>
             </div>
+          </div>
+          <div className="absolute w-1/3 h-2/5 bg-transparent bottom-10 right-10">
+            <ChatCard />
           </div>
         </div>
       </div>

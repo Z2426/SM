@@ -11,6 +11,7 @@ import ListUser from "./ListUser";
 import TopBarAdmin from "./TopBarAdmin";
 import Post from "./Post";
 import EditFix from "./EditFix";
+import ChatCard from "./ChatCard";
 export {
   TextInput,
   Loading,
@@ -25,4 +26,5 @@ export {
   TopBarAdmin,
   Post,
   EditFix,
+  ChatCard,
 };
