@@ -35,7 +35,7 @@ import {
   uploadVideo,
 } from "../until";
 import { dispatch } from "../redux/store";
-import { UpdatePost } from "../redux/userSlice";
+import { Logout, UpdatePost } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { UserLogin } from "../redux/userSlice";
 const Home = () => {
@@ -150,7 +150,9 @@ const Home = () => {
       const message = res?.message?.message;
       console.log(res?.message);
       Cookies.set("message", message, { expires: 7 });
-      navigate("/error");
+      dispatch(Logout());
+      navigate("/login");
+      // navigate("/error");
     }
     //console.log(res);
   };
