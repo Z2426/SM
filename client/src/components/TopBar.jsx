@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TextInput from "./TextInput";
 import CustomButton from "./CustomButton";
-import { PiSignOutBold } from "react-icons/pi";
+import { PiSignOut } from "react-icons/pi";
 import { useForm } from "react-hook-form";
 import { BsMoon, BsSunFill } from "react-icons/bs";
 import { IoChatboxOutline } from "react-icons/io5";
@@ -14,7 +14,7 @@ import { setTheme } from "../redux/theme";
 import { Logout, Setnotification } from "../redux/userSlice";
 import { fetchNotifications, fetchPosts } from "../until";
 import Notification from "./Notification";
-import { CiLogout } from "react-icons/ci";
+import { CiSettings } from "react-icons/ci";
 import { UpdateProfile } from "../redux/userSlice";
 import { IoIosSettings } from "react-icons/io";
 import { ImProfile } from "react-icons/im";
@@ -154,29 +154,35 @@ const TopBar = ({ user }) => {
         <div className="bg-primary">
           <div className=" right-20 z-50 absolute w-fit overflow-auto border rounded-xl text-ascent-1 h-fit border-[#66666690] justify-center flex flex-col">
             <Link to={"/profilefix/" + user?._id} className="flex gap-2">
-              <div className="w-full px-10 text-center py-3 font-medium cursor-pointer bg-primary hover:bg-bgColor">
+              <div className="w-full px-10 text-center py-3 font-medium cursor-pointer bg-primary hover:bg-bgColor  flex flex-col justify-evenly">
                 <div className="flex justify-center items-center">
-                  <ImProfile size={30} />
+                  <img
+                    src={user?.profileUrl ?? NoProfile}
+                    className="w-10 h-10 object-cover rounded-full px-1 py-1 z-10"
+                    onClick={() => {
+                      setAvatar();
+                    }}
+                  />
                   Profile
                 </div>
               </div>
             </Link>
 
             <div
-              className="w-full text-center py-3  font-medium cursor-pointer bg-primary hover:bg-bgColor"
+              className="w-full text-center py-3 font-medium cursor-pointer bg-primary hover:bg-bgColor  flex justify-evenly"
               onClick={() => dispatch(UpdateProfile(true))}
             >
               <div className="flex justify-center items-center">
-                <IoIosSettings size={30} />
+                <CiSettings size={30} />
                 Setting
               </div>
             </div>
             <div
-              className="w-full text-center py-3  font-medium cursor-pointer bg-primary hover:bg-bgColor"
+              className="w-full text-center py-3 font-medium cursor-pointer bg-primary hover:bg-bgColor flex justify-evenly"
               onClick={() => handleLogout()}
             >
               <div className="flex justify-center items-center ">
-                <PiSignOutBold size={30} />
+                <PiSignOut size={30} />
                 Logout
               </div>
             </div>
