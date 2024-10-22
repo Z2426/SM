@@ -91,7 +91,7 @@ const ProfileFix = () => {
                 src={user?.profileUrl ?? NoProfile}
                 alt={user?.email}
                 className="object-cover h-52 w-52 
-             rounded-full relative bottom-12 overflow-hidden outline outline-8 text-ascent-2"
+                rounded-full relative bottom-12 overflow-hidden outline outline-8 text-ascent-2"
               />
             </div>
             <div className="relative font-bold text-4xl bottom-4">

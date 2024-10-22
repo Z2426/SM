@@ -271,17 +271,14 @@ const Home = () => {
       >
         <TopBar user={user} />
 
-        <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
+        <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full justify-between">
           {/* {LEFT} */}
-          <div
-            className="hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6
-        overflow-y-auto"
-          >
+          <div className="hidden w-1/5 h-full md:flex flex-col gap-6 overflow-y-auto flex-initial">
             <ProfileCard user={user} />
             <FriendsCard friends={user?.friends} />
           </div>
           {/* {CENTTER} */}
-          <div className="flex-1 h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg">
+          <div className=" h-full flex-initial w-2/5 bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg ">
             <form
               onSubmit={handleSubmit(handlePostSubmit)}
               className="bg-primary px-4 rounded-lg"
@@ -303,7 +300,7 @@ const Home = () => {
                   error={errors.description ? errors.description.message : ""}
                 /> */}
                 <div
-                  className=" text-ascent-2 rounded-full py-5 w-full bg-secondary hover:cursor-text"
+                  className=" text-ascent-2 rounded-full border border-[#66666645] py-5 w-full bg-secondary hover:cursor-text"
                   onClick={() => {
                     // console.log("!solem");
                     dispatch(UpdatePost(true));
@@ -333,7 +330,7 @@ const Home = () => {
 
               {preview && (
                 <>
-                  <span
+                  {/* <span
                     className="text-ascent-1 cursor-pointer rounded-full px-4 py-1 bg-[#0444a4]"
                     onClick={() => {
                       setPreview(false);
@@ -341,11 +338,11 @@ const Home = () => {
                     }}
                   >
                     Close
-                  </span>
+                  </span> */}
                   {/* <span className="text-ascent-1">
                     Preview {file.type.includes("image") ? "Image" : "Video"}
                   </span> */}
-                  {file.type.includes("image") ? (
+                  {/* {file.type.includes("image") ? (
                     <img
                       className="w-full mt-2 rounded-lg"
                       src={`${URL.createObjectURL(file)}`}
@@ -362,11 +359,11 @@ const Home = () => {
                       />
                       Your browser does not support the video tag.
                     </video>
-                  )}
+                  )} */}
                 </>
               )}
 
-              {file != null && <img src="" />}
+              {/* {file != null && <img src="" />}
               {errMsg?.message && (
                 <span
                   role="alert"
@@ -378,14 +375,15 @@ const Home = () => {
                 >
                   {errMsg?.message}
                 </span>
-              )}
+              )} */}
 
-              <div className="flex items-center justify-between py-4">
-                <label
-                  htmlFor="imgUpload"
-                  className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
-                >
-                  {/* <input
+              {
+                <div className="flex items-center justify-between py-4">
+                  <label
+                    htmlFor="imgUpload"
+                    className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
+                  >
+                    {/* <input
                     type="file"
                     onChange={(e) => handlePreview(e.target.files[0])}
                     className="hidden"
@@ -393,11 +391,11 @@ const Home = () => {
                     data-max-size="5120"
                     accept=".jpg, .png, .jpeg"
                   /> */}
-                  <BiImages />
-                  <span>Image</span>
-                </label>
+                    {/* <BiImages />
+                  <span>Image</span> */}
+                  </label>
 
-                {/* <label
+                  {/* <label
                   htmlFor="videoUpload"
                   className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
                 >
@@ -413,11 +411,11 @@ const Home = () => {
                   <span>Video</span>
                 </label> */}
 
-                <label
-                  htmlFor="vgifUpload"
-                  className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
-                >
-                  {/* <input
+                  <label
+                    htmlFor="vgifUpload"
+                    className="flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer"
+                  >
+                    {/* <input
                     type="file"
                     onChange={(e) => handlePreview(e.target.files[0])}
                     className="hidden"
@@ -425,11 +423,11 @@ const Home = () => {
                     data-max-size="5120"
                     accept=".gif"
                   /> */}
-                  <BsFiletypeGif />
-                  <span>Gif</span>
-                </label>
+                    {/* <BsFiletypeGif />
+                  <span>Gif</span> */}
+                  </label>
 
-                <div>
+                  {/* <div>
                   {posting ? (
                     <Loading />
                   ) : (
@@ -439,8 +437,9 @@ const Home = () => {
                       containerStyles="bg-[#0444a4] text-white py-1 px-6 rounded-full font-semibold text-sm"
                     />
                   )}
+                </div> */}
                 </div>
-              </div>
+              }
             </form>
 
             {loading ? (
@@ -462,7 +461,7 @@ const Home = () => {
             )}
           </div>
           {/* {RIGHT} */}
-          <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
+          <div className="hidden w-1/5 h-full lg:flex flex-col gap-8 overflow-y-auto flex-initial">
             {/* {FRIEND REQUEST} */}
             <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
               <div
@@ -590,9 +589,9 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="absolute w-1/3 h-2/5 bg-transparent bottom-10 right-10">
+          {/* <div className="absolute w-1/3 h-2/5 bg-transparent bottom-10 right-10">
             <ChatCard />
-          </div>
+          </div> */}
         </div>
       </div>
 

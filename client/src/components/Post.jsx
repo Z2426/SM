@@ -188,12 +188,12 @@ const Post = ({ onEvent }) => {
                       }}
                     />
                     <div className="flex gap-3">
-                      <div className="w-fit py-1 flex outline-1 px-3 text-[#04c922] bg-[#072b0c] rounded-full outline  justify-center items-center cursor-pointer ">
+                      <div className="w-fit py-1 flex outline-1 px-3 text-[#04c922] bg-primary rounded-full outline  justify-center items-center cursor-pointer ">
                         <CiShoppingTag />
                         <div className="hover:text-ascent-1">Tags</div>
                       </div>
 
-                      <div className="w-fit py-1 flex outline-1 px-3 text-[#345cd9] bg-[#06133d] rounded-full outline  justify-center items-center cursor-pointer">
+                      <div className="w-fit py-1 flex outline-1 px-3 text-[#345cd9] bg-primary rounded-full outline  justify-center items-center cursor-pointer">
                         <label
                           htmlFor="imgUpload"
                           className="flex items-center gap-1 text-base text-[#345cd9] hover:text-ascent-1 cursor-pointer"
