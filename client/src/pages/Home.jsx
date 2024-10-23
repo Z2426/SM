@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import Cookies from "js-cookie";
+import { FaUserFriends } from "react-icons/fa";
+import { IoBookmark } from "react-icons/io5";
 import {
   CustomButton,
   EditProfile,
@@ -274,11 +276,51 @@ const Home = () => {
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full justify-between">
           {/* {LEFT} */}
           <div className="hidden w-1/5 h-full md:flex flex-col gap-6 overflow-y-auto flex-initial">
-            <ProfileCard user={user} />
+            {/* <ProfileCard user={user} /> */}
+            <div className="bg-primary w-full h-fit rounded-lg flex flex-col gap-3 overflow-hidden">
+              <Link
+                to={"/profilefix/" + user?._id}
+                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+              >
+                <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    <img
+                      src={user?.profileUrl ?? NoProfile}
+                      alt={user?.email}
+                      className="w-10 h-10 object-cover rounded-full"
+                    />
+                  </div>
+                  {user?.firstName} {user?.lastName}
+                </span>
+              </Link>
+              <Link
+                to={"/friend"}
+                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+              >
+                <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    <FaUserFriends size={30} />
+                  </div>
+                  Friends
+                </span>
+              </Link>
+
+              <Link
+                to={"/save"}
+                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+              >
+                <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
+                  <div className="w-10 h-10 flex items-center justify-center  ">
+                    <IoBookmark size={30} />
+                  </div>
+                  Saved
+                </span>
+              </Link>
+            </div>
             <FriendsCard friends={user?.friends} />
           </div>
           {/* {CENTTER} */}
-          <div className=" h-full flex-initial w-2/5 bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg ">
+          <div className="no-scrollbar h-full flex-initial w-2/5 bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg ">
             <form
               onSubmit={handleSubmit(handlePostSubmit)}
               className="bg-primary px-4 rounded-lg"

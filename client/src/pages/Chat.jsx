@@ -5,11 +5,14 @@ import { useParams } from "react-router-dom";
 import { BsBriefcase } from "react-icons/bs";
 import { IoIosChatbubbles, IoIosSettings, IoMdContact } from "react-icons/io";
 import { IoCallSharp } from "react-icons/io5";
-
+import { MdEmojiEmotions } from "react-icons/md";
+import { CiCirclePlus } from "react-icons/ci";
+import Picker from "emoji-picker-react";
+import { NoProfile } from "../assets";
 const UserCard = (user) => {
   //console.log(user);
   return (
-    <div className="w-full border-b gap-4 flex py-5 px-5 rounded-2xl border-[#66666690] items-center">
+    <div className="w-full gap-4 flex py-5 px-5 rounded-2xl hover:bg-ascent-3/30 items-center">
       <img
         src={user?.user?.profileUrl}
         alt={user?.firstName}
@@ -26,14 +29,21 @@ const UserCard = (user) => {
 const Chat = () => {
   const { user, edit } = useSelector((state) => state.user);
   const { id } = useParams();
+  const [chat, setChat] = useState("");
+  const { theme } = useSelector((state) => state.theme);
+  const [showPicker, setShowPicker] = useState(false);
   // console.log(user);
+  const onEmojiClick = (e) => {
+    setChat((prevInput) => prevInput + e.emoji);
+    setShowPicker(false);
+  };
   return (
     <div>
       <div
         className="home w-full px-0 lg:px-10 pb-20 2xl-40 bg-bgColor 
     lg:rounded-lg h-screen overflow-hidden"
       >
-        <TopBar />
+        <TopBar user={user} />
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* {LEFT} */}
           <div className="h-full w-20 rounded-xl bg-primary overflow-hidden">
@@ -49,8 +59,8 @@ const Chat = () => {
             </div>
           </div>
           <div
-            className="hidden w-1/3 lg:w-1/4 h-full bg-primary md:flex flex-col gap-1
-        overflow-y-auto rounded-xl"
+            className="w-1/5 lg:w-1/5 h-full bg-primary md:flex flex-col gap-1
+        overflow-y-auto rounded-xl grow-0"
           >
             <div>
               <div className="w-full font-bold text-ascent-1 text-3xl px-5 py-5">
@@ -83,8 +93,24 @@ const Chat = () => {
           </div>
           <div className="flex-1 h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg">
             {/* Phần tiêu đề của khung chat */}
-            <div className="text-ascent-1 mt-3 font-bold text-3xl">
-              Chat Room
+            <div className="flex w-full justify-between mt-3 border-b border-[#66666645] pb-3 select-none px-3">
+              <div className="text-ascent-1 font-bold text-3xl">
+                <div className=" flex text-ascent-1 text-sm items-center gap-1">
+                  <img
+                    src={user?.profileUrl ?? NoProfile}
+                    alt="post image"
+                    className="w-14 h-14 shrink-0 object-cover rounded-full "
+                  ></img>
+                  <div className="flex items-center w-full h-full">
+                    <span className="align-middle">
+                      {user?.firstName} {user?.lastName}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-center items-center">
+                <IoCallSharp className="text-ascent-1 " size={25} />
+              </div>
             </div>
 
             {/* Phần nội dung của khung chat */}
@@ -94,11 +120,9 @@ const Chat = () => {
                 <div className="flex items-center">
                   <div className="bg-gray-300 rounded-full h-8 w-8 flex items-center justify-center text-ascent-2"></div>
                   <div className="flex flex-col gap-5">
-                    {" "}
                     <div className="w-full">
-                      <div className="bg-blue p-2 border rounded-md ml-2 w-2/3">
-                        <p className="text-white px-2 py-2">
-                          {" "}
+                      <div className="bg-ascent-3/10 p-2 border rounded-xl ml-2 w-2/3">
+                        <p className="text-ascent-1 px-2 py-2">
                           Lorem ipsum dolor sit amet consectetur adipisicing
                           elit. Soluta natus architecto eum deserunt facere
                           enim? Aliquam laborum repellendus, placeat vero
@@ -116,32 +140,26 @@ const Chat = () => {
                           adipisicing elit. Labore fugiat aliquam, quas facilis
                           atque distinctio corrupti expedita fugit deleniti
                           eligendi, libero rerum quam. Amet at deleniti aliquam?
-                          Tenetur, similique voluptatibus?Lorem ipsum dolor sit
-                          amet consectetur adipisicing elit. Soluta natus
-                          architecto eum deserunt facere enim? Aliquam laborum
-                          repellendus, placeat vero laboriosam quo in blanditiis
-                          nihil ullam debitis quisquam eum recusandae! Lorem
-                          ipsum dolor sit amet consectetur adipisicing elit.
-                          Labore fugiat aliquam, quas facilis atque distinctio
-                          corrupti expedita fugit deleniti eligendi, libero
-                          rerum quam. Amet at deleniti aliquam? Tenetur,
-                          similique voluptatibus?Lorem ipsum dolor sit amet
-                          consectetur adipisicing elit. Soluta natus architecto
-                          eum deserunt facere enim? Aliquam laborum repellendus,
-                          placeat vero laboriosam quo in blanditiis nihil ullam
-                          debitis quisquam eum recusandae! Lorem ipsum dolor sit
-                          amet consectetur adipisicing elit. Labore fugiat
-                          aliquam, quas facilis atque distinctio corrupti
-                          expedita fugit deleniti eligendi, libero rerum quam.
-                          Amet at deleniti aliquam? Tenetur, similique
-                          voluptatibus?
+                          eleniti eligendi, libero rerum quam. Amet at deleniti
+                          aliquam? Tenetur, similique voluptatibus?Lorem ipsum
+                          dolor sit amet consectetur adipisicing elit. Soluta
+                          natus architecto eum deserunt facere enim? Aliquam
+                          laborum repellendus, placeat vero laboriosam quo in
+                          blanditiis nihil ullam debitis quisquam eum
+                          recusandae! Lorem ipsum dolor sit amet consectetur
+                          adipisicing elit. Labore fugiat aliquam, quas facilis
+                          atque distinctio corrupti expedita fugit deleniti
+                          eligendi, libero rerum quam. Amet at deleniti aliquam?
                         </p>
                       </div>
                     </div>
+                    <div className="w-full flex justify-center">
+                      <span className="text-ascent-1 ">Date nn/mm time</span>
+                    </div>
+                    <div className="w-full flex justify-center">{}</div>
                     <div className="w-full flex justify-end">
-                      <div className="bg-blue p-2 border rounded-md ml-2 w-2/3">
+                      <div className="bg-blue p-2 border rounded-xl ml-2 w-2/3">
                         <p className="text-white px-2 py-2">
-                          {" "}
                           Lorem ipsum dolor sit amet consectetur adipisicing
                           elit. Soluta natus architecto eum deserunt facere
                           enim? Aliquam laborum repellendus, placeat vero
@@ -158,26 +176,22 @@ const Chat = () => {
                           recusandae! Lorem ipsum dolor sit amet consectetur
                           adipisicing elit. Labore fugiat aliquam, quas facilis
                           atque distinctio corrupti expedita fugit deleniti
-                          eligendi, libero rerum quam. Amet at deleniti aliquam?
-                          Tenetur, similique voluptatibus?Lorem ipsum dolor sit
-                          amet consectetur adipisicing elit. Soluta natus
-                          architecto eum deserunt facere enim? Aliquam laborum
-                          repellendus, placeat vero laboriosam quo in blanditiis
-                          nihil ullam debitis quisquam eum recusandae! Lorem
-                          ipsum dolor sit amet consectetur adipisicing elit.
-                          Labore fugiat aliquam, quas facilis atque distinctio
-                          corrupti expedita fugit deleniti eligendi, libero
-                          rerum quam. Amet at deleniti aliquam? Tenetur,
-                          similique voluptatibus?Lorem ipsum dolor sit amet
-                          consectetur adipisicing elit. Soluta natus architecto
-                          eum deserunt facere enim? Aliquam laborum repellendus,
-                          placeat vero laboriosam quo in blanditiis nihil ullam
-                          debitis quisquam eum recusandae! Lorem ipsum dolor sit
-                          amet consectetur adipisicing elit. Labore fugiat
-                          aliquam, quas facilis atque distinctio corrupti
-                          expedita fugit deleniti eligendi, libero rerum quam.
-                          Amet at deleniti aliquam? Tenetur, similique
-                          voluptatibus?
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. Soluta natus architecto eum deserunt facere
+                          enim? Aliquam laborum repellendus, placeat vero
+                          laboriosam quo in blanditiis nihil ullam debitis
+                          quisquam eum recusandae! Lorem ipsum dolor sit amet
+                          consectetur adipisicing elit. Labore fugiat aliquam,
+                          quas facilis atque distinctio corrupti expedita fugit
+                          deleniti eligendi, libero rerum quam. Amet at deleniti
+                          aliquam? Tenetur, similique voluptatibus?Lorem ipsum
+                          dolor sit amet consectetur adipisicing elit. Soluta
+                          natus architecto eum deserunt facere enim? Aliquam
+                          laborum repellendus, placeat vero laboriosam quo in
+                          blanditiis nihil ullam debitis quisquam eum
+                          recusandae! Lorem ipsum dolor sit amet consectetur
+                          adipisicing elit. Labore fugiat aliquam, quas facilis
+                          atque distinctio corrupti expedita fugit deleniti
                         </p>
                       </div>
                     </div>
@@ -187,15 +201,47 @@ const Chat = () => {
             </div>
 
             {/* Phần nhập tin nhắn */}
-            <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                className="flex-1 py-2 px-5 border text-ascent-1 rounded-full focus:outline-none  focus:ring focus:border-blue  bg-bgColor mb-5"
-              />
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2 bg-blue mb-5">
-                Send
-              </button>
+            <div className="relative flex items-center">
+              <div className="absolute bottom-20 ">
+                {showPicker && (
+                  <Picker
+                    className=""
+                    theme={theme}
+                    onEmojiClick={onEmojiClick}
+                  />
+                )}
+              </div>
+              <div className="flex w-full mb-3 justify-center items-center">
+                <div
+                  className="h-full w-fit text-ascent-1 px-1 py-2 flex justify-center items-center"
+                  onClick={() => {}}
+                >
+                  <CiCirclePlus size={35} />
+                </div>
+                <div
+                  className="h-full w-fit text-ascent-1 px-1 py-2 flex justify-center items-center"
+                  onClick={() => {
+                    setShowPicker(!showPicker);
+                  }}
+                >
+                  <MdEmojiEmotions size={35} />
+                </div>
+                <div className="w-full h-full flex justify-center items-center">
+                  <input
+                    type="text"
+                    value={chat}
+                    onChange={(e) => {
+                      setChat(e.target.value);
+                    }}
+                    placeholder="Type your message..."
+                    className="w-full flex-1 py-2 px-5 text-ascent-1 rounded-full focus:outline-none focus:ring focus:border-blue  bg-bgColor"
+                  />
+                </div>
+
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2 bg-blue ">
+                  Send
+                </button>
+              </div>
             </div>
           </div>
         </div>

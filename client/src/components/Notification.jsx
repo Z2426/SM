@@ -1,17 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { NoProfile } from "../assets";
 import moment from "moment";
+import { Logout } from "../redux/userSlice";
 const Notification = ({ notify }) => {
+  console.log(notify);
+  const [all, setAll] = useState(true);
+  const [bg, setBG] = useState();
+  const check = () => {
+    all ? setBG("bg-blue") : setBG(" hover:bg-ascent-3");
+  };
+
   return (
-    <div className="relative w-full shadow-sm rounded-xl  py-5 hover:bg-secondary">
+    <div className="relative w-full shadow-sm rounded-full  py-5">
       <div
-        className="flex items-center justify-between text-xl text-ascent-1 
-            pb-2 border-b border-[#66666645f] mx-6"
+        className="flex flex-col text-2xl text-ascent-1 
+              mx-6 gap-2 mb-2"
       >
-        <span> Notification</span>
-        <span>{notify?.length}</span>
+        <span className="font-medium "> Notification</span>
+        <div className="font-normal text-base">
+          <span
+            className={`w-fit  px-3 py-1 text-ascent-1 rounded-full hover:bg-ascent-3/100 cursor-pointer ${bg}`}
+          >
+            All
+          </span>
+          <span
+            className={`w-fit  px-3 py-1 text-ascent-1 rounded-full hover:bg-ascent-3/100 cursor-pointer ${bg}`}
+          >
+            Unread
+          </span>
+        </div>
       </div>
-      <div className="w-full flex flex-col gap-4 pt-4 ">
+      <div className="w-full flex flex-col gap-4 pb-2 ">
         {notify?.map(({ _id, content, createdBy: from, createdAt }) => (
           <div
             key={_id}
@@ -21,17 +40,22 @@ const Notification = ({ notify }) => {
               <img
                 src={from?.profileUrl ?? NoProfile}
                 alt={from?.firstName}
-                className="w-10 h-10 object-cover rounded-full"
+                className="w-16 h-16  object-cover rounded-full"
               />
               <div className="flex-1 ">
-                <p className="text-base font-medium text-ascent-1">
+                <p className="text-base font-bold text-ascent-1 ">
                   {from?.firstName} {from?.lastName}{" "}
                 </p>
-                <span className="hidden md:flex text-ascent-2">
-                  {moment(createdAt ?? "2023-05-25").fromNow()}
+
+                <span className="text-sm text-ascent-2 ">
+                  {content
+                    ? content?.length > 50
+                      ? content.slice(0, 50) + "..."
+                      : content
+                    : "Wrong"}
                 </span>
-                <span className="text-sm text-ascent-2">
-                  {content ?? "Something Wrong"}
+                <span className="hidden md:flex text-ascent-2 text-xs">
+                  {moment(createdAt ?? "2023-05-25").fromNow()}
                 </span>
               </div>
             </div>

@@ -11,6 +11,7 @@ module.exports = {
       ascent: {
         1: "rgb(var(--color-ascent1) / <alpha-value>)",
         2: "rgb(var(--color-ascent2) / <alpha-value>)",
+        3: "rgb(var(--color-ascent3) / <alpha-value>)",
       },
     },
     screens: {

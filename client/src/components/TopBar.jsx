@@ -41,7 +41,7 @@ const TopBar = ({ user }) => {
 
   const setAvatar = () => {
     setAva(!ava);
-    console.log(ava);
+    // console.log(ava);
   };
   const handleSearch = async (data) => {
     await fetchPosts(user.token, dispatch, "", data);
@@ -50,7 +50,7 @@ const TopBar = ({ user }) => {
     setAva(!ava);
     dispatch(Logout());
   };
-  console.log(notifications);
+  // console.log(notifications);
   const fetchNotification = async () => {
     try {
       const res = await fetchNotifications({
@@ -58,7 +58,7 @@ const TopBar = ({ user }) => {
         userId: user?._id,
         dispatch,
       });
-      console.log(res);
+      // console.log(res);
       setNotifications(res.notifications);
     } catch (error) {
       console.log(error);
@@ -145,7 +145,7 @@ const TopBar = ({ user }) => {
 
       {notification && (
         <div className="bg-primary">
-          <div className="top-20 right-32 z-50 absolute w-1/5 overflow-auto border bg-primary rounded text-ascent-1 h-1/2 border-[#66666690] justify-center flex">
+          <div className="top-20 right-32 z-50 absolute w-1/5 overflow-auto border bg-primary rounded-xl text-ascent-1 h-1/2 border-[#66666690] justify-center flex">
             <Notification notify={notifications} />
           </div>
         </div>

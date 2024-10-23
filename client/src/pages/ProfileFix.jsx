@@ -62,11 +62,11 @@ const ProfileFix = () => {
   }, [id]);
 
   return (
-    <div className="home w-full bg-bgColor text-ascent-1 overflow-hidden lg:rounded-lg h-screen items-center ">
+    <div className="home w-full bg-bgColor text-ascent-1 overflow-hidden lg:rounded-lg h-screen items-center px-0 lg:px-10">
       <TopBar user={user} />
       <div className="w-full h-full flex justify-center overflow-auto">
         <div className="flex flex-col  h-screen w-8/12 items-center ">
-          <div className="flex w-full h-1/4 bg-secondary relative">
+          <div className="flex w-full h-1/4 bg-secondary relative select-none">
             <img
               src={banner}
               alt="Banner Image"
@@ -85,16 +85,16 @@ const ProfileFix = () => {
             </label>
           </div>
 
-          <div className="relative text-ascent-1 w-full rounded-xl mb-5 py-7 text-center bg-primary pb-8 border-b-2 border-[#66666645] flex flex-col items-center">
-            <div>
+          <div className="select-none relative text-ascent-1 w-full rounded-xl mb-5 py-7 text-center bg-primary pb-8 border-b-2 border-[#66666645] flex flex-col items-center">
+            <div className="">
               <img
                 src={user?.profileUrl ?? NoProfile}
                 alt={user?.email}
                 className="object-cover h-52 w-52 
-                rounded-full relative bottom-12 overflow-hidden outline outline-8 text-ascent-2"
+                rounded-full relative bottom-12 overflow-hidden border-8 border-bgColor text-ascent-2"
               />
             </div>
-            <div className="relative font-bold text-4xl bottom-4">
+            <div className="select-none relative font-bold text-4xl bottom-4">
               {user?.firstName} {user?.lastName}
             </div>
             <div

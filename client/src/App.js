@@ -11,6 +11,10 @@ import {
   Admin,
   ProfileFix,
   PostPage,
+  Friend,
+  ProfileDetail,
+  Search,
+  Save,
 } from "./pages";
 import { useSelector } from "react-redux";
 import PrivateRoute from "./until/privateroute";
@@ -47,9 +51,13 @@ function App() {
           <Route element={<Layout />}>
             {/* <Route path="/admin" element={<Admin />} /> */}
             <Route path="/" element={<Home />} />
+            <Route path="/friend" element={<Friend />} />
+            <Route path="/frienddetails" element={<ProfileDetail />} />
             <Route path="/profile/:id?" element={<Profile />} />
             <Route path="/chat/:id?" element={<Chat />} />
             <Route path="/post/:id?" element={<PostPage />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/save" element={<Save />} />
           </Route>
         )}
 

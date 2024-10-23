@@ -2,14 +2,16 @@ import React, { useState } from "react";
 // import { useForm } from "react-hook-form";
 import { MdClose } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import TextInput from "./TextInput";
+import { AiOutlineDown } from "react-icons/ai";
 import Loading from "./Loading";
 import CustomButton from "./CustomButton";
 import { UpdatePost, UpdateProfile, UserLogin } from "../redux/userSlice";
 import { apiRequest, handFileUpload } from "../until";
-import ReactQuill from "react-quill";
+import { FaEarthAfrica } from "react-icons/fa6";
+import { TiDeleteOutline } from "react-icons/ti";
 import { CiImageOn, CiShoppingTag } from "react-icons/ci";
 import { useForm } from "react-hook-form";
+import { AiOutlinePlus } from "react-icons/ai";
 const Post = ({ onEvent }) => {
   const { user, post } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -18,10 +20,24 @@ const Post = ({ onEvent }) => {
   const [picture, setPicuter] = useState(null);
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
-  const [newImage, setNewImage] = useState([]);
   const [preview, setPreview] = useState(false);
+  const [write, setWrite] = useState(true);
+  const [audience, setAudience] = useState(false);
   const [file, setFile] = useState(null);
   const [posting, setPosting] = useState(false);
+  const [review, setReview] = useState();
+  const [tem, setTem] = useState();
+
+  const handlebg = (e) => {
+    console.log(e.target.files[0]);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setReview(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+    setPreview(true);
+  };
+
   const {
     register,
     handleSubmit,
@@ -140,12 +156,12 @@ const Post = ({ onEvent }) => {
           <div className="fixed inset-0 transition-opacticy">
             <div className="absolute inset-0 bg-[#000] opacity-70"></div>
           </div>
-          <span className="h-full flex justify-center items-center sm:inline-block sm:align-middle sm:h-screen">
+          <span className="h-full w-full flex justify-center items-center sm:inline-block sm:align-middle sm:h-screen  select-none">
             <form onSubmit={handleSubmit(handlePostSubmit)}>
               <div
                 className="inline-block align-bottom bg-primary rounded-3xl
             text-left overflow-hidden shadow-xl transform transition-all
-            sm:my-8 sm:align-middle sm:max-w-lg sm:w-full "
+            sm:my-10 sm:align-middle sm:max-w-md sm:w-full"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-headline"
@@ -162,63 +178,70 @@ const Post = ({ onEvent }) => {
                     <MdClose size={22} />
                   </button>
                 </div>
-                {/* <div className="px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6">
-              <ReactQuill onChange={(ev) => setContent(ev)} modules={modules} />
-            </div> */}
-                <div className="flex justify-between px-6 pt-5 pb-2">
-                  <label
-                    htmlFor="name"
-                    className="block font-medium text-xl text-ascent-1 text-left py-7 box-border"
-                  ></label>
-                  <div className="w-full h-full flex-col-reverse m-3 gap-80">
-                    <textarea
-                      {...register("description", {
-                        required: "Write something about post",
-                      })}
-                      error={
-                        errors.description ? errors.description.message : ""
-                      }
-                      className="w-full h-72 mb-20 bg-primary rounded-3xl border-none
-            outline-none text-3xl text-ascent-1 
-            px-4 py-3 placeholder:text-ascent-2 resize-none"
-                      value={content}
-                      placeholder="Write something about post"
-                      onChange={(ev) => {
-                        setContent(ev.target.value);
-                      }}
-                    />
-                    <div className="flex gap-3">
-                      <div className="w-fit py-1 flex outline-1 px-3 text-[#04c922] bg-primary rounded-full outline  justify-center items-center cursor-pointer ">
-                        <CiShoppingTag />
-                        <div className="hover:text-ascent-1">Tags</div>
-                      </div>
-
-                      <div className="w-fit py-1 flex outline-1 px-3 text-[#345cd9] bg-primary rounded-full outline  justify-center items-center cursor-pointer">
-                        <label
-                          htmlFor="imgUpload"
-                          className="flex items-center gap-1 text-base text-[#345cd9] hover:text-ascent-1 cursor-pointer"
-                        >
-                          <input
-                            type="file"
-                            onChange={(e) => handlePreview(e.target.files[0])}
-                            className="hidden"
-                            id="imgUpload"
-                            data-max-size="5120"
-                            accept=".jpg, .png, .jpeg"
-                          />
-                          <CiImageOn />
-                          Image
-                        </label>
+                {write && (
+                  <div>
+                    <div className="flex justify-center items-center ">
+                      <div
+                        className="bg-secondary text-ascent-1 px-2 py-1 opacity-70 flex justify-center items-center gap-1"
+                        onClick={() => {
+                          setAudience(true);
+                          setWrite(false);
+                        }}
+                      >
+                        <FaEarthAfrica />
+                        Public <AiOutlineDown size={15} />
                       </div>
                     </div>
-                    {preview && (
-                      <div className="py-4 flex items-end gap-3">
-                        <span className="text-ascent-1">
-                          Preview{" "}
+                    <div className="flex justify-between px-6 pt-5 pb-2">
+                      <label
+                        htmlFor="name"
+                        className="block font-medium text-xl text-ascent-1 text-left py-7 box-border"
+                      ></label>
+                      <div className="w-full h-full flex-col-reverse m-3 gap-80">
+                        <textarea
+                          {...register("description", {
+                            required: "Write something about post",
+                          })}
+                          error={
+                            errors.description ? errors.description.message : ""
+                          }
+                          className="w-full h-72 mb-20 bg-primary rounded-3xl border-none
+            outline-none text-3xl text-ascent-1 
+            px-4 py-3 placeholder:text-ascent-2 resize-none"
+                          value={content}
+                          placeholder="Write something about post"
+                          onChange={(ev) => {
+                            setContent(ev.target.value);
+                          }}
+                        />
+                        {preview && (
+                          <div className="py-4 w-full flex justify-center gap-3">
+                            {/* <span className="text-ascent-1">
+                          Preview:
                           {file.type.includes("image") ? "Image" : "Video"}
-                        </span>
+                        </span> */}
+                            <div className="flex relative w-full border-4 border-opacity-70 rounded-xl">
+                              <img src={review} alt="Something wrong" />
+                              {/* <TiDeleteOutline
+                            size={30}
+                            onClick={() => {
+                              setPreview(false);
+                              setFile(null);
+                            }}
+                            className="cursor-pointer absolute right-1 top-1"
+                          /> */}
+                              <div
+                                onClick={() => {
+                                  setPreview(false);
+                                  setFile(null);
+                                }}
+                                className="rotate-45 cursor-pointer absolute right-1 top-1 bg-[#000000] aspect-square rounded-full opacity-90 w-6 h-6 text-white flex justify-center items-center"
+                              >
+                                <AiOutlinePlus />
+                              </div>
+                            </div>
 
-                        {/* {file.type.includes("image") ? (
+                            {/* {file.type.includes("image") ? (
                           <img
                             className="w-20 mt-2 rounded-lg border-solid border-[#345cd9]"
                             src={`${URL.createObjectURL(file)}`}
@@ -236,35 +259,144 @@ const Post = ({ onEvent }) => {
                             Your browser does not support the video tag.
                           </video>
                         )} */}
-                        <span
-                          className="text-ascent-1 h-fit cursor-pointer rounded-full px-4 py-1 bg-[#0444a4]"
+                            {/* <span
+                          className="text-ascent-3 h-fit cursor-pointer rounded-full px-4 py-1 bg-[#0444a4]"
                           onClick={() => {
                             setPreview(false);
                             setFile(null);
                           }}
                         >
                           Delete
-                        </span>
-                      </div>
-                    )}
-                    <div className="w-full flex justify-end">
-                      {posting ? (
-                        <Loading />
-                      ) : (
-                        <CustomButton
-                          type="submit"
-                          Post
-                          onClick={() => {
-                            console.log("press");
-                          }}
-                          containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
+                        </span> */}
+                          </div>
+                        )}
+                        <div className="flex gap-3">
+                          <div className="w-fit py-1 flex outline-1 px-3 text-[#04c922] bg-primary rounded-full outline  justify-center items-center cursor-pointer ">
+                            <CiShoppingTag />
+                            <div className="hover:text-ascent-1">Tags</div>
+                          </div>
+
+                          <div className="w-fit py-1 flex outline-1 px-3 text-[#345cd9] bg-primary rounded-full outline  justify-center items-center cursor-pointer">
+                            <label
+                              htmlFor="imgUpload"
+                              className="flex items-center gap-1 text-base text-[#345cd9] hover:text-ascent-1 cursor-pointer"
+                            >
+                              <input
+                                type="file"
+                                onChange={(e) => {
+                                  e && handlebg(e);
+                                }}
+                                className="hidden"
+                                id="imgUpload"
+                                data-max-size="5120"
+                                accept=".jpg, .png, .jpeg"
+                              />
+                              <CiImageOn />
+                              Image
+                            </label>
+                          </div>
+                        </div>
+
+                        <div className="w-full flex justify-end">
+                          {posting ? (
+                            <Loading />
+                          ) : (
+                            <CustomButton
+                              type="submit"
+                              Post
+                              onClick={() => {
+                                console.log("press");
+                              }}
+                              containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
                     py-3 text-sm font-medium text-white outline-none`}
-                          tittle="Post"
-                        />
-                      )}
+                              tittle="Post"
+                            />
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {audience && (
+                  <div>
+                    <div className="flex justify-center items-center w-full">
+                      <div
+                        className="w-full h-72 mb-20 bg-primary rounded-3xl border-none
+            outline-none text-xl text-ascent-1 px-4 py-3 placeholder:text-ascent-2 resize-none"
+                      >
+                        <div class="items-center mb-4 select-none">
+                          <label
+                            for="default-radio-1"
+                            className="ms-2 text-gray-900 dark:text-gray-300 font-medium"
+                          >
+                            Public
+                            <br />
+                            <span className="text-ascent-2">Anyone</span>
+                          </label>
+                          <input
+                            id="default-radio-1"
+                            type="radio"
+                            value=""
+                            name="default-radio"
+                            onChange={() => {
+                              console.log(1);
+                            }}
+                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                        </div>
+                        <div class=" items-center mb-4 select-none">
+                          <label
+                            for="default-radio-1"
+                            className="ms-2 text-gray-900 dark:text-gray-300 font-medium"
+                          >
+                            Public
+                            <br />
+                            <span className="text-ascent-2">Anyone</span>
+                          </label>
+                          <input
+                            id="default-radio-1"
+                            type="radio"
+                            value=""
+                            name="default-radio"
+                            onChange={() => {
+                              console.log(1);
+                            }}
+                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between px-6 pt-5 pb-2">
+                      <div className="w-full flex m-3 justify-between items-center">
+                        <CustomButton
+                          type=""
+                          Post
+                          onClick={() => {
+                            setAudience(false);
+                            setWrite(true);
+                          }}
+                          containerStyles={`inline-flex justify-center rounded-full bg-secondary/70 px-8
+                    py-3 text-sm font-medium text-white outline-none`}
+                          tittle="Back"
+                        />
+                        <div className="w-full h-full flex-col-reverse gap-80">
+                          <div className="w-full flex justify-end">
+                            <CustomButton
+                              type=""
+                              Post
+                              onClick={() => {
+                                console.log("press");
+                              }}
+                              containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
+                    py-3 text-sm font-medium text-white outline-none`}
+                              tittle="Done"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {/* <form
               className="px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6"
               onSubmit={handleSubmit(onSubmit)}

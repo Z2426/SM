@@ -5,7 +5,7 @@
 ::-webkit-scrollbar {
   display: none;
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none;
+  scrollbar-width: 5px;
 }
 
 .topbar {
@@ -75,6 +75,7 @@
     --color-secondary: 255 255 255;
     --color-ascent1: 0 0 0;
     --color-ascent2: 89 91 100;
+    --color-ascent3: 204 200 190;
     --color-blue: 6 90 216;
     --color-white: 255 255 255;
   }
@@ -85,6 +86,7 @@
     --color-secondary: 47 45 48;
     --color-ascent1: 255 255 255;
     --color-ascent2: 164 161 162;
+    --color-ascent3: 204 200 190;
     --color-blue: 6 90 216;
     /* //16 176 255; */
     --color-white: 255 255 255;

@@ -9,6 +9,11 @@ import ChangePassword from "./ChangePassword";
 import Admin from "./Admin";
 import ProfileFix from "./ProfileFix";
 import PostPage from "./PostPage";
+import Friend from "./Friend";
+import ProfileDetail from "./FriendDetail";
+import Search from "./Search";
+import Save from "./Save";
+
 export {
   Home,
   Register,
@@ -21,4 +26,8 @@ export {
   Admin,
   ProfileFix,
   PostPage,
+  Friend,
+  ProfileDetail,
+  Search,
+  Save,
 };

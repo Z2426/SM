@@ -4,6 +4,7 @@ import CustomButton from "./CustomButton";
 import TopBar from "./TopBar";
 import ProfileCard from "./ProfileCard";
 import FriendsCard from "./FriendsCard";
+import FriendCard from "./FriendCard";
 import PostCard from "./PostCard";
 import EditProfile from "./EditProfile";
 import Notification from "./Notification";
@@ -12,6 +13,9 @@ import TopBarAdmin from "./TopBarAdmin";
 import Post from "./Post";
 import EditFix from "./EditFix";
 import ChatCard from "./ChatCard";
+import FriendMain from "./Friend_main";
+import PostAudioPostAudience from "./Post_audience";
+import SaveCard from "./Saveitems";
 export {
   TextInput,
   Loading,
@@ -27,4 +31,8 @@ export {
   Post,
   EditFix,
   ChatCard,
+  PostAudioPostAudience,
+  FriendCard,
+  FriendMain,
+  SaveCard,
 };
