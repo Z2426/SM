@@ -66,6 +66,7 @@ export const checkresetpassword = async (uri) => {
 };
 
 export const fetchPosts = async (token, dispatch, uri, data) => {
+  console.log("Data: " + data);
   try {
     const res = await apiRequest({
       url: uri || "/posts",
@@ -73,7 +74,7 @@ export const fetchPosts = async (token, dispatch, uri, data) => {
       method: "POST",
       data: data || {},
     });
-    //console.log(res.data);
+    console.log("fetch: " + res?.data);
     dispatch(SetPosts(res?.data));
     return;
   } catch (error) {

@@ -16,6 +16,7 @@ import ChatCard from "./ChatCard";
 import FriendMain from "./Friend_main";
 import PostAudioPostAudience from "./Post_audience";
 import SaveCard from "./Saveitems";
+import ImageCheck from "./ImageCheck";
 export {
   TextInput,
   Loading,
@@ -35,4 +36,5 @@ export {
   FriendCard,
   FriendMain,
   SaveCard,
+  ImageCheck,
 };

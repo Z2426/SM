@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { FriendsCard, ProfileCard, TextInput, TopBar } from "../components";
+import {
+  FriendsCard,
+  ProfileCard,
+  TextInput,
+  TopBar,
+  ImageCheck,
+} from "../components";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { AiOutlinePlus } from "react-icons/ai";
 import { BsBriefcase } from "react-icons/bs";
 import { IoIosChatbubbles, IoIosSettings, IoMdContact } from "react-icons/io";
 import { IoCallSharp } from "react-icons/io5";
@@ -32,15 +39,26 @@ const Chat = () => {
   const [chat, setChat] = useState("");
   const { theme } = useSelector((state) => state.theme);
   const [showPicker, setShowPicker] = useState(false);
+  const [review, setReview] = useState();
+  const [reviewcheck, setReviewcheck] = useState(false);
   // console.log(user);
   const onEmojiClick = (e) => {
     setChat((prevInput) => prevInput + e.emoji);
     setShowPicker(false);
   };
+  const handlebg = (e) => {
+    console.log(e.target.files[0]);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setReview(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+    // setPreview(true);
+  };
   return (
     <div>
       <div
-        className="home w-full px-0 lg:px-10 pb-20 2xl-40 bg-bgColor 
+        className=" flex flex-col home w-full px-0 lg:px-10 pb-20 2xl-40 bg-bgColor 
     lg:rounded-lg h-screen overflow-hidden"
       >
         <TopBar user={user} />
@@ -201,8 +219,8 @@ const Chat = () => {
             </div>
 
             {/* Phần nhập tin nhắn */}
-            <div className="relative flex items-center">
-              <div className="absolute bottom-20 ">
+            <div className="relative flex flex-col items-start">
+              <div className="absolute bottom-20 right-20">
                 {showPicker && (
                   <Picker
                     className=""
@@ -211,22 +229,49 @@ const Chat = () => {
                   />
                 )}
               </div>
+              {review && (
+                <div className="relative flex h-20 w-20 bg-bgColor rounded-2xl overflow-hidden mx-2 my-2">
+                  <div className="overflow-hidden ">
+                    <img
+                      src={review}
+                      className="h-20 w-20 object-contain cursor-pointer"
+                      onClick={() => {
+                        setReviewcheck(!reviewcheck);
+                        setReview(review);
+                      }}
+                    />
+                  </div>
+                  <div
+                    onClick={() => {
+                      setReview(null);
+                      // setTemp(null);
+                    }}
+                    className="rotate-45 cursor-pointer absolute right-1 top-1 bg-[#000000] rounded-full opacity-70 w-1/3 h-1/3 text-white flex justify-center items-center"
+                  >
+                    <AiOutlinePlus size={15} className="font-thin" />
+                  </div>
+                </div>
+              )}
+
               <div className="flex w-full mb-3 justify-center items-center">
                 <div
                   className="h-full w-fit text-ascent-1 px-1 py-2 flex justify-center items-center"
                   onClick={() => {}}
                 >
-                  <CiCirclePlus size={35} />
+                  <label className="bg-primary rounded-xl cursor-pointer">
+                    <CiCirclePlus size={35} />
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".jpg, .png, .jpeg"
+                      onInput={(e) => {
+                        handlebg(e);
+                      }}
+                    />
+                  </label>
                 </div>
-                <div
-                  className="h-full w-fit text-ascent-1 px-1 py-2 flex justify-center items-center"
-                  onClick={() => {
-                    setShowPicker(!showPicker);
-                  }}
-                >
-                  <MdEmojiEmotions size={35} />
-                </div>
-                <div className="w-full h-full flex justify-center items-center">
+
+                <div className=" overflow-hidden w-full h-full flex justify-center items-center border bg-bgColor rounded-full focus:outline-none focus:ring focus:border-blue">
                   <input
                     type="text"
                     value={chat}
@@ -234,8 +279,16 @@ const Chat = () => {
                       setChat(e.target.value);
                     }}
                     placeholder="Type your message..."
-                    className="w-full flex-1 py-2 px-5 text-ascent-1 rounded-full focus:outline-none focus:ring focus:border-blue  bg-bgColor"
+                    className="w-full flex-1 py-2 px-5 text-ascent-1 rounded-full bg-bgColor focus:outline-0 text-wrap"
                   />
+                  <div
+                    className="h-full w-fit text-ascent-1 px-1 py-2 flex justify-center items-center  "
+                    onClick={() => {
+                      setShowPicker(!showPicker);
+                    }}
+                  >
+                    <MdEmojiEmotions size={35} />
+                  </div>
                 </div>
 
                 <button className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2 bg-blue ">
@@ -245,6 +298,13 @@ const Chat = () => {
             </div>
           </div>
         </div>
+        {reviewcheck && (
+          <ImageCheck
+            img={review}
+            review={reviewcheck}
+            setReview={setReviewcheck}
+          />
+        )}
       </div>
     </div>
   );

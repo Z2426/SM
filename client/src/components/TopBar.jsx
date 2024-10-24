@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TbSocial } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import TextInput from "./TextInput";
 import CustomButton from "./CustomButton";
 import { PiSignOut } from "react-icons/pi";
@@ -21,13 +21,15 @@ import { ImProfile } from "react-icons/im";
 import { NoProfile } from "../assets";
 import { ProfileFix } from "../pages";
 import EditFix from "./EditFix";
-const TopBar = ({ user }) => {
+const TopBar = ({ user, setKey }) => {
   const { theme } = useSelector((state) => state.theme);
   const { notification, edit } = useSelector((state) => state.user);
   const [notifications, setNotifications] = useState();
   const [profilecard, setProfilecard] = useState();
   const [ava, setAva] = useState();
+  const [value, setvalue] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -45,6 +47,7 @@ const TopBar = ({ user }) => {
   };
   const handleSearch = async (data) => {
     await fetchPosts(user.token, dispatch, "", data);
+    navigate("/search");
   };
   const handleLogout = () => {
     setAva(!ava);
@@ -83,7 +86,36 @@ const TopBar = ({ user }) => {
           </span>
         </Link>
         {/* <FaTools /> */}
-
+        {/* <div className="hidden md:flex items-center justify-center ">
+          <input
+            type="text"
+            className=" bg-secondary rounded border border-[#66666690] 
+            outline-none text-sm text-ascent-1 
+            px-4 placeholder:text-ascent-2 w-[18rem] lg:w-[38rem] rounded-l-full py-3"
+            placeholder="Search..."
+            value={value}
+            onChange={(e) => {
+              setvalue(e.target.value);
+            }}
+          />
+          <Link
+            to={`/search/${value}`}
+            onClick={() => {
+              console.log("Topbar" + value);
+              handleSearch(value);
+              // handleSearch(value);
+              // {
+              //   handle ? handle(value) : "";
+              // }
+            }}
+          >
+            <CustomButton
+              tittle="search"
+              type="submit"
+              containerStyles="bg-[#0444a4] text-white px-6 py-2.5 rounded-r-full"
+            />
+          </Link>
+        </div> */}
         <form
           className="hidden md:flex items-center justify-center"
           onSubmit={handleSubmit(handleSearch)}
@@ -93,6 +125,7 @@ const TopBar = ({ user }) => {
             styles="w-[18rem] lg:w-[38rem] rounded-l-full py-3"
             register={register("search")}
           />
+
           <CustomButton
             tittle="search"
             type="submit"
@@ -145,7 +178,7 @@ const TopBar = ({ user }) => {
 
       {notification && (
         <div className="bg-primary">
-          <div className="top-20 right-32 z-50 absolute w-1/5 overflow-auto border bg-primary rounded-xl text-ascent-1 h-1/2 border-[#66666690] justify-center flex">
+          <div className="top-20 right-32 z-40 absolute w-1/5 overflow-auto border bg-primary rounded-xl text-ascent-1 h-1/2 border-[#66666690] justify-center flex">
             <Notification notify={notifications} />
           </div>
         </div>

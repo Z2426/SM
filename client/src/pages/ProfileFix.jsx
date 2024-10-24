@@ -74,7 +74,7 @@ const ProfileFix = () => {
               overflow-hidden rounded-xl z-0"
             />
 
-            <label className="absolute right-4 bottom-2 z-30 bg-primary px-6 py-2 rounded-xl border border-[#66666690] cursor-pointer">
+            <label className="absolute right-4 bottom-2 z-30 bg-primary/50 px-6 py-2 rounded-xl border border-[#66666690] cursor-pointer">
               Edit
               <input
                 type="file"

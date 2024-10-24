@@ -56,7 +56,7 @@ function App() {
             <Route path="/profile/:id?" element={<Profile />} />
             <Route path="/chat/:id?" element={<Chat />} />
             <Route path="/post/:id?" element={<PostPage />} />
-            <Route path="/search" element={<Search />} />
+            <Route path="/search/:keyword?" element={<Search />} />
             <Route path="/save" element={<Save />} />
           </Route>
         )}

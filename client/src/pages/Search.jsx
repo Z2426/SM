@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FriendCard, FriendMain, TopBar } from "../components";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate, useParams } from "react-router-dom";
 import { NoProfile } from "../assets";
 import { useSelector } from "react-redux";
 import { FaUserFriends } from "react-icons/fa";
@@ -22,8 +22,12 @@ import {
 import { Loading, PostCard } from "../components/index";
 import { useDispatch } from "react-redux";
 const Search = () => {
+  const { keyword } = useParams();
+  const [key, setKey] = useState();
   const [right, setRight] = useState(false);
   const [left, setLeft] = useState(true);
+  console.log("main key:" + keyword);
+
   const { user } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -35,6 +39,14 @@ const Search = () => {
   const crollleft = () => {
     let position = document.getElementById("request");
     position.scrollLeft -= 200;
+  };
+  const handleSearch = async (key) => {
+    try {
+      await fetchPosts(user.token, dispatch, "", key);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const fetchPost = async () => {
     try {
@@ -54,8 +66,9 @@ const Search = () => {
     await fetchPost();
   };
   useEffect(() => {
-    setLoading(true);
-    fetchPost();
+    // setLoading(true);
+    // handleSearch(key);
+    // fetchPost();
   }, []);
 
   return (
@@ -64,7 +77,7 @@ const Search = () => {
         className="home w-full px-0 lg:px-10 pb-20 2xl-40 bg-bgColor 
 lg:rounded-lg h-screen overflow-hidden"
       >
-        <TopBar user={user} />
+        <TopBar user={user} setKey={setKey} />
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full justify-between">
           <div className="w-1/5 h-full md:flex flex-col gap-2 overflow-y-auto flex-initial bg-primary rounded-lg px-7">
             <span className="text-ascent-1 text-2xl font-bold w-full  pt-5 border-b border-[#66666645]">

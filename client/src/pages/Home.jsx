@@ -16,6 +16,7 @@ import {
   Notification,
   Post,
   ChatCard,
+  ImageCheck,
 } from "../components";
 import Profile from "./Profile";
 // import { requests, suggest } from "../assets/data";
@@ -51,6 +52,7 @@ const Home = () => {
   const [preview, setPreview] = useState(false);
   const [search, setSearch] = useState("");
   const [posting, setPosting] = useState(false);
+  const [picreview, setPicreview] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -639,6 +641,7 @@ const Home = () => {
 
       {edit && <EditFix />}
       {post && <Post onEvent={fetchPost} />}
+      {/* {picreview && <ImageCheck />} */}
     </div>
   );
 };
