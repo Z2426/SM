@@ -292,10 +292,10 @@ const Post = ({ onEvent }) => {
                   )}
                   {audience && (
                     <div className="bg-primary absolute w-full h-full flex flex-col justify-between">
-                      <div className="flex w-full select-none">
+                      <div className="flex w-full h-full select-none overflow-y-auto my-5">
                         <div
                           className="w-full h-72 mb-20 rounded-3xl border-none
-            outline-none text-xl text-ascent-1 px-5 py-3 placeholder:text-ascent-2 resize-none"
+            outline-none text-xl text-ascent-1 px-5 py-3 placeholder:text-ascent-2 "
                         >
                           <label
                             htmlFor="default-radio-1"
@@ -344,6 +344,7 @@ const Post = ({ onEvent }) => {
                               name="auth"
                               onChange={(e) => {
                                 setOption(e.target.value);
+                                setSpecific(!specific);
                               }}
                               className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
                             />
@@ -400,7 +401,7 @@ const Post = ({ onEvent }) => {
                           </label>
                         </div>
                       </div>
-                      <div className=" flex justify-between px-6 pt-5 pb-2">
+                      <div className=" flex justify-between px-6">
                         <div className="w-full flex m-3 justify-between items-center">
                           <CustomButton
                             type=""
@@ -434,7 +435,85 @@ const Post = ({ onEvent }) => {
                     </div>
                   )}
                   {specific && (
-                    <div className="absolute h-full w-full bg-primary"></div>
+                    <div className="bg-primary absolute w-full h-full flex flex-col justify-between">
+                      <div className="flex w-full h-full select-none overflow-y-auto my-5">
+                        <div
+                          className="w-full h-full mb-20 rounded-3xl border-none
+          outline-none text-xl text-ascent-1 px-5 py-3 placeholder:text-ascent-2"
+                        >
+                          <input
+                            type="text"
+                            className="w-full my-2 bg-secondary outline-none px-5 py-2 rounded-full "
+                            placeholder="Search"
+                          />
+                          <div className="w-full h-full ">
+                            <label
+                              htmlFor="default-radio-1"
+                              className="items-center mb-4 select-none w-full flex px-5 py-2 justify-between hover:bg-ascent-3/30 rounded-xl"
+                            >
+                              <label
+                                htmlFor="default-radio-1"
+                                className="ms-2 text-gray-900 dark:text-gray-300 font-medium flex"
+                              >
+                                <img
+                                  src={user?.profileUrl}
+                                  alt=""
+                                  className="h-16 w-16 object-cover rounded-full mr-3"
+                                />
+                                <div className="h-full flex justify-center items-center">
+                                  Public
+                                  <br />
+                                  {/* <span className="text-ascent-2 text-base">
+                                    Anyone can see
+                                  </span> */}
+                                </div>
+                              </label>
+                              <input
+                                id="default-radio-1"
+                                type="radio"
+                                value="public"
+                                name="auth"
+                                onChange={(e) => {
+                                  setOption(e.target.value);
+                                }}
+                                className="w-5 h-5 text-blue-600  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 
+                            dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600"
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div className=" flex justify-between px-6">
+                        <div className="w-full flex m-3 justify-between items-center">
+                          <CustomButton
+                            type=""
+                            Post
+                            onClick={() => {
+                              setSpecific(!specific);
+                            }}
+                            containerStyles={`inline-flex justify-center rounded-full bg-secondary/70 px-8
+                  py-3 text-sm font-medium text-white outline-none`}
+                            tittle="Back"
+                          />
+                          <div className="w-full h-full flex-col-reverse gap-80">
+                            <div className="w-full flex justify-end">
+                              <CustomButton
+                                type=""
+                                Post
+                                onClick={() => {
+                                  setAudience(!audience);
+                                  // setWrite(!write);
+                                  console.log("press");
+                                }}
+                                containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
+                  py-3 text-sm font-medium text-white outline-none`}
+                                tittle="Done"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

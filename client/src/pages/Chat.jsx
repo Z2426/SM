@@ -6,10 +6,12 @@ import {
   TopBar,
   ImageCheck,
 } from "../components";
+import { IoIosContact } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsBriefcase } from "react-icons/bs";
+import { FaVideo } from "react-icons/fa";
 import { IoIosChatbubbles, IoIosSettings, IoMdContact } from "react-icons/io";
 import { IoCallSharp } from "react-icons/io5";
 import { MdEmojiEmotions } from "react-icons/md";
@@ -25,8 +27,11 @@ const UserCard = (user) => {
         alt={user?.firstName}
         className="w-14 h-14 object-cover rounded-full"
       />
-      <div className="flex-col flex h-full justify-center">
-        <span className="text-ascent-1">Name</span>
+      <div className="flex-col w-full flex h-full justify-center">
+        <div className="flex justify-between">
+          <span className="text-ascent-1">Name</span>{" "}
+          <span className="text-ascent-2 ">time</span>
+        </div>
         <span className="text-ascent-2">Nội dung gần nhất</span>
       </div>
     </div>
@@ -66,14 +71,23 @@ const Chat = () => {
           {/* {LEFT} */}
           <div className="h-full w-20 rounded-xl bg-primary overflow-hidden">
             <div className="w-full h-2/3 gap-7 flex flex-col items-center content-end justify-start py-10 ">
-              <IoIosChatbubbles className="text-ascent-1 " size={30} />
-              <IoCallSharp className="text-ascent-1 " size={30} />
-              <IoMdContact className="text-ascent-1 " size={30} />
+              <div className="hover:bg-ascent-3/30 py-1 px-1 rounded-xl">
+                <IoIosChatbubbles className="text-ascent-1 " size={30} />
+              </div>
+              <div className="hover:bg-ascent-3/30 py-1 px-1 rounded-xl">
+                <IoIosContact className="text-ascent-1 " size={30} />
+              </div>
+              <div className="hover:bg-ascent-3/30 py-1 px-1 rounded-xl">
+                <FaVideo className="text-ascent-1 " size={30} />
+              </div>
+
               {/* <IoIosSettings className=" text-ascent-1 " size={30} /> */}
             </div>
 
             <div className="h-1/3 w-full bg-primary flex justify-center items-end py-10">
-              <IoIosSettings className=" text-ascent-1 " size={30} />
+              <div className="hover:bg-ascent-3/30 py-1 px-1 rounded-xl">
+                <IoIosSettings className=" text-ascent-1 " size={30} />
+              </div>
             </div>
           </div>
           <div

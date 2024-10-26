@@ -24,15 +24,15 @@ import { BsBriefcase, BsFacebook, BsInstagram } from "react-icons/bs";
 import { FaTwitterSquare } from "react-icons/fa";
 import moment from "moment";
 import { UpdateProfile } from "../redux/userSlice";
-const ProfileDetail = () => {
-  const { id } = useParams();
+const ProfileDetail = ({ title }) => {
+  const { id, key } = useParams();
   const [friend, setFriend] = useState();
   const { user, edit } = useSelector((state) => state.user);
   const { posts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const uri = "/posts/get-user-post/" + id;
+  const uri = "/posts/get-user-post/" + user?._id;
   const [userInfor, setUserInfor] = useState(user);
   const [banner, setBanner] = useState(user?.profileUrl ?? NoProfile);
   const handleDelete = async (id) => {
@@ -90,7 +90,9 @@ const ProfileDetail = () => {
       <div className="w-full h-full flex justify-center pt-5 pb-32">
         <div className="bg-primary h-full w-1/5 rounded-lg">
           <div className="w-full h-full flex flex-col gap-4 pt-4 px-4 select-none overflow-auto">
-            <span className="text-xl font-semibold">All Friend</span>
+            <span className="text-xl font-semibold">
+              {key ? key : "All Friend"}
+            </span>
             <form
               className="hidden md:flex items-center justify-center gap-5"
               onSubmit={(e) => handleSearch(e)}
@@ -150,8 +152,11 @@ const ProfileDetail = () => {
             })()}
           </div>
         </div>
-        <div className="h-full w-3/4 flex flex-col items-center overflow-auto">
-          <div className="flex flex-col  h-screen w-8/12 items-center">
+        <div className="h-full w-3/4 flex flex-col items-center overflow-auto rounded-xl">
+          {/* <div className="flex flex-col h-screen w-8/12 items-center overflow-hidden bg-primary">
+            <Loading />
+          </div> */}
+          <div className="flex flex-col h-screen w-8/12 items-center overflow-y-auto rounded-xl">
             <div className="flex w-full h-1/4 bg-secondary relative select-none">
               <img
                 src={banner}
@@ -174,14 +179,9 @@ const ProfileDetail = () => {
                 {user?.firstName} {user?.lastName}
               </div>
             </div>
-            {/* <div className="flex overflow-auto"> */}
             <div className="w-full flex gap-6 ">
-              <div className="w-2/3 h-full pb-32">
+              <div className="w-2/3 h-full">
                 <div className="w-full h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-xl  items-center">
-                  {/* <div className="w-full mx-10">
-                  <Loading />
-                </div> */}
-
                   {loading ? (
                     <div className="w-full justify-center h-full flex">
                       <Loading />
@@ -267,6 +267,12 @@ const ProfileDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* <div className="h-full w-3/4 flex flex-col items-center overflow-auto rounded-xl">
+          <div className="text-ascent-2 w-1/2 h-full bg-primary justify-center flex items-center rounded-xl">
+            Choose one
+          </div>
+        </div> */}
 
         {edit && <EditProfile />}
       </div>

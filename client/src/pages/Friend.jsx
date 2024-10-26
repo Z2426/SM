@@ -10,13 +10,45 @@ const Friend = () => {
   const [right, setRight] = useState(false);
   const [left, setLeft] = useState(true);
   const { user } = useSelector((state) => state.user);
+  const [checkr, setCheckr] = useState("");
+  const [checkl, setCheckl] = useState("hidden");
+  const check = () => {
+    let position = document.getElementById("request");
+    console.log(position.offsetWidth);
+    console.log(position.scrollWidth);
+    console.log(position.clientWidth);
+    console.log(position.scrollHeight);
+    console.log(position.scrollLeft);
+    position.scrollLeft <= 25 ? setCheckl("hidden") : setCheckl("");
+    // position.scrollLeft == position.scrollWidth - position.clientWidth
+    position.scrollLeft >= position.scrollHeight
+      ? setCheckr("hidden")
+      : setCheckr("");
+  };
   const crollright = () => {
     let position = document.getElementById("request");
+    // console.log(position.offsetWidth);
+    // console.log(position.scrollWidth);
+    // console.log(position.clientWidth);
+    // console.log(position.scrollLeft);
     position.scrollLeft += 200;
+    console.log(position.scrollLeft);
+    position.scrollLeft == 0 ? setCheckl("hidden") : setCheckl("");
+    position.scrollLeft >= position.scrollWidth - position.clientWidth - 200
+      ? setCheckr("hidden")
+      : setCheckr("");
   };
   const crollleft = () => {
     let position = document.getElementById("request");
+    // console.log(position.offsetWidth);
+    // console.log(position.scrollWidth);
+    // console.log(position.clientWidth);
+    // console.log(position.scrollLeft);
     position.scrollLeft -= 200;
+    position.scrollLeft < 100 ? setCheckl("hidden") : setCheckl("");
+    position.scrollLeft <= position.scrollWidth - position.clientWidth - 200
+      ? setCheckr("")
+      : setCheckr("hidden");
   };
 
   return (
@@ -25,12 +57,12 @@ const Friend = () => {
         className="home w-full px-0 lg:px-10 pb-20 2xl-40 bg-bgColor 
 lg:rounded-lg h-screen overflow-hidden"
       >
-        <TopBar />
+        <TopBar user={user} />
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full justify-between">
           <div className="w-1/5 h-full md:flex flex-col gap-6 overflow-y-auto flex-initial bg-primary rounded-lg">
             <div className="bg-primary w-full h-fit rounded-lg flex flex-col gap-3 overflow-hidden">
               <Link
-                to={"/frienddetails"}
+                to={"/frienddetails/Friend Request"}
                 className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
@@ -42,7 +74,7 @@ lg:rounded-lg h-screen overflow-hidden"
               </Link>
 
               <Link
-                to={"/frienddetails"}
+                to={"/frienddetails/Suggestions"}
                 className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
@@ -53,7 +85,7 @@ lg:rounded-lg h-screen overflow-hidden"
                 </span>
               </Link>
               <Link
-                to={"/frienddetails"}
+                to={"/frienddetails/All Friends"}
                 className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
@@ -68,29 +100,41 @@ lg:rounded-lg h-screen overflow-hidden"
           <div className=" justify-center h-full flex-initial w-4/5 flex-wrap px-4 py-4 flex gap-6 overflow-y-auto rounded-lg">
             <div>
               <div className="flex flex-col gap-2 h-fit relative select-none">
-                <span className="text-ascent-1 font-bold text-3xl">
-                  Friend Requests
-                </span>
+                <div className="w-full flex items-end justify-between">
+                  <span className="text-ascent-1 font-bold text-3xl">
+                    Friend Requests
+                  </span>
+                  <span className=" hover:underline hover:underline-offset-2 text-blue font-medium text-xl">
+                    See more
+                  </span>
+                </div>
+
                 <div
                   onClick={() => {
                     crollright();
+                    check();
                   }}
-                  className="absolute text-white bg-[#000000]/50 rounded-full w-12 h-12 flex justify-center cursor-pointer items-center bottom-1/2 right-4"
+                  className={`${checkr} absolute text-white bg-[#000000]/50 rounded-full w-12 h-12 flex justify-center cursor-pointer items-center bottom-1/2 right-4`}
                 >
                   <FaAngleRight size={30} />
                 </div>
                 <div
                   onClick={() => {
                     crollleft();
+                    check();
                   }}
-                  className="absolute text-white rotate-180 bg-[#000000]/50 rounded-full w-12 h-12 flex justify-center cursor-pointer items-center bottom-1/2 left-4"
+                  className={` ${checkl} absolute text-white rotate-180 bg-[#000000]/50 rounded-full w-12 h-12 flex justify-center cursor-pointer items-center bottom-1/2 left-4`}
                 >
                   <FaAngleRight size={30} />
                 </div>
                 <div
                   id="request"
-                  className=" flex w-fit h-fit justify-start grow-0 overflow-x-auto gap-2 scroll-smooth"
+                  className="flex w-fit h-full justify-start grow-0 overflow-x-auto gap-2 scroll-smooth rounded-xl overflow-hidden"
                 >
+                  {/* <div className="absolute w-full h-full bg-primary rounded-xl flex justify-center items-center text-lg text-ascent-2">
+                    No Request
+                  </div> */}
+
                   <div className="h-fit w-fit flex-shrink-0">
                     <FriendCard />
                   </div>
@@ -128,6 +172,7 @@ lg:rounded-lg h-screen overflow-hidden"
                   People you may know
                 </span>
                 <div className="flex justify-center items-center flex-col">
+                  {/* <div className="w-full h-full bg-blue"> No </div> */}
                   <div className="w-2/3 h-fit flex gap-2 flex-wrap">
                     {(() => {
                       const items = [];

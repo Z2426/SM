@@ -52,7 +52,7 @@ function App() {
             {/* <Route path="/admin" element={<Admin />} /> */}
             <Route path="/" element={<Home />} />
             <Route path="/friend" element={<Friend />} />
-            <Route path="/frienddetails" element={<ProfileDetail />} />
+            <Route path="/frienddetails/:key?" element={<ProfileDetail />} />
             <Route path="/profile/:id?" element={<Profile />} />
             <Route path="/chat/:id?" element={<Chat />} />
             <Route path="/post/:id?" element={<PostPage />} />

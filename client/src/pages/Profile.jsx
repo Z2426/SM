@@ -34,7 +34,7 @@ const Profile = () => {
     const res = await getUserInfo(user?.token, id);
     setUserInfor(res);
   };
-  console.log(userInfor);
+  // console.log(userInfor);
   const getPosts = async () => {
     await fetchPosts(user.token, dispatch, uri);
     setLoading(false);

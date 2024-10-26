@@ -40,9 +40,9 @@ const Search = () => {
     let position = document.getElementById("request");
     position.scrollLeft -= 200;
   };
-  const handleSearch = async (key) => {
+  const handleSearch = async (data) => {
     try {
-      await fetchPosts(user.token, dispatch, "", key);
+      await fetchPosts(user.token, dispatch, "", data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -88,8 +88,10 @@ lg:rounded-lg h-screen overflow-hidden"
             </span>
             <div className="bg-primary w-full h-fit rounded-lg flex flex-col gap-3 overflow-hidden">
               <Link
-                to={"/frienddetails"}
-                className="flex gap-2 hover:bg-secondary w-full  py-2"
+                className="flex gap-2 hover:bg-secondary w-full rounded-xl py-2"
+                onClick={() => {
+                  fetchPost();
+                }}
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center">
@@ -101,7 +103,7 @@ lg:rounded-lg h-screen overflow-hidden"
 
               <Link
                 to={"/frienddetails"}
-                className="flex gap-2 hover:bg-secondary w-full  py-2"
+                className="flex gap-2 hover:bg-secondary w-full py-2 rounded-xl"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center  ">
@@ -112,7 +114,7 @@ lg:rounded-lg h-screen overflow-hidden"
               </Link>
               <Link
                 to={"/frienddetails"}
-                className="flex gap-2 hover:bg-secondary w-full  py-2"
+                className="flex gap-2 hover:bg-secondary w-full rounded-xl py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center  ">
