@@ -6,12 +6,12 @@ import TextInput from "./TextInput";
 import CustomButton from "./CustomButton";
 import { PiSignOut } from "react-icons/pi";
 import { useForm } from "react-hook-form";
-import { BsMoon, BsSunFill } from "react-icons/bs";
+
 import { MdDarkMode } from "react-icons/md";
-import { IoMdNotificationsOutline } from "react-icons/io";
+
 import { FaTools } from "react-icons/fa";
 import { IoNotifications } from "react-icons/io5";
-import { FaSun } from "react-icons/fa";
+
 import { setTheme } from "../redux/theme";
 import { Logout, Setnotification } from "../redux/userSlice";
 import { fetchNotifications, fetchPosts } from "../until";
@@ -20,10 +20,9 @@ import { CiSettings } from "react-icons/ci";
 import { FaFacebookMessenger } from "react-icons/fa";
 import { UpdateProfile } from "../redux/userSlice";
 import { GoSun } from "react-icons/go";
-import { ImProfile } from "react-icons/im";
+
 import { NoProfile } from "../assets";
-import { ProfileFix } from "../pages";
-import EditFix from "./EditFix";
+
 const TopBar = ({ user, setKey }) => {
   const { theme } = useSelector((state) => state.theme);
   const { notification, edit } = useSelector((state) => state.user);
@@ -153,10 +152,16 @@ const TopBar = ({ user, setKey }) => {
           >
             {theme == "dark" ? <GoSun size={25} /> : <MdDarkMode size={25} />}
           </button>
-          <div className="px-3 py-3 text-ascent-1 rounded-full hidden lg:flex bg-ascent-3/30 cursor-pointer hover:bg-ascent-3/70">
-            <Link to={`/chat/${user?._id}`}>
+          <div
+            onClick={() => {
+              navigate(`/chat/${user?._id}`);
+            }}
+            className="px-3 py-3 text-ascent-1 rounded-full hidden lg:flex bg-ascent-3/30 cursor-pointer hover:bg-ascent-3/70"
+          >
+            <FaFacebookMessenger size={25} />
+            {/* <Link to={`/chat/${user?._id}`}>
               <FaFacebookMessenger size={25} />
-            </Link>
+            </Link> */}
           </div>
           <div
             className=" px-3 py-3 text-ascent-1 rounded-full hidden lg:flex bg-ascent-3/30 cursor-pointer hover:bg-ascent-3/70"
