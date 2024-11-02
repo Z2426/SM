@@ -15,6 +15,7 @@ import {
   ProfileDetail,
   Search,
   Save,
+  Demo,
 } from "./pages";
 import { useSelector } from "react-redux";
 import PrivateRoute from "./until/privateroute";
@@ -63,6 +64,7 @@ function App() {
             <Route path="/post/:id?" element={<PostPage />} />
             <Route path="/search/:keyword?" element={<Search />} />
             <Route path="/save" element={<Save />} />
+            <Route path="/demo" element={<Demo />} />
           </Route>
         )}
 

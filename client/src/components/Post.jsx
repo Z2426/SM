@@ -12,6 +12,8 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { CiImageOn, CiShoppingTag } from "react-icons/ci";
 import { useForm } from "react-hook-form";
 import { AiOutlinePlus } from "react-icons/ai";
+import { NoProfile } from "../assets";
+import ListCard from "./ListCard";
 const Post = ({ onEvent }) => {
   const { user, post } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -28,6 +30,7 @@ const Post = ({ onEvent }) => {
   const [posting, setPosting] = useState(false);
   const [review, setReview] = useState();
   const [tem, setTem] = useState();
+  const [lists, setLists] = useState([]);
   const [option, setOption] = useState("public");
 
   const handlebg = (e) => {
@@ -39,6 +42,18 @@ const Post = ({ onEvent }) => {
     };
     reader.readAsDataURL(e.target.files[0]);
     setPreview(true);
+  };
+  const pushList = (id) => {
+    let memo = [...lists];
+    console.log(memo);
+
+    lists.includes(id)
+      ? (memo = lists.filter((memo) => memo != id))
+      : memo.push(id);
+
+    setLists(memo);
+
+    console.log(memo);
   };
 
   const {
@@ -105,11 +120,17 @@ const Post = ({ onEvent }) => {
       setisSubmitting(false);
     }
   };
+  const handleCheck = (id, check) => {
+    console.log(check);
 
+    lists.includes(id) ? (check = true) : (check = false);
+  };
   const handlePostSubmit = async (data) => {
     setPosting(true);
     setPreview(false);
     seterrMsg("");
+    data.visibility = option;
+    // console.log(data);
 
     try {
       const uri = file && (await handFileUpload(file));
@@ -446,42 +467,85 @@ const Post = ({ onEvent }) => {
                             className="w-full my-2 bg-secondary outline-none px-5 py-2 rounded-full "
                             placeholder="Search"
                           />
+                          <div className="w-full flex items-center justify-center">
+                            <div className="flex flex-wrap gap-2 justify-start mb-2">
+                              {lists.length > 0 &&
+                                lists?.map((friend) => {
+                                  var check = lists.includes(friend?._id);
+                                  return (
+                                    <div
+                                      key={friend?._id}
+                                      onClick={() => {
+                                        pushList(friend);
+                                        console.log(lists);
+                                      }}
+                                      className="flex flex-col justify-center items-center"
+                                    >
+                                      <img
+                                        src={friend?.profileUrl ?? NoProfile}
+                                        alt=""
+                                        className="h-16 w-full object-contain rounded-full"
+                                      />
+                                      <span>{friend?.firstName}</span>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </div>
                           <div className="w-full h-full ">
                             {user?.friends.map((friend) => {
+                              var check = lists.includes(friend?._id);
+
                               return (
-                                <label
-                                  htmlFor={friend._id}
-                                  className="items-center mb-4 select-none w-full flex px-5 py-2 justify-between hover:bg-ascent-3/30 rounded-xl"
+                                <div
+                                  onClick={() => {
+                                    pushList(friend);
+                                    console.log(lists);
+                                  }}
+                                  className={`${
+                                    check ? "bg-ascent-3/10" : ""
+                                  }  items-center mb-4 select-none w-full flex px-5 py-2 justify-between hover:bg-ascent-3/30 rounded-xl`}
                                 >
-                                  <label
-                                    htmlFor={friend._id}
-                                    className="ms-2 text-gray-900 dark:text-gray-300 font-medium flex"
-                                  >
+                                  <div className="ms-2 text-gray-900 dark:text-gray-300 font-medium flex">
                                     <img
-                                      src={friend?.profileUrl}
+                                      src={friend?.profileUrl ?? NoProfile}
                                       alt=""
                                       className="h-16 w-16 object-cover rounded-full mr-3"
                                     />
-                                    <div className="h-full flex justify-center items-center">
+                                    <div
+                                      id={friend._id}
+                                      className="h-full flex justify-center items-center"
+                                    >
                                       {friend.firstName} {friend.lastName}
                                       <br />
                                       {/* <span className="text-ascent-2 text-base">
-                                    Anyone can see
-                                  </span> */}
+      Anyone can see
+    </span> */}
                                     </div>
-                                  </label>
-                                  <input
-                                    id={friend._id}
-                                    type="radio"
-                                    value="public"
-                                    name="auth"
-                                    onChange={(e) => {
-                                      setOption(e.target.value);
-                                    }}
-                                    className="w-5 h-5 text-blue-600  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 
-                            dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600"
-                                  />
-                                </label>
+                                  </div>
+                                  {/* <input
+      id={friend._id}
+      type="radio"
+      value="public"
+      name="auth"
+      onClick={(e) => {
+        // setOption(e.target.value);
+        pushList(friend._id);
+      }}
+      className={`${}w-5 h-5 text-blue-600  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 
+dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600`}
+    /> */}
+                                </div>
+                                // <ListCard
+                                //   friend={friend}
+                                //   onClick={() => {
+                                //     pushList(friend);
+                                //     console.log(lists);
+                                //     // handleCheck(friend._id, check);
+                                //   }}
+                                //   check={check}
+                                //   lists={lists}
+                                // />
                               );
                             })}
                           </div>

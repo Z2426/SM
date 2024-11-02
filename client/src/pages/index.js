@@ -13,7 +13,7 @@ import Friend from "./Friend";
 import ProfileDetail from "./FriendDetail";
 import Search from "./Search";
 import Save from "./Save";
-
+import Demo from "./Demo";
 export {
   Home,
   Register,
@@ -30,4 +30,5 @@ export {
   ProfileDetail,
   Search,
   Save,
+  Demo,
 };
