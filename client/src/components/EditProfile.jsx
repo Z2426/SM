@@ -14,7 +14,20 @@ const EditProfile = () => {
   const [errMsg, seterrMsg] = useState("");
   const [isSubmitting, setisSubmitting] = useState(false);
   const [picture, setPicuter] = useState(null);
-
+  const [preview, setPreview] = useState();
+  const [file, setFile] = useState(null);
+  const [review, setReview] = useState();
+  const handlebg = (e) => {
+    // console.log(e.target.files[0]);
+    setPicuter(e.target.files[0]);
+    setFile(e.target.files[0]);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setReview(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+    setPreview(true);
+  };
   const {
     register,
     handleSubmit,
@@ -59,6 +72,7 @@ const EditProfile = () => {
         }, 3000);
       }
       setisSubmitting(false);
+      window.location.reload();
     } catch (error) {
       console.log(error);
       setisSubmitting(false);
@@ -152,16 +166,28 @@ const EditProfile = () => {
                 error={errors.location ? errors.location?.message : ""}
               />
 
-              <label
-                className="flex items-center gap-1 text-base text-ascent-2
-              hover:text-ascent cursor-pointer my-4"
-                htmlFor="imgUpload"
-              >
+              <label className="w-full flex justify-center items-center">
+                {review ? (
+                  <img
+                    src={review}
+                    className="object-cover rounded-full h-24 w-24"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    src={user?.profileUrl}
+                    className="object-cover rounded-full h-24 w-24"
+                    alt=""
+                  />
+                )}
+
                 <input
                   type="file"
-                  className=""
-                  id="imgUpload"
-                  onChange={(e) => handleSelect(e)}
+                  className="hidden w-full bg-secondary"
+                  id="avatar"
+                  onInput={(e) => {
+                    e.target.value[0] && handlebg(e);
+                  }}
                   accept=".jpg, .png, .jpeg"
                 />
               </label>

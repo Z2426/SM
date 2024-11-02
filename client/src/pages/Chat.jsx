@@ -279,7 +279,7 @@ const Chat = () => {
                       className="hidden"
                       accept=".jpg, .png, .jpeg"
                       onInput={(e) => {
-                        handlebg(e);
+                        e.target.files[0] && handlebg(e);
                       }}
                     />
                   </label>

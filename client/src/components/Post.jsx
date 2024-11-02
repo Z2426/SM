@@ -254,7 +254,7 @@ const Post = ({ onEvent }) => {
                                   <input
                                     type="file"
                                     onChange={(e) => {
-                                      e && handlebg(e);
+                                      e.target.files[0] && handlebg(e);
                                     }}
                                     className="hidden"
                                     id="imgUpload"

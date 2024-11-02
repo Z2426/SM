@@ -77,36 +77,50 @@ const ProfileFix = () => {
                 className="object-cover h-full w-full
               overflow-hidden rounded-xl z-0"
               />
-
-              <label className="absolute right-4 bottom-2 z-30 bg-primary/50 px-6 py-2 rounded-xl border border-[#66666690] cursor-pointer">
-                Edit
-                <input
-                  type="file"
-                  className="hidden"
-                  accept=".jpg, .png, .jpeg"
-                  onInput={(e) => handlebg(e)}
-                />
-              </label>
+              {id == user?._id && (
+                <label className="absolute right-4 bottom-2 z-30 bg-primary/50 px-6 py-2 rounded-xl border border-[#66666690] cursor-pointer">
+                  Edit
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".jpg, .png, .jpeg"
+                    onInput={(e) => {
+                      e.target.files[0] && handlebg(e);
+                    }}
+                  />
+                </label>
+              )}
             </div>
 
             <div className="select-none relative text-ascent-1 w-full rounded-xl mb-5 py-7 text-center bg-primary pb-8 border-b-2 border-[#66666645] flex flex-col items-center">
               <div className="">
-                <img
-                  src={userInfor?.profileUrl ?? NoProfile}
-                  alt={userInfor?.email}
-                  className="object-cover h-52 w-52 
+                <label htmlFor="imgUpload" className="cursor-pointer">
+                  <img
+                    src={userInfor?.profileUrl ?? NoProfile}
+                    alt={userInfor?.email}
+                    className="object-cover h-52 w-52 
                 rounded-full relative bottom-12 overflow-hidden border-8 border-bgColor text-ascent-2"
-                />
+                  />
+                  <input
+                    type="file"
+                    className="hidden"
+                    id="imgUpload"
+                    // onChange={(e) => handleSelect(e)}
+                    accept=".jpg, .png, .jpeg"
+                  />
+                </label>
               </div>
               <div className="select-none relative font-bold text-4xl bottom-4">
                 {userInfor?.firstName} {userInfor?.lastName}
               </div>
-              <div
-                onClick={() => handleedit()}
-                className="absolute right-4 bottom-2 z-30 bg-primary px-6 py-4 rounded-xl border border-[#66666690] cursor-pointer"
-              >
-                Edit Profile
-              </div>
+              {id == user?._id && (
+                <div
+                  onClick={() => handleedit()}
+                  className="absolute right-4 bottom-2 z-30 bg-primary px-6 py-4 rounded-xl border border-[#66666690] cursor-pointer"
+                >
+                  Edit Profile
+                </div>
+              )}
             </div>
             {/* <div className="flex overflow-auto"> */}
             <div className="w-full flex gap-6 ">
