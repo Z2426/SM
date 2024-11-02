@@ -4,7 +4,7 @@ import CustomButton from "./CustomButton";
 import TopBar from "./TopBar";
 import ProfileCard from "./ProfileCard";
 import FriendsCard from "./FriendsCard";
-import FriendCard from "./FriendCard";
+import FriendCardRequest from "./FriendCardRequest";
 import PostCard from "./PostCard";
 import EditProfile from "./EditProfile";
 import Notification from "./Notification";
@@ -17,6 +17,7 @@ import FriendMain from "./Friend_main";
 import PostAudioPostAudience from "./Post_audience";
 import SaveCard from "./Saveitems";
 import ImageCheck from "./ImageCheck";
+import FriendCardSuggest from "./FriendCardSuggest";
 export {
   TextInput,
   Loading,
@@ -33,8 +34,9 @@ export {
   EditFix,
   ChatCard,
   PostAudioPostAudience,
-  FriendCard,
+  FriendCardRequest,
   FriendMain,
   SaveCard,
   ImageCheck,
+  FriendCardSuggest,
 };

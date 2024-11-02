@@ -192,7 +192,10 @@ const PostPage = () => {
     }
   };
   const handleLike = async (uri) => {
-    await likePost(uri);
+    console.log(uri);
+    const token = user?.token;
+    await likePost({ uri, token });
+    await getPost();
     await getComments(post?._id);
   };
   const handleDeletePost = async (id) => {
@@ -245,7 +248,7 @@ lg:rounded-lg h-screen overflow-hidden"
 
                 <div className="w-full flex justify-between overflow-auto">
                   <div className="">
-                    <Link to={"/profile/" + post?.userId._id}>
+                    <Link to={"/profilefix/" + post?.userId._id}>
                       <p className="font-medium text-lg text-ascent-1">
                         {post?.userId?.firstName} {post?.userId?.lastName}
                       </p>
@@ -265,11 +268,11 @@ lg:rounded-lg h-screen overflow-hidden"
               </div>
               <p className="text-ascent-2">{post?.description}</p>
               {post?.image && (
-                <div className="h-fit w-full flex justify-center items-center">
+                <div className="bg-secondary rounded-2xl h-full w-full flex justify-center items-center overflow-hidden">
                   <img
                     src={post?.image}
                     alt="post image"
-                    className="w-3/6 mt-2 rounded-lg "
+                    className="max-h-full mt-2 rounded-lg "
                   ></img>
                 </div>
               )}

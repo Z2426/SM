@@ -447,39 +447,43 @@ const Post = ({ onEvent }) => {
                             placeholder="Search"
                           />
                           <div className="w-full h-full ">
-                            <label
-                              htmlFor="default-radio-1"
-                              className="items-center mb-4 select-none w-full flex px-5 py-2 justify-between hover:bg-ascent-3/30 rounded-xl"
-                            >
-                              <label
-                                htmlFor="default-radio-1"
-                                className="ms-2 text-gray-900 dark:text-gray-300 font-medium flex"
-                              >
-                                <img
-                                  src={user?.profileUrl}
-                                  alt=""
-                                  className="h-16 w-16 object-cover rounded-full mr-3"
-                                />
-                                <div className="h-full flex justify-center items-center">
-                                  Public
-                                  <br />
-                                  {/* <span className="text-ascent-2 text-base">
+                            {user?.friends.map((friend) => {
+                              return (
+                                <label
+                                  htmlFor={friend._id}
+                                  className="items-center mb-4 select-none w-full flex px-5 py-2 justify-between hover:bg-ascent-3/30 rounded-xl"
+                                >
+                                  <label
+                                    htmlFor={friend._id}
+                                    className="ms-2 text-gray-900 dark:text-gray-300 font-medium flex"
+                                  >
+                                    <img
+                                      src={friend?.profileUrl}
+                                      alt=""
+                                      className="h-16 w-16 object-cover rounded-full mr-3"
+                                    />
+                                    <div className="h-full flex justify-center items-center">
+                                      {friend.firstName} {friend.lastName}
+                                      <br />
+                                      {/* <span className="text-ascent-2 text-base">
                                     Anyone can see
                                   </span> */}
-                                </div>
-                              </label>
-                              <input
-                                id="default-radio-1"
-                                type="radio"
-                                value="public"
-                                name="auth"
-                                onChange={(e) => {
-                                  setOption(e.target.value);
-                                }}
-                                className="w-5 h-5 text-blue-600  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 
+                                    </div>
+                                  </label>
+                                  <input
+                                    id={friend._id}
+                                    type="radio"
+                                    value="public"
+                                    name="auth"
+                                    onChange={(e) => {
+                                      setOption(e.target.value);
+                                    }}
+                                    className="w-5 h-5 text-blue-600  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 
                             dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600"
-                              />
-                            </label>
+                                  />
+                                </label>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
@@ -497,7 +501,7 @@ const Post = ({ onEvent }) => {
                           />
                           <div className="w-full h-full flex-col-reverse gap-80">
                             <div className="w-full flex justify-end">
-                              <CustomButton
+                              {/* <CustomButton
                                 type=""
                                 Post
                                 onClick={() => {
@@ -508,7 +512,7 @@ const Post = ({ onEvent }) => {
                                 containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
                   py-3 text-sm font-medium text-white outline-none`}
                                 tittle="Done"
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>

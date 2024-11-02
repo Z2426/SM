@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FriendCard from "./FriendCard";
+import FriendCard from "./FriendCardRequest";
 import { FaUserFriends } from "react-icons/fa";
 import { GiThreeFriends } from "react-icons/gi";
 import { FaAngleRight } from "react-icons/fa";

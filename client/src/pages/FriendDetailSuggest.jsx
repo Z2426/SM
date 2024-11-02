@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
 import {
   CustomButton,
   EditProfile,
@@ -17,6 +18,7 @@ import {
   likePost,
   apiRequest,
   viewUserProfile,
+  sendFriendRequest,
 } from "../until";
 import { Link } from "react-router-dom";
 import { CiLocationOn } from "react-icons/ci";
@@ -24,44 +26,24 @@ import { BsBriefcase, BsFacebook, BsInstagram } from "react-icons/bs";
 import { FaTwitterSquare } from "react-icons/fa";
 import moment from "moment";
 import { UpdateProfile } from "../redux/userSlice";
-const ProfileDetail = ({ title }) => {
+const FriendDetailSuggest = ({ title }) => {
+  const { id, key } = useParams();
   const [friend, setFriend] = useState();
+  const navigate = useNavigate();
   const { user, edit } = useSelector((state) => state.user);
+  const [uid, setUid] = useState(user?._id);
   const { posts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [uid, setUid] = useState(user?._id);
   const [userInfor, setUserInfor] = useState();
   const [banner, setBanner] = useState(user?.profileUrl ?? NoProfile);
-  // const uri = "/posts/get-user-post/" + uid;
+  const [suggestedFriends, setsuggestedFriends] = useState();
   const handleDelete = async (id) => {
     await deletePost(id, user.token);
     await getPosts();
   };
-  console.log(user);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (search === "") {
-      //   fetchSuggestFriends();
-    } else {
-      try {
-        console.log(`/users/search/${search}`);
-        const res = await apiRequest({
-          url: `/users/search/${search}`,
-          token: user?.token,
-          data: {},
-          method: "POST",
-        });
-        console.log(res);
-        // setsuggestedFriends(res);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-  // const fetchFriend = () => {};
   const handleLikePost = async (uri) => {
     await likePost({ uri: uri, token: user?.token });
     await getPosts(uid);
@@ -75,21 +57,71 @@ const ProfileDetail = ({ title }) => {
     console.log(id);
 
     const res = await getUserInfo(user?.token, id);
-    setUserInfor(res);
     setBanner(res?.profileUrl);
-    setUid(id);
+    setUserInfor(res);
   };
 
-  const handleedit = () => {
-    dispatch(UpdateProfile(true));
-  };
   console.log(userInfor);
+  const handleFriendRequest = async (id) => {
+    try {
+      const res = await sendFriendRequest(user.token, id);
+      await fetchSuggestFriends();
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchSuggestFriends = async () => {
+    try {
+      const res = await apiRequest({
+        url: "/users/suggested-friends",
+        token: user?.token,
+        method: "POST",
+      });
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
+      console.log(res);
+      setsuggestedFriends(res);
+    } catch (error) {
+      //console.log(error);
+    }
+  };
+
+  const handleSearch = async (e) => {
+    console.log(e.target.value);
+    // e.key === "Enter";
+    // e.preventDefault();
+    if (e === "") {
+      fetchSuggestFriends();
+    } else {
+      try {
+        // console.log(`/users/search/${e.target.value}`);
+        const res = await apiRequest({
+          url: `/users/search/${e.target.value}`,
+          token: user?.token,
+          data: {},
+          method: "POST",
+        });
+        console.log(res);
+        setsuggestedFriends(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
-    getUser(user?._id);
+    fetchSuggestFriends();
+    getUser();
     getPosts(user?._id);
-  }, []);
+  }, [id]);
 
   return (
     <div className="home w-full bg-bgColor text-ascent-1 overflow-hidden lg:rounded-lg h-screen items-center px-0 lg:px-10 select-none">
@@ -97,10 +129,10 @@ const ProfileDetail = ({ title }) => {
       <div className="w-full h-full flex justify-center pt-5 pb-32">
         <div className="bg-primary h-full w-1/5 rounded-lg">
           <div className="w-full h-full flex flex-col gap-4 pt-4 px-4 select-none overflow-auto">
-            <span className="text-xl font-semibold">All Friend</span>
-            <form
+            <span className="text-xl font-semibold">Friend Sugguest</span>
+            <div
               className="hidden md:flex items-center justify-center gap-5"
-              onSubmit={(e) => handleSearch(e)}
+              //   onSubmit={(e) => handleSearch(e)}
             >
               {/* <TextInput
                       styles="w-full rounded-l-full py-5"
@@ -111,8 +143,8 @@ const ProfileDetail = ({ title }) => {
                 className="bg-primary placeholder:text-[#666] px-5 py-1 border-[#66666690] border rounded-full w-full 
                       outline-none text-ascent-2"
                 placeholder="Search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                // value={search}
+                onChangeCapture={(e) => handleSearch(e)}
               />
               {/* <CustomButton
                       tittle="search"
@@ -127,39 +159,44 @@ const ProfileDetail = ({ title }) => {
               >
                 search
               </button> */}
-            </form>
-            {user?.friends.map((friend) => {
-              console.log(friend);
-              return (
-                <div
-                  className="w-full flex gap-4 items-center cursor-pointer"
-                  onClick={() => {
-                    getUser(friend?._id);
-                    setUid(friend?._id);
-                    getPosts(friend?._id);
-                  }}
-                >
-                  <img
-                    src={friend?.profileUrl ?? NoProfile}
-                    alt={friend?.firstName}
-                    className="w-16 h-16 object-cover rounded-full"
-                  />
-                  <div className="flex-1">
-                    <p className="text-base font-medium text-ascent-1">
-                      {friend?.firstName} {friend?.lastName}
-                    </p>
-                    <span className="text-sm text-ascent-2">
-                      {friend?.profession ?? "No Profession"}
-                    </span>
+            </div>
+            {suggestedFriends ? (
+              suggestedFriends.map((friend) => {
+                return (
+                  <div
+                    className="w-full flex gap-4 items-center cursor-pointer"
+                    onClick={() => {
+                      getUser(friend?._id);
+                      setUid(friend?._id);
+                      getPosts(friend?._id);
+                    }}
+                  >
+                    <img
+                      src={friend?.profileUrl ?? NoProfile}
+                      alt={friend?.firstName}
+                      className="w-16 h-16 object-cover rounded-full"
+                    />
+                    <div className="flex-1">
+                      <p className="text-base font-medium text-ascent-1">
+                        {friend?.firstName} {friend?.lastName}
+                      </p>
+                      <span className="text-sm text-ascent-2">
+                        {friend?.profession ?? "No Profession"}
+                      </span>
+                    </div>
+                    <CustomButton
+                      onClick={() => {
+                        handleFriendRequest(friend?._id);
+                      }}
+                      containerStyles="bg-blue px-3 rounded-xl py-1 text-white"
+                      tittle="Add"
+                    />
                   </div>
-                  <CustomButton
-                    containerStyles="bg-blue px-3 rounded-xl py-1 text-white"
-                    tittle="Unfriend"
-                  />
-                </div>
-              );
-            })}
-
+                );
+              })
+            ) : (
+              <div></div>
+            )}
             {/* {(() => {
               const items = [];
               for (let i = 0; i < 20; i++) {
@@ -322,4 +359,4 @@ const ProfileDetail = ({ title }) => {
   );
 };
 
-export default ProfileDetail;
+export default FriendDetailSuggest;

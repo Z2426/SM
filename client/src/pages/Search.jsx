@@ -113,7 +113,7 @@ lg:rounded-lg h-screen overflow-hidden"
                 </span>
               </Link>
               <Link
-                to={"/frienddetails"}
+                to={"/friendsuggest"}
                 className="flex gap-2 hover:bg-secondary w-full rounded-xl py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">

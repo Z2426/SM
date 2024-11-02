@@ -7,16 +7,19 @@ import CustomButton from "./CustomButton";
 import { PiSignOut } from "react-icons/pi";
 import { useForm } from "react-hook-form";
 import { BsMoon, BsSunFill } from "react-icons/bs";
-import { IoChatboxOutline } from "react-icons/io5";
+import { MdDarkMode } from "react-icons/md";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaTools } from "react-icons/fa";
+import { IoNotifications } from "react-icons/io5";
+import { FaSun } from "react-icons/fa";
 import { setTheme } from "../redux/theme";
 import { Logout, Setnotification } from "../redux/userSlice";
 import { fetchNotifications, fetchPosts } from "../until";
 import Notification from "./Notification";
 import { CiSettings } from "react-icons/ci";
+import { FaFacebookMessenger } from "react-icons/fa";
 import { UpdateProfile } from "../redux/userSlice";
-import { IoIosSettings } from "react-icons/io";
+import { GoSun } from "react-icons/go";
 import { ImProfile } from "react-icons/im";
 import { NoProfile } from "../assets";
 import { ProfileFix } from "../pages";
@@ -61,7 +64,7 @@ const TopBar = ({ user, setKey }) => {
         userId: user?._id,
         dispatch,
       });
-      // console.log(res);
+      console.log(res);
       setNotifications(res.notifications);
     } catch (error) {
       console.log(error);
@@ -144,19 +147,22 @@ const TopBar = ({ user, setKey }) => {
             </div>
           )}
 
-          <button onClick={() => handleTheme()}>
-            {theme ? <BsMoon /> : <BsSunFill />}
+          <button
+            className="px-3 py-3 text-ascent-1 rounded-full bg-ascent-3/30 cursor-pointer hover:bg-ascent-3/70"
+            onClick={() => handleTheme()}
+          >
+            {theme == "dark" ? <GoSun size={25} /> : <MdDarkMode size={25} />}
           </button>
-          <div className="hidden lg:flex">
+          <div className="px-3 py-3 text-ascent-1 rounded-full hidden lg:flex bg-ascent-3/30 cursor-pointer hover:bg-ascent-3/70">
             <Link to={`/chat/${user?._id}`}>
-              <IoChatboxOutline />
+              <FaFacebookMessenger size={25} />
             </Link>
           </div>
           <div
-            className="hidden lg:flex cursor-pointer"
+            className=" px-3 py-3 text-ascent-1 rounded-full hidden lg:flex bg-ascent-3/30 cursor-pointer hover:bg-ascent-3/70"
             onClick={() => dispatch(Setnotification(!notification))}
           >
-            <IoMdNotificationsOutline />
+            <IoNotifications size={25} />
           </div>
           <img
             src={user?.profileUrl ?? NoProfile}
@@ -178,7 +184,7 @@ const TopBar = ({ user, setKey }) => {
 
       {notification && (
         <div className="bg-primary">
-          <div className="top-20 right-32 z-40 absolute w-1/5 overflow-auto border bg-primary rounded-xl text-ascent-1 h-1/2 border-[#66666690] justify-center flex">
+          <div className="top-20 right-32 z-50 absolute w-1/5 overflow-auto border bg-primary rounded-xl text-ascent-1 h-1/2 border-[#66666690] justify-center flex">
             <Notification notify={notifications} />
           </div>
         </div>

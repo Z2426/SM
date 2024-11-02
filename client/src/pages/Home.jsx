@@ -139,7 +139,7 @@ const Home = () => {
         userId: user?._id,
         dispatch,
       });
-      //console.log(res);
+      console.log(res);
       setNotifications(res.notifications);
     } catch (error) {
       console.log(error);
@@ -230,7 +230,7 @@ const Home = () => {
     try {
       const res = await getUserInfo(user?.token);
       const newData = { token: user?.token, ...res };
-      //console.log(user);
+
       dispatch(UserLogin(newData));
     } catch (error) {
       console.log(error);
@@ -520,7 +520,7 @@ const Home = () => {
                 {friendRequest?.map(({ _id, requestFrom: from }) => (
                   <div key={_id} className="flex items-center justify-between">
                     <Link
-                      to={"/profile/" + from._id}
+                      to={"/profilefix/" + from._id}
                       className="w-full flex gap-4 items-center 
                           cursor-pointer "
                     >
@@ -599,7 +599,7 @@ const Home = () => {
                     key={friend._id}
                   >
                     <Link
-                      to={"/profile/" + friend?._id}
+                      to={"/profilefix/" + friend?._id}
                       key={friend._id}
                       className="w-full flex gap-4 items-center 
                   cursor-pointer"

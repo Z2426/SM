@@ -24,23 +24,44 @@ import { BsBriefcase, BsFacebook, BsInstagram } from "react-icons/bs";
 import { FaTwitterSquare } from "react-icons/fa";
 import moment from "moment";
 import { UpdateProfile } from "../redux/userSlice";
-const ProfileDetail = ({ title }) => {
+const FriendDetailRequest = ({ title }) => {
+  const { id, key } = useParams();
   const [friend, setFriend] = useState();
+
   const { user, edit } = useSelector((state) => state.user);
+  const [uid, setUid] = useState(user?._id);
   const { posts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [uid, setUid] = useState(user?._id);
+  const [friendRequest, setfriendRequest] = useState();
+  const [suggestedFriends, setsuggestedFriends] = useState();
   const [userInfor, setUserInfor] = useState();
   const [banner, setBanner] = useState(user?.profileUrl ?? NoProfile);
-  // const uri = "/posts/get-user-post/" + uid;
   const handleDelete = async (id) => {
     await deletePost(id, user.token);
-    await getPosts();
+    await getPosts(uid);
   };
-  console.log(user);
+  const acceptFriendRequest = async (id, status) => {
+    console.log(id);
+    try {
+      const res = await apiRequest({
+        url: "/users/accept-request",
+        token: user?.token,
+        method: "POST",
+        data: { rid: id, status },
+      });
+      console.log(res);
 
+      setfriendRequest(res?.data);
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleSearch = async (e) => {
     e.preventDefault();
     if (search === "") {
@@ -61,7 +82,7 @@ const ProfileDetail = ({ title }) => {
       }
     }
   };
-  // const fetchFriend = () => {};
+
   const handleLikePost = async (uri) => {
     await likePost({ uri: uri, token: user?.token });
     await getPosts(uid);
@@ -75,21 +96,55 @@ const ProfileDetail = ({ title }) => {
     console.log(id);
 
     const res = await getUserInfo(user?.token, id);
-    setUserInfor(res);
     setBanner(res?.profileUrl);
-    setUid(id);
+    setUserInfor(res);
   };
 
-  const handleedit = () => {
-    dispatch(UpdateProfile(true));
+  const fetchSuggestFriends = async () => {
+    try {
+      const res = await apiRequest({
+        url: "/users/suggested-friends",
+        token: user?.token,
+        method: "POST",
+      });
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
+      console.log(res);
+      setsuggestedFriends(res);
+    } catch (error) {
+      //console.log(error);
+    }
   };
+
+  const fetchFriendRequest = async () => {
+    try {
+      const res = await apiRequest({
+        url: "/users/get-friend-request",
+        token: user?.token,
+        method: "POST",
+      });
+      console.log(res);
+      if (res?.status === "failed") {
+        Cookies.set("message", res?.message, { expires: 7 });
+        navigate("/error");
+      }
+      setfriendRequest(res?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   console.log(userInfor);
 
   useEffect(() => {
     setLoading(true);
-    getUser(user?._id);
+    getUser();
+    fetchFriendRequest();
+    fetchSuggestFriends();
     getPosts(user?._id);
-  }, []);
+  }, [id]);
 
   return (
     <div className="home w-full bg-bgColor text-ascent-1 overflow-hidden lg:rounded-lg h-screen items-center px-0 lg:px-10 select-none">
@@ -97,7 +152,7 @@ const ProfileDetail = ({ title }) => {
       <div className="w-full h-full flex justify-center pt-5 pb-32">
         <div className="bg-primary h-full w-1/5 rounded-lg">
           <div className="w-full h-full flex flex-col gap-4 pt-4 px-4 select-none overflow-auto">
-            <span className="text-xl font-semibold">All Friend</span>
+            <span className="text-xl font-semibold">Friend Request</span>
             <form
               className="hidden md:flex items-center justify-center gap-5"
               onSubmit={(e) => handleSearch(e)}
@@ -107,13 +162,7 @@ const ProfileDetail = ({ title }) => {
                       placeholder="What's on your mind...."
                       register={register("search")}
                     /> */}
-              <input
-                className="bg-primary placeholder:text-[#666] px-5 py-1 border-[#66666690] border rounded-full w-full 
-                      outline-none text-ascent-2"
-                placeholder="Search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+
               {/* <CustomButton
                       tittle="search"
                       type="submit"
@@ -128,45 +177,63 @@ const ProfileDetail = ({ title }) => {
                 search
               </button> */}
             </form>
-            {user?.friends.map((friend) => {
-              console.log(friend);
-              return (
-                <div
-                  className="w-full flex gap-4 items-center cursor-pointer"
-                  onClick={() => {
-                    getUser(friend?._id);
-                    setUid(friend?._id);
-                    getPosts(friend?._id);
-                  }}
-                >
-                  <img
-                    src={friend?.profileUrl ?? NoProfile}
-                    alt={friend?.firstName}
-                    className="w-16 h-16 object-cover rounded-full"
-                  />
-                  <div className="flex-1">
-                    <p className="text-base font-medium text-ascent-1">
-                      {friend?.firstName} {friend?.lastName}
-                    </p>
-                    <span className="text-sm text-ascent-2">
-                      {friend?.profession ?? "No Profession"}
-                    </span>
+            {friendRequest ? (
+              friendRequest.map((friend) => {
+                return (
+                  <div
+                    className="w-full flex gap-4 items-center cursor-pointer"
+                    onClick={() => {
+                      getUser(friend?._id);
+                      setUid(friend?._id);
+                      getPosts(friend?._id);
+                    }}
+                  >
+                    <img
+                      src={friend?.profileUrl ?? NoProfile}
+                      alt={friend?.firstName}
+                      className="w-16 h-16 object-cover rounded-full"
+                    />
+                    <div className="flex-1">
+                      <p className="text-base  font-medium text-ascent-1">
+                        {friend?.firstName} {friend?.lastName}
+                      </p>
+                      <span className="text-sm text-ascent-2">
+                        {friend?.profession ?? "No Profession"}
+                      </span>
+                    </div>
+                    <div className="flex gap-1 ">
+                      <CustomButton
+                        onClick={() => {
+                          acceptFriendRequest(friend?._id, "Accepted");
+                        }}
+                        containerStyles="bg-blue px-3 rounded-xl py-1 text-white"
+                        tittle="Accept"
+                      />
+                      <CustomButton
+                        onClick={() => {
+                          acceptFriendRequest(friend?._id, "Denied");
+                        }}
+                        containerStyles="bg-ascent-3/20 px-3 rounded-xl py-1 text-white"
+                        tittle="Delete"
+                      />
+                    </div>
                   </div>
-                  <CustomButton
-                    containerStyles="bg-blue px-3 rounded-xl py-1 text-white"
-                    tittle="Unfriend"
-                  />
-                </div>
-              );
-            })}
-
+                );
+              })
+            ) : (
+              <div></div>
+            )}
             {/* {(() => {
               const items = [];
               for (let i = 0; i < 20; i++) {
                 items.push(
                   <div
                     className="w-full flex gap-4 items-center cursor-pointer"
-                    onClick={() => getUser("")}
+                    onClick={() => {
+                      getUser(friend?._id);
+                      setUid(friend?._id);
+                      getPosts(friend?._id);
+                    }}
                   >
                     <img
                       src={user?.profileUrl ?? NoProfile}
@@ -182,7 +249,8 @@ const ProfileDetail = ({ title }) => {
                       </span>
                     </div>
                     <CustomButton
-                      containerStyles="bg-blue px-3 rounded-xl py-1"
+                      onClick={() => {}}
+                      containerStyles="bg-blue px-3 rounded-xl py-1 text-white"
                       tittle="Unfriend"
                     />
                   </div>
@@ -322,4 +390,4 @@ const ProfileDetail = ({ title }) => {
   );
 };
 
-export default ProfileDetail;
+export default FriendDetailRequest;

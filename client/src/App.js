@@ -18,6 +18,9 @@ import {
 } from "./pages";
 import { useSelector } from "react-redux";
 import PrivateRoute from "./until/privateroute";
+import { FriendCardRequest } from "./components";
+import FriendDetailRequest from "./pages/FriendDetailRequest";
+import FriendDetailSuggest from "./pages/FriendDetailSuggest";
 
 function Layout() {
   const { user } = useSelector((state) => state.user);
@@ -52,7 +55,9 @@ function App() {
             {/* <Route path="/admin" element={<Admin />} /> */}
             <Route path="/" element={<Home />} />
             <Route path="/friend" element={<Friend />} />
-            <Route path="/frienddetails/:key?" element={<ProfileDetail />} />
+            <Route path="/frienddetails" element={<ProfileDetail />} />
+            <Route path="/friendsuggest" element={<FriendDetailSuggest />} />
+            <Route path="/friendrequest" element={<FriendDetailRequest />} />
             <Route path="/profile/:id?" element={<Profile />} />
             <Route path="/chat/:id?" element={<Chat />} />
             <Route path="/post/:id?" element={<PostPage />} />
