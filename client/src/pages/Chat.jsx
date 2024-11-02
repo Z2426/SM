@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FriendsCard,
   ProfileCard,
@@ -17,7 +17,7 @@ import { IoCallSharp } from "react-icons/io5";
 import { MdEmojiEmotions } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import Picker from "emoji-picker-react";
-import { NoProfile } from "../assets";
+import { BgImage, NoProfile } from "../assets";
 const UserCard = (user) => {
   //console.log(user);
   return (
@@ -46,6 +46,8 @@ const Chat = () => {
   const [showPicker, setShowPicker] = useState(false);
   const [review, setReview] = useState();
   const [reviewcheck, setReviewcheck] = useState(false);
+  const myDivRef = useRef(null);
+
   // console.log(user);
   const onEmojiClick = (e) => {
     setChat((prevInput) => prevInput + e.emoji);
@@ -60,14 +62,23 @@ const Chat = () => {
     reader.readAsDataURL(e.target.files[0]);
     // setPreview(true);
   };
+  const position = () => {
+    let position = document.getElementById("window_chat");
+    console.log(position.scrollTop);
+    console.log(position.scrollHeight);
+    position.scrollTop = position.scrollHeight;
+  };
+  useEffect(() => {
+    position();
+  }, []);
   return (
     <div>
       <div
-        className=" flex flex-col home w-full px-0 lg:px-10 pb-20 2xl-40 bg-bgColor 
+        className="flex flex-col home w-full px-0 lg:px-10  2xl-40 bg-bgColor 
     lg:rounded-lg h-screen overflow-hidden"
       >
         <TopBar user={user} />
-        <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
+        <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-32 h-full shrink-0">
           {/* {LEFT} */}
           <div className="h-full w-20 rounded-xl bg-primary overflow-hidden">
             <div className="w-full h-2/3 gap-7 flex flex-col items-center content-end justify-start py-10 ">
@@ -111,6 +122,7 @@ const Chat = () => {
 
             <div className="w-full h-full gap-3 flex flex-col pt-2">
               <UserCard user={user} />
+              {/* <UserCard user={user} />
               <UserCard user={user} />
               <UserCard user={user} />
               <UserCard user={user} />
@@ -118,14 +130,13 @@ const Chat = () => {
               <UserCard user={user} />
               <UserCard user={user} />
               <UserCard user={user} />
-              <UserCard user={user} />
-              <UserCard user={user} />
+              <UserCard user={user} /> */}
             </div>
             {/* <FriendsCard friends={user?.friends} /> */}
           </div>
-          <div className="flex-1 h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg">
+          <div className="flex-1 h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto rounded-lg justify-between">
             {/* Phần tiêu đề của khung chat */}
-            <div className="flex w-full justify-between mt-3 border-b border-[#66666645] pb-3 select-none px-3">
+            <div className="flex w-full justify-between mt-3 border-b border-[#66666645] pb-3 select-none ">
               <div className="text-ascent-1 font-bold text-3xl">
                 <div className=" flex text-ascent-1 text-sm items-center gap-1">
                   <img
@@ -146,84 +157,41 @@ const Chat = () => {
             </div>
 
             {/* Phần nội dung của khung chat */}
-            <div className="flex-1 overflow-y-auto">
+            <div id="window_chat" className="flex-1 h-3/4 overflow-auto">
               {/* Danh sách tin nhắn */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center">
-                  <div className="bg-gray-300 rounded-full h-8 w-8 flex items-center justify-center text-ascent-2"></div>
-                  <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2 h-full">
+                <div ref={myDivRef} className="flex items-center w-full">
+                  {/* <div className="bg-gray-300 rounded-full h-8 w-8 flex items-center justify-between text-ascent-2"></div> */}
+                  <div className="flex flex-col gap-5 w-full overflow-auto h-full">
                     <div className="w-full">
-                      <div className="bg-ascent-3/10 p-2 border rounded-xl ml-2 w-2/3">
-                        <p className="text-ascent-1 px-2 py-2">
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Soluta natus architecto eum deserunt facere
-                          enim? Aliquam laborum repellendus, placeat vero
-                          laboriosam quo in blanditiis nihil ullam debitis
-                          quisquam eum recusandae! Lorem ipsum dolor sit amet
-                          consectetur adipisicing elit. Labore fugiat aliquam,
-                          quas facilis atque distinctio corrupti expedita fugit
-                          deleniti eligendi, libero rerum quam. Amet at deleniti
-                          aliquam? Tenetur, similique voluptatibus?Lorem ipsum
-                          dolor sit amet consectetur adipisicing elit. Soluta
-                          natus architecto eum deserunt facere enim? Aliquam
-                          laborum repellendus, placeat vero laboriosam quo in
-                          blanditiis nihil ullam debitis quisquam eum
-                          recusandae! Lorem ipsum dolor sit amet consectetur
-                          adipisicing elit. Labore fugiat aliquam, quas facilis
-                          atque distinctio corrupti expedita fugit deleniti
-                          eligendi, libero rerum quam. Amet at deleniti aliquam?
-                          eleniti eligendi, libero rerum quam. Amet at deleniti
-                          aliquam? Tenetur, similique voluptatibus?Lorem ipsum
-                          dolor sit amet consectetur adipisicing elit. Soluta
-                          natus architecto eum deserunt facere enim? Aliquam
-                          laborum repellendus, placeat vero laboriosam quo in
-                          blanditiis nihil ullam debitis quisquam eum
-                          recusandae! Lorem ipsum dolor sit amet consectetur
-                          adipisicing elit. Labore fugiat aliquam, quas facilis
-                          atque distinctio corrupti expedita fugit deleniti
-                          eligendi, libero rerum quam. Amet at deleniti aliquam?
+                      <div className="bg-ascent-3/10 p-2 border rounded-xl ml-2 max-w-2xl">
+                        <p className="text-justify text-ascent-1 px-2 py-2">
+                          Hi there, I’m sorry to keep you waiting. I’ll be back
+                          to assist you in a few moments. Hi there, I’m sorry to
+                          keep you waiting. I’ll be back to assist you in a few
                         </p>
                       </div>
+                      <img
+                        src={BgImage}
+                        alt=""
+                        className="w-1/3 p-2 ml-2 rounded-3xl"
+                      />
                     </div>
+
                     <div className="w-full flex justify-center">
-                      <span className="text-ascent-1 ">Date nn/mm time</span>
+                      <span className="text-ascent-1 ">20/10/2024</span>
                     </div>
-                    <div className="w-full flex justify-center">{}</div>
+                    <div className="w-full flex justify-center"></div>
                     <div className="w-full flex justify-end">
-                      <div className="bg-blue p-2 border rounded-xl ml-2 w-2/3">
-                        <p className="text-white px-2 py-2">
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Soluta natus architecto eum deserunt facere
-                          enim? Aliquam laborum repellendus, placeat vero
-                          laboriosam quo in blanditiis nihil ullam debitis
-                          quisquam eum recusandae! Lorem ipsum dolor sit amet
-                          consectetur adipisicing elit. Labore fugiat aliquam,
-                          quas facilis atque distinctio corrupti expedita fugit
-                          deleniti eligendi, libero rerum quam. Amet at deleniti
-                          aliquam? Tenetur, similique voluptatibus?Lorem ipsum
-                          dolor sit amet consectetur adipisicing elit. Soluta
-                          natus architecto eum deserunt facere enim? Aliquam
-                          laborum repellendus, placeat vero laboriosam quo in
-                          blanditiis nihil ullam debitis quisquam eum
-                          recusandae! Lorem ipsum dolor sit amet consectetur
-                          adipisicing elit. Labore fugiat aliquam, quas facilis
-                          atque distinctio corrupti expedita fugit deleniti
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Soluta natus architecto eum deserunt facere
-                          enim? Aliquam laborum repellendus, placeat vero
-                          laboriosam quo in blanditiis nihil ullam debitis
-                          quisquam eum recusandae! Lorem ipsum dolor sit amet
-                          consectetur adipisicing elit. Labore fugiat aliquam,
-                          quas facilis atque distinctio corrupti expedita fugit
-                          deleniti eligendi, libero rerum quam. Amet at deleniti
-                          aliquam? Tenetur, similique voluptatibus?Lorem ipsum
-                          dolor sit amet consectetur adipisicing elit. Soluta
-                          natus architecto eum deserunt facere enim? Aliquam
-                          laborum repellendus, placeat vero laboriosam quo in
-                          blanditiis nihil ullam debitis quisquam eum
-                          recusandae! Lorem ipsum dolor sit amet consectetur
-                          adipisicing elit. Labore fugiat aliquam, quas facilis
-                          atque distinctio corrupti expedita fugit deleniti
+                      <div className="bg-blue p-2 border rounded-xl ml-2 max-w-2xl">
+                        <p className="text-justify text-white px-2 py-2">
+                          Hi there, I’m sorry to keep you waiting. I’ll be back
+                          to assist you in a few moments.Hi there, I’m sorry to
+                          keep you waiting. I’ll be back to assist you in a few
+                          moments.Hi there, I’m sorry to keep you waiting. I’ll
+                          be back to assist you in a few moments.Hi there, I’m
+                          sorry to keep you waiting. I’ll be back to assist you
+                          in a few moments.Hi there,
                         </p>
                       </div>
                     </div>
