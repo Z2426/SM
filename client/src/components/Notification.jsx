@@ -19,12 +19,12 @@ const Notification = ({ notify }) => {
         <span className="font-medium "> Notification</span>
         <div className="font-normal text-base">
           <span
-            className={`w-fit  px-3 py-1 text-ascent-1 rounded-full hover:bg-ascent-3/100 cursor-pointer ${bg}`}
+            className={`w-fit  px-3 py-1 text-ascent-1 rounded-full hover:bg-bgColor cursor-pointer ${bg}`}
           >
             All
           </span>
           <span
-            className={`w-fit  px-3 py-1 text-ascent-1 rounded-full hover:bg-ascent-3/100 cursor-pointer ${bg}`}
+            className={`w-fit  px-3 py-1 text-ascent-1 rounded-full hover:bg-bgColor cursor-pointer ${bg}`}
           >
             Unread
           </span>

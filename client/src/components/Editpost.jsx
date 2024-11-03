@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { useForm } from "react-hook-form";
 import { MdClose } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import { AiOutlineDown } from "react-icons/ai";
 import Loading from "./Loading";
 import CustomButton from "./CustomButton";
 import { UpdatePost, UpdateProfile, UserLogin } from "../redux/userSlice";
-import { apiRequest, handFileUpload } from "../until";
+import { apiRequest, fetchPosts, handFileUpload } from "../until";
 import { FaEarthAfrica } from "react-icons/fa6";
 import { TiDeleteOutline } from "react-icons/ti";
 import { CiImageOn, CiShoppingTag } from "react-icons/ci";
@@ -14,13 +14,13 @@ import { useForm } from "react-hook-form";
 import { AiOutlinePlus } from "react-icons/ai";
 import { NoProfile } from "../assets";
 import ListCard from "./ListCard";
-const Post = ({ onEvent }) => {
-  const { user, post } = useSelector((state) => state.user);
+const Editpost = ({ onEvent, post, onClick }) => {
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [errMsg, seterrMsg] = useState("");
   const [isSubmitting, setisSubmitting] = useState(false);
   const [picture, setPicuter] = useState(null);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(post.description);
   const [images, setImages] = useState([]);
   const [preview, setPreview] = useState(false);
   const [write, setWrite] = useState(true);
@@ -28,10 +28,14 @@ const Post = ({ onEvent }) => {
   const [specific, setSpecific] = useState(false);
   const [file, setFile] = useState(null);
   const [posting, setPosting] = useState(false);
-  const [review, setReview] = useState();
+  const [review, setReview] = useState(post?.image ? post?.image : null);
   const [tem, setTem] = useState();
   const [lists, setLists] = useState([]);
   const [option, setOption] = useState("public");
+  console.log(post);
+  console.log(review);
+
+  // post?.image && setPreview(true);
 
   const handlebg = (e) => {
     // console.log(e.target.files[0]);
@@ -54,6 +58,13 @@ const Post = ({ onEvent }) => {
     setLists(memo);
 
     console.log(memo);
+  };
+  const fetchPost = async () => {
+    try {
+      await fetchPosts(user?.token, dispatch);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const {
@@ -120,28 +131,27 @@ const Post = ({ onEvent }) => {
       setisSubmitting(false);
     }
   };
-  const handleCheck = (id, check) => {
-    console.log(check);
-
-    lists.includes(id) ? (check = true) : (check = false);
-  };
   const handlePostSubmit = async (data) => {
     setPosting(true);
     setPreview(false);
     seterrMsg("");
     data.visibility = option;
-    // console.log(data);
+    console.log(data);
 
     try {
-      const uri = file && (await handFileUpload(file));
+      const uri = file ? await handFileUpload(file) : post?.image;
 
       const newData = uri ? { ...data, image: uri } : data;
+      console.log(newData);
+
       const res = await apiRequest({
-        url: "/posts/create-post",
+        url: `/posts/${post._id}`,
         data: newData,
         token: user?.token,
-        method: "POST",
+        method: "PUT",
       });
+      console.log(res);
+
       if (res?.status === "failed") {
         seterrMsg(res);
       } else {
@@ -150,12 +160,14 @@ const Post = ({ onEvent }) => {
         });
         setFile(null);
         seterrMsg("");
-        await onEvent();
+        // await onEvent();
       }
       setPosting(false);
       setFile(null);
       setPreview(false);
-      handleClose();
+      fetchPost();
+      close = onClick;
+      close();
     } catch (error) {
       console.log(error);
       setPosting(false);
@@ -169,6 +181,9 @@ const Post = ({ onEvent }) => {
   const handleSelect = (e) => {
     setPicuter(e.target.files[0]);
   };
+  useEffect(() => {
+    review ? setPreview(true) : setPreview(false);
+  }, []);
 
   return (
     <div>
@@ -195,10 +210,10 @@ const Post = ({ onEvent }) => {
                     htmlFor="name"
                     className="block w-full  text-xl text-ascent-1 text-center font-bold"
                   >
-                    Create Post
+                    Edit Post
                   </label>
 
-                  <button className="text-ascent-1" onClick={handleClose}>
+                  <button className="text-ascent-1" onClick={onClick}>
                     <MdClose size={22} />
                   </button>
                 </div>
@@ -303,7 +318,7 @@ const Post = ({ onEvent }) => {
                                 }}
                                 containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
                     py-3 text-sm font-medium text-white outline-none`}
-                                tittle="Post"
+                                tittle="Submit"
                               />
                             )}
                           </div>
@@ -518,34 +533,9 @@ const Post = ({ onEvent }) => {
                                     >
                                       {friend.firstName} {friend.lastName}
                                       <br />
-                                      {/* <span className="text-ascent-2 text-base">
-      Anyone can see
-    </span> */}
                                     </div>
                                   </div>
-                                  {/* <input
-      id={friend._id}
-      type="radio"
-      value="public"
-      name="auth"
-      onClick={(e) => {
-        // setOption(e.target.value);
-        pushList(friend._id);
-      }}
-      className={`${}w-5 h-5 text-blue-600  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 
-dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600`}
-    /> */}
                                 </div>
-                                // <ListCard
-                                //   friend={friend}
-                                //   onClick={() => {
-                                //     pushList(friend);
-                                //     console.log(lists);
-                                //     // handleCheck(friend._id, check);
-                                //   }}
-                                //   check={check}
-                                //   lists={lists}
-                                // />
                               );
                             })}
                           </div>
@@ -564,20 +554,7 @@ dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600`}
                             tittle="Back"
                           />
                           <div className="w-full h-full flex-col-reverse gap-80">
-                            <div className="w-full flex justify-end">
-                              {/* <CustomButton
-                                type=""
-                                Post
-                                onClick={() => {
-                                  setAudience(!audience);
-                                  // setWrite(!write);
-                                  console.log("press");
-                                }}
-                                containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
-                  py-3 text-sm font-medium text-white outline-none`}
-                                tittle="Done"
-                              /> */}
-                            </div>
+                            <div className="w-full flex justify-end"></div>
                           </div>
                         </div>
                       </div>
@@ -587,11 +564,10 @@ dark:ring-offset-gray-800  dark:bg-gray-700 dark:border-gray-600`}
               </div>
             </form>
           </span>
-          {/* &#8203; */}
         </div>
       </div>
     </div>
   );
 };
 
-export default Post;
+export default Editpost;

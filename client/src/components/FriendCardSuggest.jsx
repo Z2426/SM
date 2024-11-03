@@ -35,7 +35,12 @@ const FriendCardSuggest = ({ user, fetchSuggestFriends, friend }) => {
           className="w-44 h-44  object-cover"
         />
         <div className="w-full h-full py-3 flex flex-col justify-center items-center font-bold gap-5">
-          <span className="text-ascent-1 ">
+          <span
+            className="text-ascent-1 "
+            onClick={() => {
+              navigate("/profilefix/" + friend?._id);
+            }}
+          >
             {friend?.firstName} {friend?.lastName}
           </span>
           <div className="w-4/5">

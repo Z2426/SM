@@ -157,7 +157,7 @@ lg:rounded-lg h-screen overflow-hidden"
             <div className="bg-primary w-full h-fit rounded-lg flex flex-col gap-3 overflow-hidden">
               <Link
                 to={"/friendrequest"}
-                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center">
@@ -169,7 +169,7 @@ lg:rounded-lg h-screen overflow-hidden"
 
               <Link
                 to={"/friendsuggest"}
-                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center  ">
@@ -180,7 +180,7 @@ lg:rounded-lg h-screen overflow-hidden"
               </Link>
               <Link
                 to={"/frienddetails"}
-                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center  ">

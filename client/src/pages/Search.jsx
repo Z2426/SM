@@ -88,7 +88,7 @@ lg:rounded-lg h-screen overflow-hidden"
             </span>
             <div className="bg-primary w-full h-fit rounded-lg flex flex-col gap-3 overflow-hidden">
               <Link
-                className="flex gap-2 hover:bg-secondary w-full rounded-xl py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full rounded-xl py-2"
                 onClick={() => {
                   fetchPost();
                 }}
@@ -103,7 +103,7 @@ lg:rounded-lg h-screen overflow-hidden"
 
               <Link
                 to={"/frienddetails"}
-                className="flex gap-2 hover:bg-secondary w-full py-2 rounded-xl"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full py-2 rounded-xl"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center  ">
@@ -114,7 +114,7 @@ lg:rounded-lg h-screen overflow-hidden"
               </Link>
               <Link
                 to={"/friendsuggest"}
-                className="flex gap-2 hover:bg-secondary w-full rounded-xl py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full rounded-xl py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center  ">
@@ -132,7 +132,7 @@ lg:rounded-lg h-screen overflow-hidden"
                   People you may know
                 </span> */}
                 <div className="flex justify-center items-center flex-col">
-                  <div className="w-2/3 h-fit flex gap-2 flex-wrap justify-center">
+                  <div className="w-full h-fit flex gap-2 flex-wrap justify-center">
                     {/* {(() => {
                       const items = [];
                       for (let i = 0; i < 20; i++) {
@@ -145,7 +145,7 @@ lg:rounded-lg h-screen overflow-hidden"
                       return items;
                     })()} */}
                     {/* <div className=" w-2/3 h-20 flex flex-col"></div> */}
-                    <div className=" w-2/3 h-fit flex flex-col">
+                    <div className=" w-full h-fit flex flex-col">
                       {loading ? (
                         <Loading />
                       ) : posts?.length > 0 ? (

@@ -17,6 +17,7 @@ import {
   Post,
   ChatCard,
   ImageCheck,
+  Editpost,
 } from "../components";
 import Profile from "./Profile";
 // import { requests, suggest } from "../assets/data";
@@ -48,6 +49,7 @@ const Home = () => {
   const [notifications, setNotifications] = useState();
   const [suggestedFriends, setsuggestedFriends] = useState();
   const [errMsg, seterrMsg] = useState("");
+
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(false);
   const [search, setSearch] = useState("");
@@ -282,7 +284,7 @@ const Home = () => {
             <div className="bg-primary w-full h-fit rounded-lg flex flex-col gap-3 overflow-hidden">
               <Link
                 to={"/profilefix/" + user?._id}
-                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center">
@@ -297,7 +299,7 @@ const Home = () => {
               </Link>
               <Link
                 to={"/friend"}
-                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center">
@@ -309,7 +311,7 @@ const Home = () => {
 
               <Link
                 to={"/save"}
-                className="flex gap-2 hover:bg-secondary w-full px-6 py-2"
+                className="flex gap-2 hover:bg-ascent-3/30 w-full px-6 py-2"
               >
                 <span className="text-base font-medium text-ascent-1 flex items-center gap-2">
                   <div className="w-10 h-10 flex items-center justify-center  ">
@@ -641,6 +643,7 @@ const Home = () => {
 
       {edit && <EditFix />}
       {post && <Post onEvent={fetchPost} />}
+
       {/* {picreview && <ImageCheck />} */}
     </div>
   );

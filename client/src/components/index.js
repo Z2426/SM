@@ -18,6 +18,7 @@ import PostAudioPostAudience from "./Post_audience";
 import SaveCard from "./Saveitems";
 import ImageCheck from "./ImageCheck";
 import FriendCardSuggest from "./FriendCardSuggest";
+import Editpost from "./Editpost";
 export {
   TextInput,
   Loading,
@@ -39,4 +40,5 @@ export {
   SaveCard,
   ImageCheck,
   FriendCardSuggest,
+  Editpost,
 };
