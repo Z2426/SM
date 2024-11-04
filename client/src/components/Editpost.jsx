@@ -32,8 +32,8 @@ const Editpost = ({ onEvent, post, onClick }) => {
   const [tem, setTem] = useState();
   const [lists, setLists] = useState([]);
   const [option, setOption] = useState("public");
-  console.log(post);
-  console.log(review);
+  // console.log(post);
+  // console.log(review);
 
   // post?.image && setPreview(true);
 
@@ -49,7 +49,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
   };
   const pushList = (id) => {
     let memo = [...lists];
-    console.log(memo);
+    // console.log(memo);
 
     lists.includes(id)
       ? (memo = lists.filter((memo) => memo != id))
@@ -57,13 +57,13 @@ const Editpost = ({ onEvent, post, onClick }) => {
 
     setLists(memo);
 
-    console.log(memo);
+    // console.log(memo);
   };
   const fetchPost = async () => {
     try {
       await fetchPosts(user?.token, dispatch);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -76,7 +76,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
 
   const handlePreview = async (file) => {
     if (file) {
-      console.log(file);
+      // console.log(file);
       await setFile(file);
       setPreview(true);
     }
@@ -111,7 +111,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
         token: user?.token,
       });
 
-      console.log(res);
+      // console.log(res);
       if (res?.status === "failed") {
         seterrMsg(res);
       } else {
@@ -127,7 +127,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
       }
       setisSubmitting(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setisSubmitting(false);
     }
   };
@@ -136,13 +136,13 @@ const Editpost = ({ onEvent, post, onClick }) => {
     setPreview(false);
     seterrMsg("");
     data.visibility = option;
-    console.log(data);
+    // console.log(data);
 
     try {
       const uri = file ? await handFileUpload(file) : post?.image;
 
       const newData = uri ? { ...data, image: uri } : data;
-      console.log(newData);
+      // console.log(newData);
 
       const res = await apiRequest({
         url: `/posts/${post._id}`,
@@ -150,7 +150,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
         token: user?.token,
         method: "PUT",
       });
-      console.log(res);
+      // console.log(res);
 
       if (res?.status === "failed") {
         seterrMsg(res);
@@ -166,10 +166,10 @@ const Editpost = ({ onEvent, post, onClick }) => {
       setFile(null);
       setPreview(false);
       fetchPost();
-      close = onClick;
+      const close = onClick;
       close();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setPosting(false);
     }
   };
@@ -314,7 +314,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
                                 type="submit"
                                 Post
                                 onClick={() => {
-                                  console.log("press");
+                                  // console.log("press");
                                 }}
                                 containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
                     py-3 text-sm font-medium text-white outline-none`}
@@ -458,7 +458,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
                                 onClick={() => {
                                   setAudience(!audience);
                                   // setWrite(!write);
-                                  console.log("press");
+                                  // console.log("press");
                                 }}
                                 containerStyles={`inline-flex justify-center rounded-full bg-blue px-8
                     py-3 text-sm font-medium text-white outline-none`}
@@ -492,7 +492,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
                                       key={friend?._id}
                                       onClick={() => {
                                         pushList(friend);
-                                        console.log(lists);
+                                        // console.log(lists);
                                       }}
                                       className="flex flex-col justify-center items-center"
                                     >
@@ -515,7 +515,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
                                 <div
                                   onClick={() => {
                                     pushList(friend);
-                                    console.log(lists);
+                                    // console.log(lists);
                                   }}
                                   className={`${
                                     check ? "bg-ascent-3/10" : ""

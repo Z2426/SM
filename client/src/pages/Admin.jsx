@@ -4,6 +4,7 @@ import {
   Notification,
   ProfileCard,
   TopBarAdmin,
+  Reportlist,
 } from "../components/index";
 import { ListUser } from "../components/index";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,21 +15,26 @@ const Admin = () => {
   const { user, edit } = useSelector((state) => state.user);
   const [listUser, setListUser] = useState();
   const dispatch = useDispatch();
+  const [page, setPage] = useState(true);
   const [type, setType] = useState("");
+  const [suggestedFriends, setsuggestedFriends] = useState();
   const fetchUser = async () => {
     const uri = "/admin/show-all-user";
     const data = {
       user: { userId: user?._id },
     };
-
-    const res = await apiRequest({
-      url: uri,
-      token: user?.token,
-      data,
-      method: "GET",
-    });
-    setListUser(res?.data);
-    console.log(res);
+    try {
+      const res = await apiRequest({
+        url: uri,
+        token: user?.token,
+        data,
+        method: "GET",
+      });
+      setListUser(res?.data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchNotification = async () => {
@@ -87,16 +93,36 @@ lg:rounded-lg h-screen overflow-hidden"
               List User
             </span> */}
             <ProfileCard user={user} />
-            <Notification notify={notifications} />
+            {/* <Notification notify={notifications} /> */}
+            <div
+              onClick={() => {
+                setPage(true);
+              }}
+              className="w-full text-ascent-1 flex flex-col px-5 py-6 font-semibold text-lg hover:bg-ascent-3/30 rounded-xl justify-center items-start"
+            >
+              List User
+            </div>
+            <div
+              onClick={() => {
+                setPage(false);
+              }}
+              className="w-full text-ascent-1 flex flex-col px-5 py-6 font-semibold text-lg hover:bg-ascent-3/30 rounded-xl justify-center items-start"
+            >
+              Manager Report
+            </div>
           </div>
           {/* {CENTTER} */}
 
           <div className="flex-1 w-full h-full bg-primary px-4 flex flex-col overflow-y-auto rounded-lg items-center">
-            <ListUser
-              listUser={listUser}
-              fetchUser={fetchUser}
-              setListUser={setListUser}
-            />
+            {page ? (
+              <ListUser
+                listUser={listUser}
+                fetchUser={fetchUser}
+                setListUser={setListUser}
+              />
+            ) : (
+              <Reportlist />
+            )}
           </div>
         </div>
       </div>

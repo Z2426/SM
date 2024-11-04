@@ -32,106 +32,111 @@ const UserCard = ({ user, setDetails, handleHistory, setUserInfo }) => {
   //   setUser(user);
   // }, []);
   return (
-    <div className="mt-5 flex rounded border-b border-[#66666690]  bg-secondary gap-5 px-5 py-5 w-full">
-      <img
-        className="h-20 w-20 object-cover rounded-full"
-        src={
-          user?.profileUrl
-            ? user?.profileUrl
-            : `https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar.jpg`
-        }
-        alt="Avatar"
-      />
-      <div className="flex w-full gap-4">
-        <div className="flex flex-col text-right">
-          <span className="text-ascent-2">Name: </span>
-          <span className="text-ascent-2">Role: </span>
-          <span className="text-ascent-2">Email: </span>
-          <span className="text-ascent-2">Join at: </span>
-          <span className="text-ascent-2">Verified: </span>
-          <span className="text-ascent-2">Activity: </span>
-        </div>
-        <div className="w-full text-ascent-1 text-base flex flex-col items-start">
-          <span className="max-h-6 overflow-hidden">
-            {user?.firstName ? user?.firstName : "?"}{" "}
-            {user?.lastName ? user?.lastName : "?"}
-          </span>
-          <span className="max-h-6 overflow-hidden">
-            {user?.role ? user?.role : "?"}
-          </span>
-          <span className="max-h-6 overflow-hidden">
-            {user?.email ? user?.email : "?"}
-          </span>
-          <span className="max-h-6 overflow-hidden">
-            {user?.createdAt
-              ? moment(user?.createdAt).format("MMMM Do YYYY")
-              : "?"}
-          </span>
-          <span className="max-h-6 overflow-hidden">
-            {user?.verified === true ? "True" : "False"}
-          </span>
-          <div>
-            {isLoading ? (
-              <div className="mt-2">
-                <Loading />
-              </div>
-            ) : (
-              <div className="">
-                {user?.statusActive === true ? (
-                  <div>Active</div>
-                ) : (
-                  <div>Wait</div>
-                )}
-                {/* <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
-                  <CiLock /> Lock
+    <div>
+      <div className="mt-5 flex rounded border-b border-[#66666690]  bg-secondary gap-5 px-5 py-5 w-full">
+        <img
+          className="h-20 w-20 object-cover rounded-full"
+          src={
+            user?.profileUrl
+              ? user?.profileUrl
+              : `https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar.jpg`
+          }
+          alt="Avatar"
+        />
+        <div className="flex w-full gap-4">
+          <div className="flex flex-col text-right">
+            <span className="text-ascent-2">Name: </span>
+            <span className="text-ascent-2">Role: </span>
+            <span className="text-ascent-2">Email: </span>
+            <span className="text-ascent-2">Join at: </span>
+            <span className="text-ascent-2">Verified: </span>
+            <span className="text-ascent-2">Activity: </span>
+          </div>
+          <div className="w-full text-ascent-1 text-base flex flex-col items-start">
+            <span className="max-h-6 overflow-hidden">
+              {user?.firstName ? user?.firstName : "?"}{" "}
+              {user?.lastName ? user?.lastName : "?"}
+            </span>
+            <span className="max-h-6 overflow-hidden">
+              {user?.role ? user?.role : "?"}
+            </span>
+            <span className="max-h-6 overflow-hidden">
+              {user?.email ? user?.email : "?"}
+            </span>
+            <span className="max-h-6 overflow-hidden">
+              {user?.createdAt
+                ? moment(user?.createdAt).format("MMMM Do YYYY")
+                : "?"}
+            </span>
+            <span className="max-h-6 overflow-hidden">
+              {user?.verified === true ? "True" : "False"}
+            </span>
+            <div>
+              {isLoading ? (
+                <div className="mt-2">
+                  <Loading />
                 </div>
-                <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
-                  <CiUnlock /> Unlock
-                </div> */}
+              ) : (
+                <div className="">
+                  {user?.statusActive === true ? (
+                    <div>Active</div>
+                  ) : (
+                    <div>Wait</div>
+                  )}
+                  {/* <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
+                <CiLock /> Lock
               </div>
+              <div className="flex px-1 items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer border rounded-full justify-center">
+                <CiUnlock /> Unlock
+              </div> */}
+                </div>
 
-              // <input
-              //   className=""
-              //   type="checkbox"
-              //   onChange={() => {
-              //     handleloading();
-              //     rehandleloading();
-              //   }}
-              // />
-            )}
+                // <input
+                //   className=""
+                //   type="checkbox"
+                //   onChange={() => {
+                //     handleloading();
+                //     rehandleloading();
+                //   }}
+                // />
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="w-1/5 flex flex-col items-center justify-center gap-2">
-        <button
-          onClick={() => {
-            setUser(user);
-            setDetails();
-          }}
-          className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
-        >
-          View Details
-        </button>
-        <button
-          onClick={() => {
-            setUser(user);
-            handleHistory();
-          }}
-          className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
-        >
-          History
-        </button>
+        <div className="w-1/5 flex flex-col items-center justify-center gap-2">
+          <button
+            onClick={() => {
+              setUser(user);
+              setDetails();
+            }}
+            className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
+          >
+            View Details
+          </button>
+          {/* <button
+        onClick={() => {
+          setUser(user);
+          handleHistory();
+        }}
+        className="w-full justify-center inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full"
+      >
+        History
+      </button> */}
+        </div>
       </div>
     </div>
   );
 };
 
 const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
-  const [info, setInfo] = useState();
+  // const [info, setInfo] = useState();
+  // setInfo(userInfo.friends);
+  // console.log(userInfo);
+  // console.log(userInfo.friends);
+  // console.log(user);
+  // console.log(info);
 
-  console.log(userInfo);
-  console.log(user);
   const changeStatususer = async () => {
     try {
       const res = await apiRequest({
@@ -147,21 +152,21 @@ const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
       console.log(error);
     }
   };
-  const fetchFriend = async () => {
-    const url = "/admin/detail-user/" + userInfo?.friends;
-    const data = {
-      // user: { userId: user?._id },
-    };
-    const res = await apiRequest({
-      url: url,
-      token: user?.token,
-      data,
-      method: "GET",
-    });
-    setInfo(res?.data);
+  // const fetchFriend = async () => {
+  //   const url = "/admin/detail-user/" + userInfo?.friends;
+  //   const data = {
+  //     // user: { userId: user?._id },
+  //   };
+  //   const res = await apiRequest({
+  //     url: url,
+  //     token: user?.token,
+  //     data,
+  //     method: "GET",
+  //   });
+  //   setInfo(res?.data);
 
-    console.log(res);
-  };
+  //   console.log(res);
+  // };
   // useEffect(() => {
   //   fetchFriend();
   // }, []);
@@ -232,7 +237,18 @@ const DetailUser = ({ user, userInfo, setDetails, setUserInfo, fetchUser }) => {
           </button>
         </div>
       </div>
-      <FriendsCard friends={info} />
+      {/* {userInfo.friends &&
+        userInfo?.friends.map((info) => {
+          <FriendsCard friends={info} />;
+        })} */}
+      {/* <div className="w-full h-full overflow-hidden">
+        <div className="flex items-center justify-between text-ascent-1 bp-2 border-b border-[#66666645]">
+          <span> Friends</span>
+        </div>
+        <FriendsCard friend={userInfo} />
+        <FriendsCard friend={userInfo} />
+        <FriendsCard friend={userInfo} />
+      </div> */}
     </div>
   );
 };
@@ -306,8 +322,176 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("email");
   const [type, setType] = useState("asc");
-  console.log(role);
-  console.log(type);
+  const [listmanager, setListmanager] = useState([
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "Nguyễn",
+      following: [],
+      friends: [],
+      lastName: "Takt",
+      location: "VietNam",
+      profileUrl:
+        "https://res.cloudinary.com/dr91wukb1/image/upload/v1730531001/SOCIALMEDIA/g2og0hxbfrh56oiadfum.png",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "joshua",
+      following: [],
+      friends: [],
+      lastName: "smith",
+      location: "VietNam",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "Nguyễn",
+      following: [],
+      friends: [],
+      lastName: "Huy",
+      location: "VietNam",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "John",
+      following: [],
+      friends: [],
+      lastName: "smith",
+      location: "New York",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "joshua",
+      following: [],
+      friends: [],
+      lastName: "kushner",
+      location: "New York",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "joshua",
+      following: [],
+      friends: [],
+      lastName: "kushner",
+      location: "New York",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "joshua",
+      following: [],
+      friends: [],
+      lastName: "kushner",
+      location: "New York",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "joshua",
+      following: [],
+      friends: [],
+      lastName: "kushner",
+      location: "New York",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+    {
+      createdAt: "2024-09-14T06:57:38.122Z",
+      email: "toan6858@gmail.com",
+      firstName: "joshua",
+      following: [],
+      friends: [],
+      lastName: "kushner",
+      location: "New York",
+      role: "Admin",
+      statusActive: true,
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU1MzNlMmI1MTQ1NTlhODA2ZjdmYzMiLCJleHAiOjE3NDYyNzEwMzEsImlhdCI6MTczMDcxOTAzMX0.ZgRy1JRcgxzPFRQSeMZlMYO-uSJprZLdrh1isI0P7Dg",
+      updatedAt: "2024-11-02T07:05:03.542Z",
+      verified: true,
+      views: [],
+      __v: 2,
+      _id: "66e533e2b514559a806f7fc3",
+    },
+  ]);
+  console.log("list12312313123manager");
+  console.log(listmanager);
+  // console.log(type);
+  console.log(user);
 
   const handledetails = () => {
     setDetails(!detail);
@@ -392,14 +576,14 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
                       type={"submit"}
                       className={`inline-flex items-center text-base bg-[#0444a4] text-white px-5 py-1 mt-2 rounded-full`}
                     >
-                      search
+                      Search
                     </button>
                   </form>
                 </div>
-                <div className="flex gap-1 items-center w-1/2 justify-center">
+                <div className="flex gap-1 shrink-0 items-center w-1/2 justify-center">
                   <label className="text-ascent-1">Filter:</label>
                   <select
-                    className="bg-primary text-ascent-1 border rounded-full "
+                    className="bg-primary text-ascent-1 outline outline-1 focus:ring-4 rounded-full "
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                   >
@@ -408,7 +592,7 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
                     <option value="timeCreated">Time Join</option>
                   </select>
                   <select
-                    className=" bg-primary text-ascent-1 border rounded-full "
+                    className=" bg-primary text-ascent-1 outline outline-1 focus:ring-4 rounded-full "
                     value={type}
                     onChange={(e) => setType(e.target.value)}
                   >
@@ -429,8 +613,26 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
                   </button>
                 </div>
               </div>
+              {listmanager.map((user) => {
+                return (
+                  <UserCard
+                    key={user?._id}
+                    user={user}
+                    setDetails={handledetails}
+                    handleHistory={handleHistory}
+                    setUserInfo={setUserInfo}
+                  />
+                );
+              })}
 
-              {listUser?.length > 0 ? (
+              {/* <UserCard
+                key={user?._id}
+                user={user}
+                setDetails={handledetails}
+                handleHistory={handleHistory}
+                setUserInfo={setUserInfo}
+              /> */}
+              {/* {listUser?.length > 0 ? (
                 listUser?.map((user) => (
                   <UserCard
                     key={user?._id}
@@ -441,8 +643,10 @@ const ListUser = ({ listUser, fetchUser, setListUser }) => {
                   />
                 ))
               ) : (
-                <div>Something was wrong</div>
-              )}
+                <div className="w-full h-full text-ascent-1 flex justify-center items-center">
+                  Something was wrong
+                </div>
+              )} */}
             </div>
           )}
         </>

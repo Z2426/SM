@@ -2,6 +2,8 @@ import Users from "../models/userModel.js";
 import { isValidEmail } from "../untils/index.js";
 //get all user
 export const getAllUsers = async (req, res) => {
+  console.log(1);
+
   try {
     const usersWithUserRole = await Users.find({ role: "User" }).select(
       "-password"

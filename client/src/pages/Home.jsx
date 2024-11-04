@@ -59,6 +59,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const videoRef = useRef(null);
+
   const {
     register,
     handleSubmit,

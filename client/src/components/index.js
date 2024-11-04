@@ -19,6 +19,7 @@ import SaveCard from "./Saveitems";
 import ImageCheck from "./ImageCheck";
 import FriendCardSuggest from "./FriendCardSuggest";
 import Editpost from "./Editpost";
+import Reportlist from "./ReportList";
 export {
   TextInput,
   Loading,
@@ -41,4 +42,5 @@ export {
   ImageCheck,
   FriendCardSuggest,
   Editpost,
+  Reportlist,
 };

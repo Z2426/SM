@@ -126,7 +126,7 @@ const ReplyCard = ({ reply, user, handleLike }) => {
       <div className="flex gap-3 items-center mb-1">
         <Link to={"/profile/" + reply?.userId?._id}>
           <img
-            src={reply?.userId?.profileUrl}
+            src={reply?.userId?.profileUrl ?? NoProfile}
             alt={reply?.userId?.firstName}
             className="w-10 h-10 rounded-full object-cover"
           />
@@ -235,10 +235,10 @@ const PostPage = () => {
 lg:rounded-lg h-screen overflow-hidden"
         >
           {/* <TopBar user={user} /> */}
-          <div className="w-full h-full  flex justify-center gap-7">
-            <div className="h-full bg-primary w-1/2 flex flex-col rounded-lg px-7 py-7 justify-between">
+          <div className="w-full h-full overflow-auto flex justify-center gap-7">
+            <div className="h-fit bg-primary w-1/2 flex flex-col rounded-lg px-7 py-7 justify-start ">
               <div className="flex gap-3 items-center mb-2">
-                <Link to={"/profile/" + post?.userId?._id}>
+                <Link to={"/profilefix/" + post?.userId?._id}>
                   <img
                     src={post?.userId.profileUrl ?? NoProfile}
                     alt={post?.userId.firstName}

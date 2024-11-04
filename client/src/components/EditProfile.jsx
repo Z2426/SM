@@ -57,7 +57,7 @@ const EditProfile = () => {
         token: user?.token,
       });
 
-      console.log(res);
+      // console.log(res);
       if (res?.status === "failed") {
         seterrMsg(res);
       } else {
@@ -74,7 +74,7 @@ const EditProfile = () => {
       setisSubmitting(false);
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setisSubmitting(false);
     }
   };

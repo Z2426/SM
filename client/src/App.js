@@ -26,8 +26,8 @@ import FriendDetailSuggest from "./pages/FriendDetailSuggest";
 function Layout() {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
-  //console.log(location);
-  //console.log(user?.token);
+  console.log(location);
+  console.log(user);
 
   return user?.token ? (
     <Outlet />
@@ -47,9 +47,21 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/admin" element={<Admin />} />
 
+            {/* <Route path="/" element={<Home />} />
+            <Route path="/profile/:id?" element={<Profile />} />
+            <Route path="/chat/:id?" element={<Chat />} /> */}
+
             <Route path="/" element={<Home />} />
+            <Route path="/friend" element={<Friend />} />
+            <Route path="/frienddetails" element={<ProfileDetail />} />
+            <Route path="/friendsuggest" element={<FriendDetailSuggest />} />
+            <Route path="/friendrequest" element={<FriendDetailRequest />} />
             <Route path="/profile/:id?" element={<Profile />} />
             <Route path="/chat/:id?" element={<Chat />} />
+            <Route path="/post/:id?" element={<PostPage />} />
+            <Route path="/search/:keyword?" element={<Search />} />
+            <Route path="/save" element={<Save />} />
+            <Route path="/demo" element={<Demo />} />
           </Route>
         ) : (
           <Route element={<Layout />}>

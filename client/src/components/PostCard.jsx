@@ -172,14 +172,14 @@ const ReplyCard = ({ reply, user, handleLike }) => {
   );
 };
 
-const Opt = ({ post, onClick }) => {
+const Opt = ({ post, onClick, report }) => {
   const { user } = useSelector((state) => state.user);
   const [save, setSave] = useState(false);
   console.log(post?.userId?._id);
   console.log(user?._id);
-
+  const handlereport = report;
   return (
-    <div className="w-40 bg-bgColor">
+    <div className="w-fit bg-bgColor">
       <span
         onClick={() => {
           setSave(!save);
@@ -189,12 +189,23 @@ const Opt = ({ post, onClick }) => {
         {save ? (
           <div className="text-ascent-1 flex justify-start items-center w-full gap-2">
             <GoBookmarkSlashFill />
-            Save
+            <div className="text-ascent-1 flex flex-col">
+              <span>Save</span>
+              <span className="text-xs text-ascent-2">
+                Add this to your saveed items.
+              </span>
+            </div>
           </div>
         ) : (
           <div className="text-ascent-1 flex justify-start items-center w-full gap-2">
             <IoBookmark />
-            Unsave
+
+            <div className="text-ascent-1 flex flex-col">
+              <span>Unsave</span>
+              <span className="text-xs text-ascent-2">
+                Remove this form your saved item.
+              </span>
+            </div>
           </div>
         )}
       </span>
@@ -207,6 +218,20 @@ const Opt = ({ post, onClick }) => {
           Edit
         </span>
       )}
+      <div>
+        <span
+          onClick={handlereport}
+          className="text-ascent-1 flex  bg-primary justify-start items-center px-3 py-4 gap-2 hover:bg-ascent-3/30"
+        >
+          <MdEdit />
+          <div className="text-ascent-1 flex flex-col">
+            <span>Report</span>
+            <span className="text-xs text-ascent-2">
+              We won't let {post?.userId?.lastName} know who reported this.
+            </span>
+          </div>
+        </span>
+      </div>
     </div>
   );
 };
@@ -231,6 +256,9 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
   const handleLike = async (uri) => {
     await likePost(uri);
     await getComments(post?._id);
+  };
+  const report = () => {
+    setOption(!option);
   };
   // const fetchPost = async () => {
   //   try {
@@ -275,6 +303,7 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
               onClick={() => {
                 setOption(!option);
               }}
+              report={report}
             >
               <SlOptions size={20} />
             </div>
@@ -285,6 +314,7 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
                   onClick={() => {
                     setEditp(!editp);
                   }}
+                  report={report}
                 />
               </div>
             )}
