@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import TextInput from "./TextInput";
 import Loading from "./Loading";
 import { IoBookmark } from "react-icons/io5";
+import { MdEdit } from "react-icons/md";
 import CustomButton from "./CustomButton";
 import { postComments } from "../assets/data";
 import { apiRequest } from "../until";
@@ -186,12 +187,12 @@ const Opt = ({ post, onClick }) => {
         className=" flex  bg-primary justify-start items-center px-3 py-4 gap-2 hover:bg-ascent-3/30"
       >
         {save ? (
-          <div className="text-ascent-1 flex w-full gap-2">
+          <div className="text-ascent-1 flex justify-start items-center w-full gap-2">
             <GoBookmarkSlashFill />
             Save
           </div>
         ) : (
-          <div className="text-ascent-1 flex w-full gap-2">
+          <div className="text-ascent-1 flex justify-start items-center w-full gap-2">
             <IoBookmark />
             Unsave
           </div>
@@ -202,7 +203,7 @@ const Opt = ({ post, onClick }) => {
           onClick={onClick}
           className="text-ascent-1 flex  bg-primary justify-start items-center px-3 py-4 gap-2 hover:bg-ascent-3/30"
         >
-          <IoBookmark />
+          <MdEdit />
           Edit
         </span>
       )}

@@ -237,7 +237,7 @@ const Editpost = ({ onEvent, post, onClick }) => {
                           htmlFor="name"
                           className="block font-medium text-xl text-ascent-1 text-left py-7 box-border"
                         ></label>
-                        <div className="w-full h-full flex-col-reverse m-3 gap-80">
+                        <div className="w-full h-full flex-col-reverse m-3 gap-8">
                           <textarea
                             {...register("description", {
                               required: "Write something about post",
@@ -247,9 +247,9 @@ const Editpost = ({ onEvent, post, onClick }) => {
                                 ? errors.description.message
                                 : ""
                             }
-                            className="w-full h-72 mb-20 bg-primary rounded-3xl border-none
-            outline-none text-3xl text-ascent-1 
-            px-4 py-3 placeholder:text-ascent-2 resize-none"
+                            className="w-full h-72  bg-primary rounded-3xl border-none
+            outline-none text-xl text-ascent-1 
+            px-4 py-3 placeholder:text-ascent-2 placeholder:text-3xl resize-none"
                             value={content}
                             placeholder="Write something about post"
                             onChange={(ev) => {

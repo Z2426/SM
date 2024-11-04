@@ -232,9 +232,9 @@ const Post = ({ onEvent }) => {
                                 ? errors.description.message
                                 : ""
                             }
-                            className="w-full h-72 mb-20 bg-primary rounded-3xl border-none
-            outline-none text-3xl text-ascent-1 
-            px-4 py-3 placeholder:text-ascent-2 resize-none"
+                            className="w-full h-72 bg-primary rounded-3xl border-none
+            outline-none text-xl text-ascent-1 
+            px-4 py-3 placeholder:text-ascent-2 placeholder:text-3xl resize-none"
                             value={content}
                             placeholder="Write something about post"
                             onChange={(ev) => {
